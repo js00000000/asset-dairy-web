@@ -10,6 +10,8 @@ import ProductPage from './pages/ProductPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmationPage from './pages/OrderConfirmationPage';
 import SellerDashboardPage from './pages/SellerDashboardPage';
+import ProfilePage from './pages/ProfilePage';
+import ProfileEditPage from './pages/ProfileEditPage';
 
 
 // Protected route component
@@ -40,6 +42,8 @@ function App() {
           <Route path="register" element={<RegisterPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="products/:productId" element={<ProductPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+<Route path="profile/edit" element={<ProfileEditPage />} />
           <Route 
             path="checkout" 
             element={

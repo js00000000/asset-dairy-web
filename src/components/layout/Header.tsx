@@ -111,11 +111,11 @@ const Header: React.FC = () => {
                       className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                     >
                       <Link
-                        to="/account"
+                        to="/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setProfileMenuOpen(false)}
                       >
-                        Your Account
+                        Profile
                       </Link>
                       <Link
                         to="/orders"

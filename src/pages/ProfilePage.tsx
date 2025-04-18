@@ -1,0 +1,67 @@
+import React from "react";
+import { UserCircle, Mail, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuthStore } from '../store/auth-store';
+
+const ProfilePage: React.FC = () => {
+  const { user } = useAuthStore();
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
+          <h2 className="text-2xl font-bold mb-4">No profile found</h2>
+          <p className="text-gray-500 mb-6">You must be logged in to view your profile.</p>
+          <Link to="/login" className="text-blue-600 hover:underline font-semibold">Go to Login</Link>
+        </div>
+      </div>
+    );
+  }
+  const { avatar, name, email, address, phone, role } = user;
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
+      <div className="w-full max-w-xl bg-white shadow-xl rounded-3xl p-8 relative">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <img
+              src={avatar}
+              alt="Avatar"
+              className="w-32 h-32 rounded-full object-cover border-4 border-blue-300 shadow-lg"
+            />
+            <span className="absolute bottom-2 right-2 bg-blue-100 p-2 rounded-full shadow">
+              <UserCircle className="w-6 h-6 text-blue-500" />
+            </span>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
+          <span className="text-blue-600 text-sm font-semibold uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">
+            {role}
+          </span>
+        </div>
+        <div className="mt-8 space-y-4">
+          <div className="flex items-center gap-3">
+            <Mail className="w-5 h-5 text-blue-400" />
+            <span className="text-gray-700">{email}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <MapPin className="w-5 h-5 text-blue-400" />
+            <span className="text-gray-700">{address || <span className='italic text-gray-400'>No address</span>}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Phone className="w-5 h-5 text-blue-400" />
+            <span className="text-gray-700">{phone || <span className='italic text-gray-400'>No phone</span>}</span>
+          </div>
+        </div>
+        {/* Edit Profile Button (to be implemented in next step) */}
+        <div className="mt-8 flex justify-end">
+          <Link
+              to="/profile/edit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition flex items-center justify-center"
+            >
+              Edit Profile
+            </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfilePage;
