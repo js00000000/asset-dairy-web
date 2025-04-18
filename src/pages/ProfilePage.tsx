@@ -1,10 +1,36 @@
-import React from "react";
-import { UserCircle, Mail, MapPin, Phone } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { UserCircle, Mail, MapPin, Phone, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from '../store/auth-store';
+import { fetchProfile } from '../services/api';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuthStore();
+  const updateUser = useAuthStore((state) => state.updateUser);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function syncProfile() {
+      setLoading(true);
+      const latest = await fetchProfile();
+      if (latest) {
+        updateUser(latest);
+      }
+      setLoading(false);
+    }
+    syncProfile();
+    // Only run on mount
+    // eslint-disable-next-line
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+        <Loader2 className="w-12 h-12 animate-spin text-blue-400" />
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">

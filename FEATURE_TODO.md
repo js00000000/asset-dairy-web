@@ -7,7 +7,7 @@
   - [~] Profile Edit Page: Enable persistent profile editing
     - [x] Implement persistent storage logic for profile data (read/write, e.g., localStorage or mock API) ✅
     - [x] Update ProfileEditPage.tsx to load, edit, and save profile fields persistently ✅
-    - [ ] Update ProfilePage.tsx to fetch and display the latest profile data from storage
+    - [x] Update ProfilePage.tsx to fetch and display the latest profile data from storage ✅
     - [x] Ensure state sync between profile view and edit pages ✅
     - [ ] Polish UI/UX for both pages to production standards
     - [ ] Test: Verify profile changes persist after reload and are reflected across the app
