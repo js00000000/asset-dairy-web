@@ -4,7 +4,13 @@
 - [ ] **User Profile Management**
   - [x] Mock API Service Layer: Implement a mock API service (using localStorage) for all user/profile/account actions, so features can be tested now and easily integrated with a real backend later. ✅
   - [x] Profile View Page: Display user information (avatar, name, email, address, contact info) ✅
-  - [~] Profile Edit Page: Allow editing of profile fields (name, address, contact info) (UI is now connected to authenticated user; changes are not yet persisted to localStorage or backend)
+  - [~] Profile Edit Page: Enable persistent profile editing
+    - [x] Implement persistent storage logic for profile data (read/write, e.g., localStorage or mock API) ✅
+    - [x] Update ProfileEditPage.tsx to load, edit, and save profile fields persistently ✅
+    - [ ] Update ProfilePage.tsx to fetch and display the latest profile data from storage
+    - [x] Ensure state sync between profile view and edit pages ✅
+    - [ ] Polish UI/UX for both pages to production standards
+    - [ ] Test: Verify profile changes persist after reload and are reflected across the app
   - [ ] Avatar Upload/Change: Enable users to upload or change their profile picture
   - [ ] Password Change: Allow users to change their password securely
   - [ ] Backend API Integration: Connect profile management UI to backend APIs for fetching and updating user data

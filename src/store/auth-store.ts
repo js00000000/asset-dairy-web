@@ -10,6 +10,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string, role: 'buyer' | 'seller') => Promise<void>;
   logout: () => void;
+  updateUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -17,6 +18,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: false,
   error: null,
+
+  updateUser: (user: User) => {
+    set({ user, isAuthenticated: true });
+  },
 
   login: async (email: string, password: string) => {
     set({ isLoading: true, error: null });

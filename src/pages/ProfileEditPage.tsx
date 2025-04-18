@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserCircle, Mail, MapPin, Phone, Save, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import { fetchProfile, updateProfile } from '../services/api';
 import { useAuthStore } from '../store/auth-store';
 
 const ProfileEditPage: React.FC = () => {
   const { user } = useAuthStore();
+  const updateUser = useAuthStore((state) => state.updateUser);
   const [form, setForm] = useState({
     name: user?.name || '',
     address: user?.address || '',
@@ -14,6 +15,23 @@ const ProfileEditPage: React.FC = () => {
   const [avatar, setAvatar] = useState(user?.avatar || '');
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load profile on mount (in case of refresh or store loss)
+  useEffect(() => {
+    async function loadProfile() {
+      const latest = await fetchProfile();
+      if (latest) {
+        setForm({
+          name: latest.name || '',
+          address: latest.address || '',
+          phone: latest.phone || '',
+        });
+        setAvatar(latest.avatar || '');
+      }
+    }
+    loadProfile();
+  }, []);
 
   if (!user) {
     return (
@@ -39,15 +57,27 @@ const ProfileEditPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
+    setError(null);
+    try {
+      // Persist profile (simulate avatar upload by just storing the preview URL)
+      const updated = await updateProfile({
+        ...form,
+        avatar: avatar || user.avatar,
+      });
+      // Update zustand store directly with new user
+      updateUser(updated);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
-    }, 1200); // Simulate save
+    } catch (err) {
+      setError('Failed to update profile. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
@@ -134,6 +164,11 @@ const ProfileEditPage: React.FC = () => {
             {success && (
               <div className="text-green-600 font-semibold text-center mt-2 animate-pulse">
                 Profile updated!
+              </div>
+            )}
+            {error && (
+              <div className="text-red-600 font-semibold text-center mt-2 animate-pulse">
+                {error}
               </div>
             )}
           </div>
