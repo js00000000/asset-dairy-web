@@ -1,7 +1,7 @@
 // Site-wide configuration for branding, navigation, and theme
 export const siteConfig = {
-  name: 'Elite',
-  description: 'A reusable template for any website',
+  name: 'Asset Dairy',
+  description: 'Your modern finance companion. Effortlessly log daily expenses, income, and transfers. Track your stock and crypto portfolios—all in one beautiful dashboard.',
   logoUrl: '', // Add your logo URL or icon component
   nav: [
     { label: 'Home', href: '/' },
@@ -10,30 +10,17 @@ export const siteConfig = {
   footer: {
     sections: [
       {
-        label: 'Shop',
+        label: 'Home',
         links: [
-          { label: 'All Products', href: '/shop' },
-          { label: 'Categories', href: '/categories' },
-          { label: 'Featured Products', href: '/featured' },
-          { label: 'New Arrivals', href: '/new-arrivals' },
-          { label: 'Special Deals', href: '/deals' },
-        ],
-      },
-      {
-        label: 'Account',
-        links: [
-          { label: 'Sign In', href: '/login' },
-          { label: 'Create Account', href: '/register' },
-          { label: 'Orders', href: '/orders' },
-          { label: 'Wishlist', href: '/wishlist' },
-          { label: 'Profile', href: '/account' },
+          { label: 'Home', href: '/' },
+          { label: 'About', href: '/about' },
+          { label: 'Contact', href: '/contact' },
         ],
       },
       {
         label: 'Help',
         links: [
           { label: 'FAQ', href: '/faq' },
-          { label: 'Shipping', href: '/shipping' },
           { label: 'Returns', href: '/returns' },
           { label: 'Contact Us', href: '/contact' },
           { label: 'Privacy Policy', href: '/privacy' },

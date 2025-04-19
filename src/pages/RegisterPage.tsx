@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { siteConfig } from '../config/site.config';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, ShoppingBag } from 'lucide-react';
@@ -64,7 +65,7 @@ const RegisterPage: React.FC = () => {
         >
           <Link to="/" className="flex items-center">
             <ShoppingBag className="h-10 w-10 text-primary-600" />
-            <span className="ml-2 text-2xl font-bold text-gray-900">Elite</span>
+            <span className="ml-2 text-2xl font-bold text-gray-900">{siteConfig.name}</span>
           </Link>
         </motion.div>
         <motion.h2
