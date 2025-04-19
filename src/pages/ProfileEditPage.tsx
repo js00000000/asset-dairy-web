@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { UserCircle, Save, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from '../services/api';
 import { useAuthStore } from '../modules/auth/auth-store';
 
@@ -32,15 +32,7 @@ const ProfileEditPage: React.FC = () => {
   }, []);
 
   if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
-          <h2 className="text-2xl font-bold mb-4">No profile found</h2>
-          <p className="text-gray-500 mb-6">You must be logged in to edit your profile.</p>
-          <Link to="/login" className="text-blue-600 hover:underline font-semibold">Go to Login</Link>
-        </div>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   // Handlers

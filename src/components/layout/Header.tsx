@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Search, Menu, X, ShoppingBag, LogOut } from 'lucide-react';
 import siteConfig from '../../config/site.config';
@@ -14,6 +14,7 @@ const Header: React.FC = () => {
   
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuthStore();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +102,7 @@ const Header: React.FC = () => {
                         onClick={() => {
                           logout();
                           setProfileMenuOpen(false);
+                          navigate('/', { replace: true });
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >

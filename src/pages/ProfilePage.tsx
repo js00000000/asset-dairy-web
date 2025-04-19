@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { UserCircle, Mail, Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuthStore } from '../modules/auth/auth-store';
 import { fetchProfile } from '../services/api';
 
@@ -32,15 +32,7 @@ const ProfilePage: React.FC = () => {
   }
 
   if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
-          <h2 className="text-2xl font-bold mb-4">No profile found</h2>
-          <p className="text-gray-500 mb-6">You must be logged in to view your profile.</p>
-          <Link to="/login" className="text-blue-600 hover:underline font-semibold">Go to Login</Link>
-        </div>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
   const { avatar, name, username, email} = user;
   return (
