@@ -46,7 +46,7 @@ export async function signup(name: string, username: string, email: string, pass
   if (existingUser) {
     throw new Error('Email already in use');
   }
-  // Create demo data for avatar, address, phone
+  // Create demo data for avatar
   const newUser: User = {
     id: `new-${Date.now()}`,
     name,
