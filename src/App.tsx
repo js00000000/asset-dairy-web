@@ -12,6 +12,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import ProfileEditPage from './pages/ProfileEditPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   useEffect(() => {
@@ -44,6 +45,7 @@ function App() {
           element: protectedElement(<ChangePasswordPage />),
         },
         // Add more routes as needed
+        { path: '*', element: <NotFoundPage /> },
       ],
     },
   ]);
