@@ -13,14 +13,13 @@ import ProfileEditPage from './pages/ProfileEditPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AccountListPage from './pages/AccountListPage';
+import AssetPage from './pages/AssetPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
   useEffect(() => {
     initAuthStore();
   }, []);
-
-
 
   // Routes config for createBrowserRouter
   const router = createBrowserRouter([
@@ -38,6 +37,7 @@ function App() {
           element: <ProtectedRoute><ChangePasswordPage /></ProtectedRoute>,
         },
         { path: 'accounts', element: <ProtectedRoute><AccountListPage /></ProtectedRoute> },
+        { path: 'asset', element: <ProtectedRoute><AssetPage /></ProtectedRoute> },
         // Add more routes as needed
         { path: '*', element: <NotFoundPage /> },
       ],

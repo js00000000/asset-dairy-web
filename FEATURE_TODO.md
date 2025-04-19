@@ -26,9 +26,19 @@ This document tracks all major features for the Asset Dairy app, prioritized for
 - [ ] Transaction history and filtering
 
 ## 3. Stock & Crypto Transactions
-- [ ] Record stock/crypto buy/sell (ticker, quantity, price, from account, date)
-- [ ] Track holdings and transaction history per asset
-- [ ] Auto-update account balances on buy/sell
+### 3.1. Record Stock/Crypto Buy/Sell Transaction UI
+- [x] Beautiful modal/form for recording a buy/sell (ticker, quantity, price, from account, date) — UI implemented and integrated on Asset page (/asset)
+- [x] Validation and feedback (Tailwind, Lucide, Pexels)
+
+### 3.2. Holdings & Transaction History UI
+- [x] 3.2a: Display holdings per asset (stock/crypto), with beautiful UI — Asset page now features a modern, production-worthy summary for each asset, using Tailwind, Lucide, and Pexels
+- [x] 3.2b: Show transaction history for each asset — Modal implemented, accessible for all assets (even with zero quantity), with beautiful, production-worthy UI and full click support for history.
+
+### 3.3. Account Balance Auto-Update Logic
+- [ ] Automatically update account balances when a stock/crypto transaction is recorded
+
+### 3.4. (Optional) Backend/Storage Integration
+- [ ] Persist stock/crypto transactions and holdings (mock/localStorage or backend, as appropriate)
 
 ## 4. Portfolio Dashboard
 - [ ] Overview of all accounts, stock, and crypto assets
