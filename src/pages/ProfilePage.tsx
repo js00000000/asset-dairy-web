@@ -42,7 +42,7 @@ const ProfilePage: React.FC = () => {
       </div>
     );
   }
-  const { avatar, name, username, email, role } = user;
+  const { avatar, name, username, email} = user;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
       <div className="w-full max-w-xl bg-white shadow-xl rounded-3xl p-8 relative">
@@ -59,9 +59,6 @@ const ProfilePage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
           <div className="text-gray-500 font-mono text-sm">@{username}</div>
-          <span className="text-blue-600 text-sm font-semibold uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">
-            {role}
-          </span>
         </div>
         <div className="flex flex-col gap-2 w-full mt-6">
           <div className="flex items-center gap-2 text-gray-700">
