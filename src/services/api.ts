@@ -39,7 +39,7 @@ export async function logout() {
   localStorage.removeItem(USER_KEY);
 }
 
-export async function signup(name: string, username: string, email: string, password: string, role: 'buyer' | 'seller') {
+export async function signup(name: string, username: string, email: string, password: string) {
   await new Promise(res => setTimeout(res, 500));
   const allUsers = [...mockUsers];
   const existingUser = allUsers.find(user => user.email.toLowerCase() === email.toLowerCase());

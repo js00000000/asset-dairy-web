@@ -8,7 +8,7 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, username: string, email: string, password: string, role: 'buyer' | 'seller') => Promise<void>;
+  signup: (name: string, username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
@@ -56,10 +56,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
   
-  signup: async (name: string, username: string, email: string, password: string, role: 'buyer' | 'seller') => {
+  signup: async (name: string, username: string, email: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      const newUser = await apiSignup(name, username, email, password, role);
+      const newUser = await apiSignup(name, username, email, password);
       set({ user: newUser, isAuthenticated: true, isLoading: false });
     } catch (error) {
       set({ 

@@ -12,7 +12,6 @@ const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
   const [formError, setFormError] = useState('');
   
   const { signup, isLoading, error, isAuthenticated } = useAuthStore();
@@ -47,7 +46,7 @@ const RegisterPage: React.FC = () => {
     setFormError('');
     
     try {
-      await signup(name, username, email, password, role);
+      await signup(name, username, email, password);
       navigate('/');
     } catch (error) {
       // Error is already handled in the auth store
@@ -155,63 +154,6 @@ const RegisterPage: React.FC = () => {
               required
               fullWidth
             />
-
-            <div>
-              <label className="text-sm font-medium text-gray-700">Account type</label>
-              <div className="mt-2 grid grid-cols-2 gap-3">
-                <div
-                  className={`
-                    cursor-pointer rounded-md border p-3 transition-colors
-                    ${role === 'buyer' 
-                      ? 'border-primary-600 bg-primary-50' 
-                      : 'border-gray-300 hover:bg-gray-50'}
-                  `}
-                  onClick={() => setRole('buyer')}
-                >
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="buyer"
-                      name="accountType"
-                      value="buyer"
-                      checked={role === 'buyer'}
-                      onChange={() => setRole('buyer')}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                    />
-                    <label htmlFor="buyer" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer">
-                      Buyer
-                    </label>
-                  </div>
-                  <p className="mt-1 text-xs text-gray-500">I want to shop on Elite</p>
-                </div>
-                
-                <div
-                  className={`
-                    cursor-pointer rounded-md border p-3 transition-colors
-                    ${role === 'seller' 
-                      ? 'border-primary-600 bg-primary-50' 
-                      : 'border-gray-300 hover:bg-gray-50'}
-                  `}
-                  onClick={() => setRole('seller')}
-                >
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="seller"
-                      name="accountType"
-                      value="seller"
-                      checked={role === 'seller'}
-                      onChange={() => setRole('seller')}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                    />
-                    <label htmlFor="seller" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer">
-                      Seller
-                    </label>
-                  </div>
-                  <p className="mt-1 text-xs text-gray-500">I want to sell on Elite</p>
-                </div>
-              </div>
-            </div>
 
             <div className="flex items-center">
               <input
