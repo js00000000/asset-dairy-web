@@ -15,8 +15,14 @@ const RegisterPage: React.FC = () => {
   const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
   const [formError, setFormError] = useState('');
   
-  const { signup, isLoading, error } = useAuthStore();
+  const { signup, isLoading, error, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -11,8 +11,14 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
   
-  const { login, isLoading, error } = useAuthStore();
+  const { login, isLoading, error, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,11 +33,7 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(email, password);
-      // Only navigate if login was successful (no error and isAuthenticated)
-      if (!useAuthStore.getState().error && useAuthStore.getState().isAuthenticated) {
-        navigate('/');
-      }
-      // Otherwise, error will be displayed below
+      // Redirect will be handled by useEffect below
     } catch (error) {
       // Error is already handled in the auth store
     }
