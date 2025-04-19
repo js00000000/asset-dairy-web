@@ -13,6 +13,7 @@ import ProfilePage from './pages/ProfilePage';
 import ProfileEditPage from './pages/ProfileEditPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AccountListPage from './pages/AccountListPage';
 
 function App() {
   useEffect(() => {
@@ -21,11 +22,9 @@ function App() {
 
   // ProtectedRoute wrapper for data router
   const protectedElement = (element: React.ReactNode) => {
-    const { user, isAuthenticated } = useAuthStore();
+    const { isAuthenticated } = useAuthStore();
     if (!isAuthenticated) return <Navigate to="/login" />;
-    if (user) {
-      return <Navigate to="/" />;
-    }
+    
     return <>{element}</>;
   };
 
@@ -44,6 +43,7 @@ function App() {
           path: 'profile/change-password',
           element: protectedElement(<ChangePasswordPage />),
         },
+        { path: 'accounts', element: protectedElement(<AccountListPage />) },
         // Add more routes as needed
         { path: '*', element: <NotFoundPage /> },
       ],

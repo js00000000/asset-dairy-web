@@ -2,10 +2,10 @@
 // This layer simulates backend endpoints using localStorage and is easy to swap for real HTTP APIs later.
 
 import { User } from '../types/user';
+import { Account } from '../types/account';
 import { mockUsers } from '../data/mock-data';
+import { getCurrentUser, loadAccounts, saveAccounts, USER_KEY } from './storage-helpers';
 // NOTE: All mock users must include a password field for password change to work.
-
-const USER_KEY = 'user';
 
 export async function fetchProfile(): Promise<User | null> {
   await new Promise(res => setTimeout(res, 300));
@@ -20,6 +20,50 @@ export async function updateProfile(data: Partial<User>): Promise<User> {
   localStorage.setItem(USER_KEY, JSON.stringify(updated));
   return updated;
 }
+
+export async function fetchAccounts(): Promise<Account[]> {
+  await new Promise(res => setTimeout(res, 400));
+  const user = getCurrentUser();
+  if (!user) return [];
+  const accounts = loadAccounts();
+  return accounts.filter(acc => acc.ownerId === user.id);
+}
+
+export async function createAccount(account: Omit<Account, 'id'>): Promise<Account> {
+  await new Promise(res => setTimeout(res, 400));
+  const accounts = loadAccounts();
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const newAccount: Account = { ...account, id };
+  accounts.push(newAccount);
+  saveAccounts(accounts);
+  return newAccount;
+}
+
+export async function updateAccount(id: string, data: Partial<Omit<Account, 'id'>>): Promise<Account> {
+  await new Promise(res => setTimeout(res, 400));
+  const user = getCurrentUser();
+  if (!user) throw new Error('Not authenticated');
+  const accounts = loadAccounts();
+  const idx = accounts.findIndex(acc => acc.id === id);
+  if (idx === -1) throw new Error('Account not found');
+  if (accounts[idx].ownerId !== user.id) throw new Error('Cannot edit account you do not own');
+  accounts[idx] = { ...accounts[idx], ...data };
+  saveAccounts(accounts);
+  return accounts[idx];
+}
+
+export async function deleteAccount(id: string): Promise<void> {
+  await new Promise(res => setTimeout(res, 400));
+  const user = getCurrentUser();
+  if (!user) throw new Error('Not authenticated');
+  const accounts = loadAccounts();
+  const idx = accounts.findIndex(acc => acc.id === id);
+  if (idx === -1) throw new Error('Account not found');
+  if (accounts[idx].ownerId !== user.id) throw new Error('Cannot delete account you do not own');
+  const newAccounts = accounts.filter(acc => acc.id !== id);
+  saveAccounts(newAccounts);
+}
+
 
 export async function login(email: string, password: string): Promise<User | null> {
   await new Promise(res => setTimeout(res, 500));

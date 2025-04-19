@@ -5,6 +5,7 @@ export const siteConfig = {
   logoUrl: '', // Add your logo URL or icon component
   nav: [
     { label: 'Home', href: '/' },
+    { label: 'Accounts', href: '/accounts' },
     // Add more navigation items as needed
   ],
   footer: {
