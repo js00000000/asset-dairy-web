@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from 'react-router-dom';
 import { initAuthStore, useAuthStore } from "./modules/auth/auth-store";
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
@@ -14,71 +18,56 @@ import ProfilePage from './pages/ProfilePage';
 import ProfileEditPage from './pages/ProfileEditPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 
-
-// Protected route component
-const ProtectedRoute = ({ children, allowedRoles = [] }: { children: React.ReactNode, allowedRoles?: string[] }) => {
-  const { user, isAuthenticated } = useAuthStore();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-  
-  if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/" />;
-  }
-  
-  return <>{children}</>;
-};
-
 function App() {
   useEffect(() => {
     initAuthStore();
   }, []);
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="cart" element={<CartPage />} />
-          <Route path="products/:productId" element={<ProductPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-<Route path="profile/edit" element={<ProfileEditPage />} />
-<Route path="profile/change-password" element={
-  <ProtectedRoute>
-    <ChangePasswordPage />
-  </ProtectedRoute>
-} />
-          <Route 
-            path="checkout" 
-            element={
-              <ProtectedRoute>
-                <CheckoutPage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="order-confirmation" 
-            element={
-              <ProtectedRoute>
-                <OrderConfirmationPage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="seller/dashboard" 
-            element={
-              <ProtectedRoute allowedRoles={['seller']}>
-                <SellerDashboardPage />
-              </ProtectedRoute>
-            } 
-          />
-          {/* Add more routes as needed */}
-        </Route>
-      </Routes>
-    </Router>
-  );
+
+  // ProtectedRoute wrapper for data router
+  const protectedElement = (element: React.ReactNode, allowedRoles?: string[]) => {
+    const { user, isAuthenticated } = useAuthStore();
+    if (!isAuthenticated) return <Navigate to="/login" />;
+    if (allowedRoles && allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
+      return <Navigate to="/" />;
+    }
+    return <>{element}</>;
+  };
+
+  // Routes config for createBrowserRouter
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        { index: true, element: <HomePage /> },
+        { path: 'login', element: <LoginPage /> },
+        { path: 'register', element: <RegisterPage /> },
+        { path: 'cart', element: <CartPage /> },
+        { path: 'products/:productId', element: <ProductPage /> },
+        { path: 'profile', element: <ProfilePage /> },
+        { path: 'profile/edit', element: <ProfileEditPage /> },
+        {
+          path: 'profile/change-password',
+          element: protectedElement(<ChangePasswordPage />),
+        },
+        {
+          path: 'checkout',
+          element: protectedElement(<CheckoutPage />),
+        },
+        {
+          path: 'order-confirmation',
+          element: protectedElement(<OrderConfirmationPage />),
+        },
+        {
+          path: 'seller/dashboard',
+          element: protectedElement(<SellerDashboardPage />, ['seller']),
+        },
+        // Add more routes as needed
+      ],
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
