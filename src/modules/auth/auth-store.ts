@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { login as apiLogin, signup as apiSignup } from '../services/api';
-import { User } from '../types/user';
+import { login as apiLogin, signup as apiSignup } from '../../services/api';
+import { User } from '../../types/user';
 
 interface AuthState {
   user: User | null;
@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       // Dynamically import to avoid circular dependency
-      const { changePassword } = await import('../services/api');
+      const { changePassword } = await import('../../services/api');
       const updatedUser = await changePassword(currentPassword, newPassword);
       set({ user: updatedUser, isLoading: false });
     } catch (error) {
@@ -35,7 +35,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       throw error;
     }
   },
-
 
   updateUser: (user: User) => {
     set({ user, isAuthenticated: true });

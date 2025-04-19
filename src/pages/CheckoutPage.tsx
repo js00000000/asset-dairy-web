@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Lock, CreditCard } from 'lucide-react';
-import { useCartStore } from '../store/cart-store';
-import { useAuthStore } from '../store/auth-store';
+import { useCartStore } from '../modules/cart/cart-store';
+import { CartItem } from '../types';
+import { useAuthStore } from '../modules/auth/auth-store';
 import { formatCurrency } from '../lib/utils';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -305,7 +306,7 @@ const CheckoutPage: React.FC = () => {
             <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
             
             <ul className="divide-y divide-gray-200 mb-4">
-              {items.map((item) => (
+              {items.map((item: CartItem, index: number) => (
                 <li key={item.id} className="py-4 flex">
                   <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                     <img

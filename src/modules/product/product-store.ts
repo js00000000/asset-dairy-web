@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { mockProducts, mockCategories } from '../data/mock-data';
-import { Product, Category } from '../types';
+import { mockProducts, mockCategories } from '../../data/mock-data';
+import { Product, Category } from '../../types';
 
 interface ProductState {
   products: Product[];

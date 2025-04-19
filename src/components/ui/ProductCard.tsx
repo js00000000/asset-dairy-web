@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Product } from '../../types';
 import { formatCurrency, calculateDiscount } from '../../lib/utils';
 import Button from './Button';
-import { useCartStore } from '../../store/cart-store';
+import { useCartStore } from '../../modules/cart/cart-store';
 
 interface ProductCardProps {
   product: Product;

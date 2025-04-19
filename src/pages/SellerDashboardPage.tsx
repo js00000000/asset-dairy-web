@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingBag, DollarSign, Users, Package, Plus, Settings, TrendingUp, BarChart4 } from 'lucide-react';
-import { useAuthStore } from '../store/auth-store';
+import { useAuthStore } from '../modules/auth/auth-store';
 import Button from '../components/ui/Button';
 
 const SellerDashboardPage: React.FC = () => {

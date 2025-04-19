@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, Search, Menu, X, ShoppingBag, Store, Heart, LogOut } from 'lucide-react';
-import { useAuthStore } from '../../store/auth-store';
-import { useCartStore } from '../../store/cart-store';
+import siteConfig from '../../config/site.config';
+import { useAuthStore } from '../../modules/auth/auth-store';
+import { useCartStore } from '../../modules/cart/cart-store';
 import Button from '../ui/Button';
 
 const Header: React.FC = () => {
@@ -46,27 +47,22 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2" aria-label="Elite Marketplace">
-            <ShoppingBag className="h-8 w-8 text-primary-600" />
-            <span className="text-xl font-bold text-gray-900">Elite</span>
+          <Link to="/" className="flex items-center space-x-2" aria-label={siteConfig.name}>
+            {siteConfig.logoUrl ? (
+              <img src={siteConfig.logoUrl} alt={siteConfig.name} className="h-8 w-8 object-contain" />
+            ) : (
+              <ShoppingBag className="h-8 w-8 text-primary-600" />
+            )}
+            <span className="text-xl font-bold text-gray-900">{siteConfig.name}</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
-              Home
-            </Link>
-            <Link to="/shop" className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
-              Shop
-            </Link>
-            <Link to="/categories" className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
-              Categories
-            </Link>
-            {user?.role === 'seller' && (
-              <Link to="/seller/dashboard" className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
-                Seller Dashboard
+          <nav className="hidden md:flex space-x-6 items-center">
+            {siteConfig.nav.map((item) => (
+              <Link key={item.href} to={item.href} className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
+                {item.label}
               </Link>
-            )}
+            ))}
           </nav>
 
           {/* Desktop Actions */}
@@ -217,6 +213,45 @@ const Header: React.FC = () => {
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
+          <motion.nav
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm flex flex-col"
+          >
+            <div className="flex items-center justify-between px-4 py-4 border-b">
+              <Link to="/" className="flex items-center space-x-2" aria-label={siteConfig.name} onClick={closeMobileMenu}>
+                {siteConfig.logoUrl ? (
+                  <img src={siteConfig.logoUrl} alt={siteConfig.name} className="h-8 w-8 object-contain" />
+                ) : (
+                  <ShoppingBag className="h-8 w-8 text-primary-600" />
+                )}
+                <span className="text-xl font-bold text-gray-900">{siteConfig.name}</span>
+              </Link>
+              <button onClick={closeMobileMenu} className="p-2 rounded-full hover:bg-gray-100">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="flex-1 flex flex-col justify-center items-center space-y-8">
+              {siteConfig.nav.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className="text-lg font-semibold text-gray-700 hover:text-primary-600 transition-colors"
+                  onClick={closeMobileMenu}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -224,6 +259,16 @@ const Header: React.FC = () => {
             className="md:hidden overflow-hidden bg-white border-t border-gray-200"
           >
             <div className="space-y-1 px-4 py-5">
+              {siteConfig.nav.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"
+                  onClick={closeMobileMenu}
+                >
+                  {item.label}
+                </Link>
+              ))}
               <Link
                 to="/"
                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"

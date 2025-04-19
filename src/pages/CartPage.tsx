@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
-import { useCartStore } from '../store/cart-store';
+import { useCartStore } from '../modules/cart/cart-store';
 import { formatCurrency } from '../lib/utils';
 import Button from '../components/ui/Button';
 

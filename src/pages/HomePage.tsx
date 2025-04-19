@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, TrendingUp, Award, Truck } from 'lucide-react';
-import { useProductStore } from '../store/product-store';
+import { useProductStore } from '../modules/product/product-store';
+import { Product, Category } from '../types';
 import ProductCard from '../components/ui/ProductCard';
 import CategoryCard from '../components/ui/CategoryCard';
 import Button from '../components/ui/Button';
@@ -182,7 +183,7 @@ const HomePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayCategories.map((category, index) => (
+            {displayCategories.map((category: Category, index: number) => (
               <motion.div
                 key={category.id}
                 custom={index}
@@ -221,7 +222,7 @@ const HomePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {popularProducts.map((product, index) => (
+            {popularProducts.map((product: Product, index: number) => (
               <motion.div
                 key={product.id}
                 custom={index}
@@ -317,7 +318,7 @@ const HomePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newArrivals.map((product, index) => (
+            {newArrivals.map((product: Product, index: number) => (
               <motion.div
                 key={product.id}
                 custom={index}

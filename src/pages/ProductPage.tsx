@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ShoppingCart, Heart, Star, Shield, TruckIcon, ChevronDown, MessageCircle } from 'lucide-react';
-import { useProductStore } from '../store/product-store';
-import { useCartStore } from '../store/cart-store';
+import { ChevronLeft, ChevronRight, ShoppingCart, Heart, Star, Shield, TruckIcon, ChevronDown, MessageCircle, Plus, Minus } from 'lucide-react';
+import { useProductStore } from '../modules/product/product-store';
+import { useCartStore } from '../modules/cart/cart-store';
 import { formatCurrency, formatDate, calculateDiscount, generateStarRating } from '../lib/utils';
 import Button from '../components/ui/Button';
 import ProductCard from '../components/ui/ProductCard';
