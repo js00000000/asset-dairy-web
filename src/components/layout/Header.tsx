@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Search, Menu, X, ShoppingBag, Store, Heart, LogOut } from 'lucide-react';
+import { User, Search, Menu, X, ShoppingBag, LogOut } from 'lucide-react';
 import siteConfig from '../../config/site.config';
 import { useAuthStore } from '../../modules/auth/auth-store';
-import { useCartStore } from '../../modules/cart/cart-store';
 import Button from '../ui/Button';
 
 const Header: React.FC = () => {
@@ -15,7 +14,6 @@ const Header: React.FC = () => {
   
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const { items, itemCount } = useCartStore();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -74,20 +72,6 @@ const Header: React.FC = () => {
             >
               <Search size={20} />
             </button>
-            
-            <Link to="/wishlist" className="p-2 text-gray-500 hover:text-primary-600 transition-colors" aria-label="Wishlist">
-              <Heart size={20} />
-            </Link>
-            
-            <Link to="/cart" className="relative p-2 text-gray-500 hover:text-primary-600 transition-colors" aria-label="Cart">
-              <ShoppingCart size={20} />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary-600 text-xs font-medium text-white">
-                  {itemCount}
-                </span>
-              )}
-            </Link>
-            
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -113,22 +97,6 @@ const Header: React.FC = () => {
                       >
                         Profile
                       </Link>
-                      <Link
-                        to="/orders"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setProfileMenuOpen(false)}
-                      >
-                        Orders
-                      </Link>
-                      {user?.role === 'seller' && (
-                        <Link
-                          to="/seller/dashboard"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => setProfileMenuOpen(false)}
-                        >
-                          Seller Dashboard
-                        </Link>
-                      )}
                       <button
                         onClick={() => {
                           logout();
@@ -160,15 +128,6 @@ const Header: React.FC = () => {
 
           {/* Mobile menu button */}
           <div className="flex md:hidden items-center space-x-4">
-            <Link to="/cart" className="relative p-2 text-gray-500" aria-label="Cart">
-              <ShoppingCart size={20} />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary-600 text-xs font-medium text-white">
-                  {itemCount}
-                </span>
-              )}
-            </Link>
-            
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-gray-500"
@@ -297,15 +256,6 @@ const Header: React.FC = () => {
               >
                 Wishlist
               </Link>
-              {user?.role === 'seller' && (
-                <Link
-                  to="/seller/dashboard"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"
-                  onClick={closeMobileMenu}
-                >
-                  Seller Dashboard
-                </Link>
-              )}
               <div className="pt-4">
                 <div className="border-t border-gray-200 pt-4">
                   {isAuthenticated ? (
@@ -320,13 +270,6 @@ const Header: React.FC = () => {
                         onClick={closeMobileMenu}
                       >
                         Your Account
-                      </Link>
-                      <Link
-                        to="/orders"
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"
-                        onClick={closeMobileMenu}
-                      >
-                        Orders
                       </Link>
                       <button
                         onClick={() => {
