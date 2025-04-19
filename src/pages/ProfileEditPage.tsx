@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { UserCircle, MapPin, Phone, Save, ArrowLeft } from "lucide-react";
+import { UserCircle, Save, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { fetchProfile, updateProfile } from '../services/api';
 import { useAuthStore } from '../store/auth-store';
@@ -9,8 +9,7 @@ const ProfileEditPage: React.FC = () => {
   const updateUser = useAuthStore((state) => state.updateUser);
   const [form, setForm] = useState({
     name: user?.name || '',
-    address: user?.address || '',
-    phone: user?.phone || '',
+    username: user?.username || '',
   });
   const [avatar, setAvatar] = useState(user?.avatar || '');
   const [saving, setSaving] = useState(false);
@@ -24,8 +23,7 @@ const ProfileEditPage: React.FC = () => {
       if (latest) {
         setForm({
           name: latest.name || '',
-          address: latest.address || '',
-          phone: latest.phone || '',
+          username: latest.username || '',
         });
         setAvatar(latest.avatar || '');
       }
@@ -123,32 +121,16 @@ const ProfileEditPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-blue-400" />
-                <span>Address</span>
+                <span>Username</span>
               </label>
               <input
                 type="text"
-                name="address"
-                value={form.address}
+                name="username"
+                value={form.username}
                 onChange={handleChange}
                 className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
                 required
-                minLength={5}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                <Phone className="w-4 h-4 text-blue-400" />
-                <span>Contact Number</span>
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-                required
-                // Pattern validation removed due to browser compatibility issues. TODO: Add robust phone validation in the future.
+                minLength={2}
               />
             </div>
             <div className="flex justify-end mt-8">

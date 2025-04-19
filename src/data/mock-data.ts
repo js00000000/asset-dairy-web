@@ -20,8 +20,7 @@ export const mockSellers: User[] = [
     role: 'seller',
     avatar: 'https://images.pexels.com/photos/5380642/pexels-photo-5380642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-01-15T08:00:00Z',
-    address: '456 Tech Ave, Silicon Valley, USA',
-    phone: '+1 555-987-6543',
+    username: 'techsolutionsinc',
     password: 'changeme',
   },
   {
@@ -31,8 +30,7 @@ export const mockSellers: User[] = [
     role: 'seller',
     avatar: 'https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-02-10T10:30:00Z',
-    address: '789 Fashion Blvd, New York, USA',
-    phone: '+1 555-222-3344',
+    username: 'fashionforward',
     password: 'changeme',
   },
   {
@@ -42,8 +40,7 @@ export const mockSellers: User[] = [
     role: 'seller',
     avatar: 'https://images.pexels.com/photos/3760610/pexels-photo-3760610.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-03-05T14:15:00Z',
-    address: '321 Home St, Austin, USA',
-    phone: '+1 555-333-4455',
+    username: 'homeessentialsco',
     password: 'changeme',
   },
 ];
@@ -227,8 +224,7 @@ export const mockBuyers: User[] = [
     role: 'buyer',
     avatar: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-04-01T09:00:00Z',
-    address: '101 Main St, Springfield, USA',
-    phone: '+1 555-111-2233',
+    username: 'alicejohnson',
     password: 'changeme',
   },
   {
@@ -238,8 +234,7 @@ export const mockBuyers: User[] = [
     role: 'buyer',
     avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-04-02T10:00:00Z',
-    address: '202 Lakeview Rd, Springfield, USA',
-    phone: '+1 555-444-5566',
+    username: 'boblee',
     password: 'changeme',
   },
   {
@@ -249,8 +244,7 @@ export const mockBuyers: User[] = [
     role: 'buyer',
     avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-04-03T11:00:00Z',
-    address: '303 River Rd, Springfield, USA',
-    phone: '+1 555-777-8899',
+    username: 'carolsmith',
     password: 'changeme',
   },
   {
@@ -260,8 +254,7 @@ export const mockBuyers: User[] = [
     role: 'buyer',
     avatar: 'https://images.pexels.com/photos/3772510/pexels-photo-3772510.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-01-20T12:00:00Z',
-    address: '404 Elm St, Springfield, USA',
-    phone: '+1 555-888-9900',
+    username: 'emmawilson',
     password: 'changeme',
   },
   {
@@ -271,8 +264,7 @@ export const mockBuyers: User[] = [
     role: 'buyer',
     avatar: 'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: '2023-02-15T09:45:00Z',
-    address: '505 Oak St, Springfield, USA',
-    phone: '+1 555-999-0000',
+    username: 'jamesjohnson',
     password: 'changeme',
   },
 ];

@@ -6,8 +6,7 @@ export interface User {
   role: 'buyer' | 'seller';
   avatar: string;
   createdAt: string;
-  address?: string;
-  phone?: string;
+  username: string;
   /**
    * Only for mock/localStorage use! Do NOT use in production.
    */

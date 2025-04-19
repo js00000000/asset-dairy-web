@@ -8,6 +8,7 @@ import Input from '../components/ui/Input';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,7 +22,7 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     
     // Basic validation
-    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+    if (!name.trim() || !username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setFormError('All fields are required');
       return;
     }
@@ -40,7 +41,7 @@ const RegisterPage: React.FC = () => {
     setFormError('');
     
     try {
-      await signup(name, email, password, role);
+      await signup(name, username, email, password, role);
       navigate('/');
     } catch (error) {
       // Error is already handled in the auth store
@@ -97,6 +98,18 @@ const RegisterPage: React.FC = () => {
               autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              leftIcon={<User size={18} />}
+              required
+              fullWidth
+            />
+
+            <Input
+              label="Username"
+              type="text"
+              id="username"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               leftIcon={<User size={18} />}
               required
               fullWidth

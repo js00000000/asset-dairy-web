@@ -39,7 +39,7 @@ export async function logout() {
   localStorage.removeItem(USER_KEY);
 }
 
-export async function signup(name: string, email: string, password: string, role: 'buyer' | 'seller') {
+export async function signup(name: string, username: string, email: string, password: string, role: 'buyer' | 'seller') {
   await new Promise(res => setTimeout(res, 500));
   const allUsers = [...mockBuyers, ...mockSellers];
   const existingUser = allUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
@@ -50,13 +50,12 @@ export async function signup(name: string, email: string, password: string, role
   const newUser: User = {
     id: `new-${Date.now()}`,
     name,
+    username,
     email,
     role,
     password,
     avatar: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: new Date().toISOString(),
-    address: '123 Demo St, Test City, USA',
-    phone: '+1 555-000-0000',
   };
   localStorage.setItem('user', JSON.stringify(newUser));
   return newUser;
