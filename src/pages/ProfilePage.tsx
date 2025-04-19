@@ -76,14 +76,22 @@ const ProfilePage: React.FC = () => {
             <span className="text-gray-700">{phone || <span className='italic text-gray-400'>No phone</span>}</span>
           </div>
         </div>
-        {/* Edit Profile Button (to be implemented in next step) */}
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex justify-end gap-4">
           <Link
-              to="/profile/edit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition flex items-center justify-center"
-            >
-              Edit Profile
-            </Link>
+            to="/profile/change-password"
+            className="flex items-center gap-2 bg-white border border-blue-300 hover:bg-blue-50 text-blue-600 font-semibold px-5 py-2 rounded-lg shadow transition-colors"
+            aria-label="Change Password"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Change Password
+          </Link>
+          <Link
+            to="/profile/edit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition flex items-center justify-center"
+            aria-label="Edit Profile"
+          >
+            Edit Profile
+          </Link>
         </div>
       </div>
     </div>

@@ -16,23 +16,27 @@ const LoginPage: React.FC = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!email.trim() || !password.trim()) {
       setFormError('Please enter both email and password');
       return;
     }
-    
-    // Clear form error
+
     setFormError('');
-    
+
     try {
       await login(email, password);
-      navigate('/');
+      // Only navigate if login was successful (no error and isAuthenticated)
+      if (!useAuthStore.getState().error && useAuthStore.getState().isAuthenticated) {
+        navigate('/');
+      }
+      // Otherwise, error will be displayed below
     } catch (error) {
       // Error is already handled in the auth store
     }
   };
+
   
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

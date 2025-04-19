@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { UserCircle, Mail, MapPin, Phone, Save, ArrowLeft } from "lucide-react";
+import { UserCircle, MapPin, Phone, Save, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { fetchProfile, updateProfile } from '../services/api';
 import { useAuthStore } from '../store/auth-store';

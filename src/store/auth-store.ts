@@ -11,6 +11,7 @@ interface AuthState {
   signup: (name: string, email: string, password: string, role: 'buyer' | 'seller') => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -18,6 +19,23 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: false,
   error: null,
+
+  async changePassword(currentPassword: string, newPassword: string) {
+    set({ isLoading: true, error: null });
+    try {
+      // Dynamically import to avoid circular dependency
+      const { changePassword } = await import('../services/api');
+      const updatedUser = await changePassword(currentPassword, newPassword);
+      set({ user: updatedUser, isLoading: false });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Failed to change password',
+        isLoading: false
+      });
+      throw error;
+    }
+  },
+
 
   updateUser: (user: User) => {
     set({ user, isAuthenticated: true });

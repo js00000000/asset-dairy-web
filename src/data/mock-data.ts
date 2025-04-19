@@ -22,6 +22,7 @@ export const mockSellers: User[] = [
     createdAt: '2023-01-15T08:00:00Z',
     address: '456 Tech Ave, Silicon Valley, USA',
     phone: '+1 555-987-6543',
+    password: 'changeme',
   },
   {
     id: 's2',
@@ -32,6 +33,7 @@ export const mockSellers: User[] = [
     createdAt: '2023-02-10T10:30:00Z',
     address: '789 Fashion Blvd, New York, USA',
     phone: '+1 555-222-3344',
+    password: 'changeme',
   },
   {
     id: 's3',
@@ -42,6 +44,7 @@ export const mockSellers: User[] = [
     createdAt: '2023-03-05T14:15:00Z',
     address: '321 Home St, Austin, USA',
     phone: '+1 555-333-4455',
+    password: 'changeme',
   },
 ];
 
@@ -226,6 +229,7 @@ export const mockBuyers: User[] = [
     createdAt: '2023-04-01T09:00:00Z',
     address: '101 Main St, Springfield, USA',
     phone: '+1 555-111-2233',
+    password: 'changeme',
   },
   {
     id: 'b2',
@@ -236,6 +240,7 @@ export const mockBuyers: User[] = [
     createdAt: '2023-04-02T10:00:00Z',
     address: '202 Lakeview Rd, Springfield, USA',
     phone: '+1 555-444-5566',
+    password: 'changeme',
   },
   {
     id: 'b3',
@@ -246,6 +251,7 @@ export const mockBuyers: User[] = [
     createdAt: '2023-04-03T11:00:00Z',
     address: '303 River Rd, Springfield, USA',
     phone: '+1 555-777-8899',
+    password: 'changeme',
   },
   {
     id: 'b4',
@@ -256,6 +262,7 @@ export const mockBuyers: User[] = [
     createdAt: '2023-01-20T12:00:00Z',
     address: '404 Elm St, Springfield, USA',
     phone: '+1 555-888-9900',
+    password: 'changeme',
   },
   {
     id: 'b5',
@@ -266,6 +273,7 @@ export const mockBuyers: User[] = [
     createdAt: '2023-02-15T09:45:00Z',
     address: '505 Oak St, Springfield, USA',
     phone: '+1 555-999-0000',
+    password: 'changeme',
   },
 ];
 

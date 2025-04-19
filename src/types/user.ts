@@ -8,4 +8,8 @@ export interface User {
   createdAt: string;
   address?: string;
   phone?: string;
+  /**
+   * Only for mock/localStorage use! Do NOT use in production.
+   */
+  password?: string;
 }

@@ -9,10 +9,18 @@
     - [x] Update ProfileEditPage.tsx to load, edit, and save profile fields persistently ✅
     - [x] Update ProfilePage.tsx to fetch and display the latest profile data from storage ✅
     - [x] Ensure state sync between profile view and edit pages ✅
-    - [ ] Polish UI/UX for both pages to production standards
-    - [ ] Test: Verify profile changes persist after reload and are reflected across the app
+
+    - [ ] Test: Verify profile changes persist after reload and are reflected across the app (localStorage/mock API)
+      - [ ] NOTE: Repeat and expand this test after backend integration to ensure persistence across devices/browsers.
   - [ ] Avatar Upload/Change: Enable users to upload or change their profile picture
-  - [ ] Password Change: Allow users to change their password securely
+  - [~] Password Change: Allow users to change their password securely
+    - [x] Add changePassword logic to mock API (localStorage) ✅
+    - [x] Add changePassword method to zustand store ✅
+    - [x] Create a beautiful password change form (current, new, confirm) ✅
+    - [x] Validate current password, new password strength, and match ✅
+    - [x] Show user feedback on success or error ✅
+    - [x] Test: Password change persists and login works with new password ✅
+    - [x] Login, password change, and error handling are now robust and user-friendly.
   - [ ] Backend API Integration: Connect profile management UI to backend APIs for fetching and updating user data
   - [ ] Validation & Feedback: Add form validation and user feedback for profile updates
     - [ ] NOTE: Phone number pattern validation was removed from Profile Edit Page due to browser compatibility issues. Needs robust solution in future.
@@ -30,6 +38,8 @@
   Ensure all pages are fully responsive and mobile-friendly.
 
 ## 🟡 Medium Priority
+- [ ] UI/UX Polish
+  - Polish profile management (Profile View/Edit) UI/UX to production standards
 - [ ] **Wishlist/Favorites**  
   Let users save products to a wishlist or favorites list.
 - [ ] **Admin Panel**  

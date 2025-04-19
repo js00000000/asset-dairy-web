@@ -12,6 +12,7 @@ import OrderConfirmationPage from './pages/OrderConfirmationPage';
 import SellerDashboardPage from './pages/SellerDashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import ProfileEditPage from './pages/ProfileEditPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 
 // Protected route component
@@ -44,6 +45,11 @@ function App() {
           <Route path="products/:productId" element={<ProductPage />} />
           <Route path="profile" element={<ProfilePage />} />
 <Route path="profile/edit" element={<ProfileEditPage />} />
+<Route path="profile/change-password" element={
+  <ProtectedRoute>
+    <ChangePasswordPage />
+  </ProtectedRoute>
+} />
           <Route 
             path="checkout" 
             element={
