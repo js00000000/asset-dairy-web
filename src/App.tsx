@@ -14,7 +14,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import AccountListPage from './accounts/AccountListPage';
 import PortfolioPage from './portfolio/PortfolioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import TransactionListPage from './transactions/TransactionListPage';
+import TradeListPage from './trades/TradeListPage';
 
 import { useEffect } from 'react';
 import { useAuthStore } from './users/auth-store';
@@ -48,7 +48,7 @@ function App() {
         },
         { path: 'accounts', element: <ProtectedRoute><AccountListPage /></ProtectedRoute> },
         { path: 'portfolio', element: <ProtectedRoute><PortfolioPage /></ProtectedRoute> },
-        { path: 'transactions', element: <ProtectedRoute><TransactionListPage /></ProtectedRoute> },
+        { path: 'trades', element: <ProtectedRoute><TradeListPage /></ProtectedRoute> },
         // Add more routes as needed
         { path: '*', element: <NotFoundPage /> },
       ],

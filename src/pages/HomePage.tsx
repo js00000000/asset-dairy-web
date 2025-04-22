@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4">
               <Coins className="w-10 h-10 text-yellow-600 mb-2" />
-              <h3 className="text-xl font-semibold">Transaction History</h3>
+              <h3 className="text-xl font-semibold">Trade History</h3>
               <p className="text-gray-600">Detailed record of all your financial activity. Filter, search, and export anytime.</p>
             </div>
           </div>

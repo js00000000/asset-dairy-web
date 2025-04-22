@@ -1,12 +1,12 @@
 # Asset Dairy
 
-Asset Dairy is a modern web application for tracking your personal finances and investment portfolios. Effortlessly log daily expenses, income, and transfers, and manage your stock and cryptocurrency transactions in one beautiful dashboard.
+Asset Dairy is a modern web application for tracking your personal finances and investment portfolios. Effortlessly log daily expenses, income, and transfers, and manage your stock and cryptocurrency trades in one beautiful dashboard.
 
 ## Features
 
 - **Account Setup**: Create and manage secure user accounts.
 - **Expense & Income Logging**: Record daily expenses, income, and transfers with ease.
-- **Portfolio Tracking**: Track your stock and crypto holdings, transactions, and portfolio value over time.
+- **Portfolio Tracking**: Track your stock and crypto holdings, trades, and portfolio value over time.
 - **Modern UI**: Clean, responsive, and production-ready interface built with React, Tailwind CSS, and Lucide React icons.
 - **Data Insights**: Visualize spending, income, and asset allocation.
 
@@ -44,7 +44,7 @@ This project follows a strict domain-driven folder structure for clarity, scalab
 src/
 ├── accounts/        # Account management domain (pages, types, API)
 ├── assets/          # Asset & portfolio management domain
-├── transactions/    # Transaction logging and history
+├── trades/          # Trades logging and history
 ├── users/           # User profiles, authentication, settings
 ├── components/      # Shared UI components
 │   ├── ui/          # Generic, reusable UI elements

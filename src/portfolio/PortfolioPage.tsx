@@ -2,36 +2,36 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { PlusCircle, TrendingUp, LineChart, Wallet } from 'lucide-react';
 import AssetCard from './AssetCard';
 import Button from '../components/ui/Button';
-import StockTransactionModal from '../transactions/StockTransactionModal';
+import TradeEditModal from '../trades/TradeEditModal';
 import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
-import { fetchTransactions } from '../transactions/transaction-api';
+import { fetchTrades } from '../trades/trade-api';
+import type { Trade } from '../trades/trade-types';
 import { fetchAccounts } from '../accounts/account-api';
-import type { Transaction } from '../transactions/transaction-types';
 import type { Account } from '../accounts/account-types';
 import { getCryptoPrice, getStockPrice } from './portfolio-api';
 
 const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
-  const [transactions, setTxs] = useState<Transaction[]>([]);
+  const [trades, setTrades] = useState<Trade[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load transactions and accounts from API on mount
+  // Load trades and accounts from API on mount
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       setError(null);
       try {
         const [txs, accs] = await Promise.all([
-          fetchTransactions(),
+          fetchTrades(),
           fetchAccounts()
         ]);
-        setTxs(txs);
-        setAssets(buildAssetsFromTransactions(txs));
+        setTrades(txs);
+        setAssets(buildAssetsFromTrades(txs));
         setAccounts(accs);
       } catch (err: any) {
         setError(err.message || 'Failed to load data');
@@ -42,8 +42,8 @@ const PortfolioPage: React.FC = () => {
     loadData();
   }, []);
 
-  // Helper to rebuild asset list from transactions
-  const buildAssetsFromTransactions = useCallback((txs: Transaction[]) => {
+  // Helper to rebuild asset list from trades
+  const buildAssetsFromTrades = useCallback((txs: Trade[]) => {
     // Enhanced asset map to include averagePrice
     const assetMap: Record<string, {
       ticker: string;
@@ -98,19 +98,19 @@ const PortfolioPage: React.FC = () => {
     return Object.values(assetMap);
   }, []);
 
-  // Handler for transaction changes
+  // Handler for trade changes
 
-  // Callback to reload accounts and transactions after edit
+  // Callback to reload accounts and trades after edit
   const handleAccountsUpdated = async () => {
     setLoading(true);
     setError(null);
     try {
       const [txs, accs] = await Promise.all([
-        fetchTransactions(),
+        fetchTrades(),
         fetchAccounts()
       ]);
-      setTxs(txs);
-      setAssets(buildAssetsFromTransactions(txs));
+      setTrades(txs);
+      setAssets(buildAssetsFromTrades(txs));
       setAccounts(accs);
     } catch (err: any) {
       setError(err.message || 'Failed to reload data');
@@ -118,11 +118,11 @@ const PortfolioPage: React.FC = () => {
       setLoading(false);
     }
   };
-  const handleTransactionsChange = async (_newTxs: Transaction[]) => {
+  const handleTradesChange = async (_newTxs: Trade[]) => {
     // Always re-fetch from API for consistency
-    const txs = await fetchTransactions();
-    setTxs(txs);
-    setAssets(buildAssetsFromTransactions(txs));
+    const txs = await fetchTrades();
+    setTrades(txs);
+    setAssets(buildAssetsFromTrades(txs));
   };
 
   if (loading) {
@@ -139,18 +139,18 @@ const PortfolioPage: React.FC = () => {
       </div>
     );
   }
-  if (transactions.length === 0) {
+  if (trades.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <LineChart className="w-12 h-12 text-blue-400 mb-4" />
-        <div className="text-slate-600 text-lg mb-2">No transactions found.</div>
+        <div className="text-slate-600 text-lg mb-2">No trades found.</div>
         <Button onClick={() => setModalOpen(true)} className="mt-2">
-          <PlusCircle className="w-5 h-5 mr-2" /> Add Transaction
+          <PlusCircle className="w-5 h-5 mr-2" /> Add Trade
         </Button>
-        <StockTransactionModal
+        <TradeEditModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
-          onTransactionsChange={handleTransactionsChange}
+          onTradesChange={handleTradesChange}
         />
       </div>
     );
@@ -170,7 +170,7 @@ const PortfolioPage: React.FC = () => {
               className="flex items-center gap-2 shadow-xl"
               onClick={() => setModalOpen(true)}
             >
-              <PlusCircle className="w-5 h-5" /> Add Transaction
+              <PlusCircle className="w-5 h-5" /> Add Trade
             </Button>
           </div>
         </div>
@@ -192,7 +192,6 @@ const PortfolioPage: React.FC = () => {
                 <AssetCard
                   key={asset.ticker}
                   ticker={asset.ticker}
-                  name={asset.name}
                   type={asset.type}
                   quantity={asset.quantity}
                   price={asset.price}
@@ -204,13 +203,13 @@ const PortfolioPage: React.FC = () => {
             </div>
           </div>
         </section>
-        <StockTransactionModal
+        <TradeEditModal
           open={modalOpen || !!selectedAssetForTx}
           onClose={() => {
             setModalOpen(false);
             setSelectedAssetForTx(null);
           }}
-          onTransactionsChange={handleTransactionsChange}
+          onTradesChange={handleTradesChange}
         />
       </div>
       {/* Asset & Account Summary Table */}

@@ -6,7 +6,7 @@ export const siteConfig = {
   nav: [
     { label: 'Accounts', href: '/accounts' },
     { label: 'Portfolio', href: '/portfolio' },
-    { label: 'Transactions', href: '/transactions' },
+    { label: 'Trades', href: '/trades' },
     // Add more navigation items as needed
   ],
   footer: {

@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Search, TrendingUp, Bitcoin, Loader2, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
-import { fetchTransactions, deleteTransaction } from "./transaction-api";
-import type { Transaction } from "./transaction-types";
+import { fetchTrades, deleteTrade } from "./trade-api";
+import type { Trade } from "./trade-types";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
-import StockTransactionModal from "./StockTransactionModal";
+import TradeEditModal from "./TradeEditModal";
 import { loadAccounts } from "../lib/storage-helpers";
 import type { Account } from "../accounts/account-types";
 
-// Extend StockTransactionModal with edit capability via props
-// (Assume modal handles initialValues and edit mode if transaction prop is passed)
+// Extend StockTradeModal with edit capability via props
+// (Assume modal handles initialValues and edit mode if trade prop is passed)
 
 
 const assetTypeIcons = {
@@ -17,11 +17,11 @@ const assetTypeIcons = {
   crypto: <Bitcoin className="w-4 h-4 text-orange-400" />,
 };
 
-const TransactionListPage: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+const TradeListPage: React.FC = () => {
+  const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editTx, setEditTx] = useState<Transaction | null>(null);
+  const [editTx, setEditTx] = useState<Trade | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [filterType, setFilterType] = useState<"all" | "stock" | "crypto">("all");
   const [search, setSearch] = useState("");
@@ -42,13 +42,13 @@ const TransactionListPage: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchTransactions()
-      .then((txs) => setTransactions(txs))
+    fetchTrades()
+      .then((txs) => setTrades(txs))
       .finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
-    let txs = transactions;
+    let txs = trades;
     if (filterType !== "all") {
       txs = txs.filter((tx) => tx.assetType === filterType);
     }
@@ -61,10 +61,10 @@ const TransactionListPage: React.FC = () => {
         : new Date(a.date).getTime() - new Date(b.date).getTime()
     );
     return txs;
-  }, [transactions, filterType, search, sortDesc]);
+  }, [trades, filterType, search, sortDesc]);
 
-  const handleTransactionsChange = (newTxs: Transaction[]) => {
-    setTransactions(newTxs);
+  const handleTradesChange = (newTxs: Trade[]) => {
+    setTrades(newTxs);
     setEditTx(null);
     setShowModal(false);
   };
@@ -72,9 +72,9 @@ const TransactionListPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     setDeletingId(id);
     try {
-      await deleteTransaction(id);
-      const txs = await fetchTransactions();
-      setTransactions(txs);
+      await deleteTrade(id);
+      const txs = await fetchTrades();
+      setTrades(txs);
     } finally {
       setDeletingId(null);
     }
@@ -85,11 +85,11 @@ const TransactionListPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-1 flex items-center gap-2">
-            Transactions
+            Trades
             <span className="text-base font-medium text-slate-400">overview</span>
           </h1>
           <p className="text-slate-500">
-            View, search, and add your asset transactions.
+            View, search, and add your asset trades.
           </p>
         </div>
         <Button
@@ -98,7 +98,7 @@ const TransactionListPage: React.FC = () => {
           variant="primary"
         >
           <Plus className="w-5 h-5" />
-          Add Transaction
+          Add Trade
         </Button>
       </div>
       <div className="flex flex-col md:flex-row gap-2 mb-6 items-center">
@@ -150,11 +150,11 @@ const TransactionListPage: React.FC = () => {
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-            <span className="ml-3 text-slate-500">Loading transactions...</span>
+            <span className="ml-3 text-slate-500">Loading trades...</span>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-            <span>No transactions found.</span>
+            <span>No trades found.</span>
           </div>
         ) : (
           <table className="min-w-full divide-y divide-slate-100">
@@ -261,14 +261,14 @@ const TransactionListPage: React.FC = () => {
           </table>
         )}
       </div>
-      <StockTransactionModal
+      <TradeEditModal
         open={showModal}
         onClose={() => { setShowModal(false); setEditTx(null); }}
-        onTransactionsChange={handleTransactionsChange}
-        transaction={editTx || undefined}
+        onTradesChange={handleTradesChange}
+        trade={editTx || undefined}
       />
     </div>
   );
 };
 
-export default TransactionListPage;
+export default TradeListPage;

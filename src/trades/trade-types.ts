@@ -1,4 +1,4 @@
-export type Transaction = {
+export type Trade = {
   type: 'buy' | 'sell';
   date: string;
   quantity: number;

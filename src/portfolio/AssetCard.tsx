@@ -3,7 +3,6 @@ import { TrendingUp, Bitcoin } from 'lucide-react';
 
 export interface AssetCardProps {
   ticker: string;
-  name: string;
   type: string;
   quantity: number;
   price: number;
@@ -14,7 +13,6 @@ export interface AssetCardProps {
 
 const AssetCard: React.FC<AssetCardProps> = ({
   ticker,
-  name,
   type,
   quantity,
   price,
@@ -29,7 +27,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
         isZero ? 'opacity-60 grayscale hover:opacity-90 hover:grayscale-0' : ''
       }`}
       onClick={onClick}
-      title={`Add transaction for ${ticker}`}
+      title={`Add trade for ${ticker}`}
     >
       {isZero && (
         <span className="absolute top-4 right-4 bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full shadow">

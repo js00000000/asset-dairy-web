@@ -15,10 +15,10 @@ src/
 │   ├── PortfolioPage.tsx
 │   ├── portfolio-api.ts
 │   └── AssetAccountSummaryTable.tsx
-├── transactions/
-│   ├── StockTransactionModal.tsx
-│   ├── transaction-api.ts
-│   └── transaction-types.ts
+├── trades/
+│   ├── TradeEditModal.tsx
+│   ├── trade-api.ts
+│   └── trade-types.ts
 ├── users/
 │   ├── ChangePasswordPage.tsx
 │   ├── ProfileEditPage.tsx
