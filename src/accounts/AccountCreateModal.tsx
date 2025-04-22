@@ -5,10 +5,7 @@ import { useAuthStore } from '../users/auth-store';
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },
-  { label: "EUR - Euro", value: "EUR" },
-  { label: "JPY - Japanese Yen", value: "JPY" },
-  { label: "CNY - Chinese Yuan", value: "CNY" },
-  { label: "GBP - British Pound", value: "GBP" },
+  { label: "TWD - Taiwanese Dollar", value: "TWD" },
 ];
 
 interface Props {
