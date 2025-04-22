@@ -30,14 +30,51 @@ npm run dev # or yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
 
+## Tech Stack
+- **React** (with hooks) for UI
+- **Tailwind CSS** for styling
+- **Lucide React** for icons
+- **Vite** for fast development
+- **TypeScript** for type safety
+
 ## Project Structure
-- `src/pages/HomePage.tsx`: Landing page (customize for your branding and features)
-- `src/components/`: Reusable UI components
-- `src/`: Main application code
+This project follows a strict domain-driven folder structure for clarity, scalability, and maintainability. Each domain folder contains its own pages, components, types, and API/services:
+
+```
+src/
+├── accounts/        # Account management domain (pages, types, API)
+├── assets/          # Asset & portfolio management domain
+├── transactions/    # Transaction logging and history
+├── users/           # User profiles, authentication, settings
+├── components/      # Shared UI components
+│   ├── ui/          # Generic, reusable UI elements
+│   └── layout/      # App-wide layout components (Header, Footer, etc.)
+├── layouts/         # Layout wrappers
+├── lib/             # Utilities and helpers
+├── data/            # Mock/test data
+├── pages/           # App-wide pages (Home, Login, Register, NotFound)
+└── config/          # App/site configuration
+```
+- Types/interfaces are placed in their primary domain folder (e.g., `accounts/account-types.ts`).
+- Only global types go in `src/types/` (if needed).
+- Test files should mirror the domain structure in a `__tests__/` or `tests/` folder.
+
+## Enforced Conventions
+- **No legacy imports**: Always import from domain-driven paths.
+- **Keep [DIR_TREE_HISTORY.md](./DIR_TREE_HISTORY.md) up to date** with any structure changes.
+- **Update [FEATURE_TODO.md](./FEATURE_TODO.md)** for ongoing and planned features.
+- **Remove empty legacy folders** after migration.
+- **UI Consistency**: All UI uses Tailwind, Lucide, and React hooks by default.
+
+## Contribution Guidelines
+- Follow the domain-driven folder structure for all new features.
+- Update DIR_TREE_HISTORY.md and FEATURE_TODO.md as required.
+- Use only the approved UI stack (React, Tailwind, Lucide) unless otherwise specified.
+- See the user rules in the repo for full enforcement details.
 
 ## License
 MIT License
 
 ---
 
-*Designed for modern finance tracking and portfolio management.*
+*Designed for modern finance tracking and portfolio management. Beautiful, production-ready, and organized for scale.*
