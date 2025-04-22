@@ -128,7 +128,7 @@ const AssetTransactionHistoryModal: React.FC<AssetTransactionHistoryModalProps> 
                           <input type="number" value={editForm.price as number} onChange={e => handleEditChange('price', Number(e.target.value))} className="border rounded px-2 py-1 w-24" />
                         </td>
                         <td className="py-3 px-4">
-                          <select value={editForm.account} onChange={e => handleEditChange('account', e.target.value)} className="border rounded px-2 py-1 w-full">
+                          <select value={editForm.accountId} onChange={e => handleEditChange('accountId', e.target.value)} className="border rounded px-2 py-1 w-full">
                             <option value="">Select Account</option>
                             {accounts.length === 0 ? (
                               <option value="">No accounts found</option>
@@ -154,7 +154,7 @@ const AssetTransactionHistoryModal: React.FC<AssetTransactionHistoryModalProps> 
                         <td className="py-3 px-4 text-left align-middle">{tx.date}</td>
                         <td className="py-3 px-4 font-mono text-right align-middle">{tx.quantity}</td>
                         <td className="py-3 px-4 font-mono text-blue-800 text-right align-middle">${tx.price.toLocaleString()}</td>
-                        <td className="py-3 px-4 text-left align-middle">{accounts.find(acc => acc.id === tx.account)?.name || tx.account}</td>
+                        <td className="py-3 px-4 text-left align-middle">{accounts.find(acc => acc.id === tx.accountId)?.name || tx.accountId}</td>
                         <td className="py-3 px-4 flex gap-2 justify-center min-w-[100px] align-middle">
                           <button onClick={() => handleEditClick(tx)} className="text-blue-500 hover:bg-blue-50 rounded p-1 transition"><Pencil className="w-5 h-5" /></button>
                           <button onClick={() => handleDeleteClick(tx.id)} className="text-red-500 hover:bg-red-50 rounded p-1 transition"><Trash2 className="w-5 h-5" /></button>

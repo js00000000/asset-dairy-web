@@ -3,7 +3,6 @@ import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bi
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { loadAccounts, getCurrentUser } from '../lib/storage-helpers';
-import { createTransaction, fetchTransactions } from '../transactions/transaction-api';
 import type { Transaction } from '../transactions/transaction-types';
 import type { Account } from '../accounts/account-types';
 
@@ -11,16 +10,16 @@ interface StockTransactionModalProps {
   open: boolean;
   onClose: () => void;
   onTransactionsChange: (newTxs: Transaction[]) => void;
+  transaction?: Transaction;
 }
 
-const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTransactionModalProps) => {
-  const [type, setType] = useState<'buy' | 'sell'>('buy');
-  const [assetType, setAssetType] = useState<'stock' | 'crypto'>('stock');
-  const [ticker, setTicker] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [price, setPrice] = useState('');
-  const [account, setAccount] = useState('');
-  // Load user accounts
+const StockTransactionModal = ({ open, onClose, onTransactionsChange, transaction }: StockTransactionModalProps) => {
+  const [type, setType] = useState<'buy' | 'sell'>(transaction ? transaction.type : 'buy');
+  const [assetType, setAssetType] = useState<'stock' | 'crypto'>(transaction ? transaction.assetType : 'stock');
+  const [ticker, setTicker] = useState(transaction ? transaction.ticker : '');
+  const [quantity, setQuantity] = useState(transaction ? String(transaction.quantity) : '');
+  const [price, setPrice] = useState(transaction ? String(transaction.price) : '');
+  const [accountId, setAccountId] = useState(transaction ? transaction.accountId : '');
   const [accounts, setAccounts] = useState<Account[]>([]);
 
   React.useEffect(() => {
@@ -33,6 +32,7 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
     }
   }, [open]);
   const [date, setDate] = useState(() => {
+    if (transaction) return transaction.date;
     // Default to today in YYYY-MM-DD format
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -43,10 +43,31 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Reset fields when modal opens/closes or transaction changes
+  React.useEffect(() => {
+    if (open) {
+      setType(transaction ? transaction.type : 'buy');
+      setAssetType(transaction ? transaction.assetType : 'stock');
+      setTicker(transaction ? transaction.ticker : '');
+      setQuantity(transaction ? String(transaction.quantity) : '');
+      setPrice(transaction ? String(transaction.price) : '');
+      setAccountId(transaction ? transaction.accountId : '');
+      setDate(transaction ? transaction.date : (() => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+      })());
+      setError(null);
+      setSuccess(false);
+    }
+  }, [open, transaction]);
+
   if (!open) return null;
 
   const validate = () => {
-    if (!ticker.trim() || !quantity || !price || !account || !date) {
+    if (!ticker.trim() || !quantity || !price || !accountId || !date) {
       setError('All fields are required.');
       return false;
     }
@@ -65,24 +86,48 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    // Compose new transaction (without id)
-    const tx = {
-      assetType,
-      type,
-      date,
-      quantity: Number(quantity),
-      price: Number(price),
-      account,
-      ticker,
-    };
-    await createTransaction(tx as Omit<Transaction, 'id'>);
-    const updated = await fetchTransactions();
-    onTransactionsChange(updated);
-    setSuccess(true);
-    setTimeout(() => {
-      setSuccess(false);
-      onClose();
-    }, 1200);
+    if (transaction) {
+      // Edit mode
+      const updatedTx = {
+        ...transaction,
+        assetType,
+        type,
+        date,
+        quantity: Number(quantity),
+        price: Number(price),
+        accountId,
+        ticker,
+      };
+      const { updateTransaction, fetchTransactions } = await import('./transaction-api');
+      await updateTransaction(transaction.id, updatedTx);
+      const updated = await fetchTransactions();
+      onTransactionsChange(updated);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        onClose();
+      }, 1200);
+    } else {
+      // Add mode
+      const tx = {
+        assetType,
+        type,
+        date,
+        quantity: Number(quantity),
+        price: Number(price),
+        accountId,
+        ticker,
+      };
+      const { createTransaction, fetchTransactions } = await import('./transaction-api');
+      await createTransaction(tx as Omit<Transaction, 'id'>);
+      const updated = await fetchTransactions();
+      onTransactionsChange(updated);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        onClose();
+      }, 1200);
+    }
   };
 
   return (
@@ -101,7 +146,9 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
           ) : (
             <ArrowDownCircle className="w-7 h-7 text-red-500" />
           )}
-          <h2 className="text-2xl font-extrabold text-blue-900 drop-shadow">{type === 'buy' ? 'Record Buy' : 'Record Sell'} Transaction</h2>
+          <h2 className="text-2xl font-extrabold text-blue-900 drop-shadow">
+            {transaction ? 'Edit' : type === 'buy' ? 'Record Buy' : 'Record Sell'} Transaction
+          </h2>
         </div>
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           <div className="flex gap-3">
@@ -145,7 +192,7 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
             required
             fullWidth
           />
-          <div className="flex gap-4">
+          <div className="grid grid-cols-2 gap-3 mb-2">
             <Input
               label="Quantity"
               placeholder="e.g. 10"
@@ -155,29 +202,14 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
               min="0"
               leftIcon={<DollarSign className="w-5 h-5 text-green-600" />}
               required
-              fullWidth
             />
-            <Input
-              label="Price per Unit (USD)"
-              placeholder="e.g. 150.00"
-              value={price}
-              onChange={e => setPrice(e.target.value)}
-              type="number"
-              min="0"
-              leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
-              required
-              fullWidth
-            />
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-1">
+            {/* From Account */}
+            <div className="flex flex-col">
               <label className="block text-sm font-medium mb-1 text-slate-700">From Account</label>
               <select
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                value={account}
-                onChange={e => {
-                  setAccount(e.target.value);
-                }}
+                className="w-full h-[42px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                value={accountId}
+                onChange={e => setAccountId(e.target.value)}
                 required
               >
                 <option value="">Select Account</option>
@@ -192,12 +224,26 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
                 )}
               </select>
             </div>
-            <div className="flex-1">
+          </div>
+          <div className="grid grid-cols-2 gap-3 mb-2">
+            {/* Price per Unit */}
+            <Input
+              label="Price per Unit (USD)"
+              placeholder="e.g. 150.00"
+              value={price}
+              onChange={e => setPrice(e.target.value)}
+              type="number"
+              min="0"
+              leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
+              required
+            />
+            {/* Date */}
+            <div className="flex flex-col">
               <label className="block text-sm font-medium mb-1 text-slate-700">Date</label>
               <div className="relative">
                 <input
                   type="date"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                  className="w-full h-[42px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
                   value={date}
                   onChange={e => setDate(e.target.value)}
                   required
@@ -217,13 +263,6 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTra
             {type === 'buy' ? <ArrowUpCircle className="w-5 h-5" /> : <ArrowDownCircle className="w-5 h-5" />} Record {type === 'buy' ? 'Buy' : 'Sell'}
           </Button>
         </form>
-        <div className="mt-8 flex justify-center">
-          <img
-            src="https://images.pexels.com/photos/6693657/pexels-photo-6693657.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt="Stock market illustration"
-            className="rounded-xl shadow-xl max-w-xs border-2 border-blue-100"
-          />
-        </div>
       </div>
     </div>
   );
