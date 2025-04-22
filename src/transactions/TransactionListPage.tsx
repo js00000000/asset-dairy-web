@@ -23,7 +23,6 @@ const TransactionListPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [filterType, setFilterType] = useState<"all" | "stock" | "crypto">("all");
   const [search, setSearch] = useState("");
   const [sortDesc, setSortDesc] = useState(true);
@@ -78,7 +77,6 @@ const TransactionListPage: React.FC = () => {
       setTransactions(txs);
     } finally {
       setDeletingId(null);
-      setConfirmDeleteId(null);
     }
   };
 
@@ -207,46 +205,54 @@ const TransactionListPage: React.FC = () => {
                       : 'Unknown Account'}
                   </td>
                   <td className="px-4 py-3 flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => { setEditTx(tx); setShowModal(true); }}
-                      title="Edit"
-                      className="text-blue-500 hover:bg-blue-50"
-                    >
-                      <span className="sr-only">Edit</span>
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmDeleteId(tx.id)}
-                      title="Delete"
-                      className="text-red-500 hover:bg-red-50"
-                      disabled={deletingId === tx.id}
-                    >
-                      <span className="sr-only">Delete</span>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                    {confirmDeleteId === tx.id && (
-                      <div className="absolute z-10 bg-white border rounded shadow p-2 mt-1 flex gap-2 items-center">
-                        <span>Delete?</span>
+                    {deletingId === tx.id ? (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-slate-500 hover:bg-slate-100"
+                          onClick={() => setDeletingId(null)}
+                          title="Cancel Delete"
+                        >
+                          <span className="sr-only">Cancel Delete</span>
+                          {/* Lucide X icon for cancel */}
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </Button>
                         <Button
                           size="sm"
                           variant="danger"
+                          className="text-red-600 hover:bg-red-100"
                           onClick={() => handleDelete(tx.id)}
-                          disabled={deletingId === tx.id}
+                          title="Confirm Delete"
                         >
-                          Confirm
+                          <span className="sr-only">Confirm Delete</span>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => { setEditTx(tx); setShowModal(true); }}
+                          title="Edit"
+                          className="text-blue-500 hover:bg-blue-50"
+                        >
+                          <span className="sr-only">Edit</span>
+                          <Edit className="w-4 h-4" />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => setConfirmDeleteId(null)}
+                          onClick={() => setDeletingId(tx.id)}
+                          title="Delete"
+                          className="text-red-500 hover:bg-red-50"
+                          disabled={deletingId === tx.id}
                         >
-                          Cancel
+                          <span className="sr-only">Delete</span>
+                          <Trash2 className="w-4 h-4" />
                         </Button>
-                      </div>
+                      </>
                     )}
                   </td>
                 </tr>
