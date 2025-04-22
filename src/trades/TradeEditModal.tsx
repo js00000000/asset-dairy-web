@@ -6,7 +6,7 @@ import { loadAccounts, getCurrentUser } from '../lib/storage-helpers';
 import type { Trade } from '../trades/trade-types';
 import type { Account } from '../accounts/account-types';
 
-interface StockTradeModalProps {
+interface TradeEditModalProps {
   open: boolean;
   onClose: () => void;
   onTradesChange: (newTxs: Trade[]) => void;
@@ -15,7 +15,7 @@ interface StockTradeModalProps {
   assetType?: string;
 }
 
-const StockTradeModal = ({ open, onClose, onTradesChange, trade, ticker: propTicker, assetType: propAssetType }: StockTradeModalProps) => {
+const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTicker, assetType: propAssetType }: TradeEditModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>(trade ? trade.type : 'buy');
   const [assetType, setAssetType] = useState<'stock' | 'crypto'>(trade ? trade.assetType : 'stock');
   const [ticker, setTicker] = useState(trade ? trade.ticker : '');
@@ -270,4 +270,4 @@ const StockTradeModal = ({ open, onClose, onTradesChange, trade, ticker: propTic
   );
 };
 
-export default StockTradeModal;
+export default TradeEditModal;
