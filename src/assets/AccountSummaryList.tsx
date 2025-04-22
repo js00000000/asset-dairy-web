@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Wallet } from "lucide-react";
-import { fetchAccounts } from "../accounts/account-api";
 import type { Account } from "../accounts/account-types";
 import AccountEditModal from "../accounts/AccountEditModal";
 
@@ -9,33 +8,15 @@ const currencySymbols: Record<string, string> = {
   TWD: "NT$",
 };
 
-export default function AccountSummaryList() {
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface AccountSummaryListProps {
+  accounts: Account[];
+  onUpdated?: () => void;
+}
+
+export default function AccountSummaryList({ accounts, onUpdated }: AccountSummaryListProps) {
   const [editId, setEditId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const loadAccounts = () => {
-    setLoading(true);
-    fetchAccounts()
-      .then((data) => {
-        setAccounts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message || "Failed to load accounts");
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    loadAccounts();
-    // eslint-disable-next-line
-  }, []);
-
-  if (loading) return <div className="text-blue-600 animate-pulse p-4">Loading accounts...</div>;
-  if (error) return <div className="text-red-600 p-4">{error}</div>;
   if (!accounts.length) return <div className="text-slate-500 p-4">No accounts found.</div>;
 
   return (
@@ -72,7 +53,7 @@ export default function AccountSummaryList() {
           setModalOpen(false);
           setEditId(null);
         }}
-        onUpdated={loadAccounts}
+        onUpdated={onUpdated ?? (() => {})}
       />
     </>
   );

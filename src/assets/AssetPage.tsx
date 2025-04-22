@@ -98,6 +98,25 @@ const AssetPage: React.FC = () => {
   }, []);
 
   // Handler for transaction changes
+
+  // Callback to reload accounts and transactions after edit
+  const handleAccountsUpdated = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [txs, accs] = await Promise.all([
+        fetchTransactions(),
+        fetchAccounts()
+      ]);
+      setTxs(txs);
+      setAssets(buildAssetsFromTransactions(txs));
+      setAccounts(accs);
+    } catch (err: any) {
+      setError(err.message || 'Failed to reload data');
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleTransactionsChange = async (_newTxs: Transaction[]) => {
     // Always re-fetch from API for consistency
     const txs = await fetchTransactions();
@@ -159,7 +178,7 @@ const AssetPage: React.FC = () => {
           <h2 className="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
             <Wallet className="w-6 h-6 text-blue-500" /> Accounts
           </h2>
-          <AccountSummaryList />
+          <AccountSummaryList accounts={accounts} onUpdated={handleAccountsUpdated} />
         </section>
         {/* Assets grid */}
         <section className="mb-8">

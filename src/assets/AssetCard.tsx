@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Bitcoin } from 'lucide-react';
+import { TrendingUp, Bitcoin } from 'lucide-react';
 
 export interface AssetCardProps {
   ticker: string;
