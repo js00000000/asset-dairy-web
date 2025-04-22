@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Menu, X, ShoppingBag, LogOut } from 'lucide-react';
+import { User, Menu, X, PiggyBank, LogOut } from 'lucide-react';
 import siteConfig from '../../config/site.config';
 import { useAuthStore } from '../../users/auth-store';
 import Button from '../ui/Button';
@@ -10,7 +10,6 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -50,7 +49,7 @@ const Header: React.FC = () => {
             {siteConfig.logoUrl ? (
               <img src={siteConfig.logoUrl} alt={siteConfig.name} className="h-8 w-8 object-contain" />
             ) : (
-              <ShoppingBag className="h-8 w-8 text-primary-600" />
+              <PiggyBank className="h-8 w-8 text-primary-600" />
             )}
             <span className="text-xl font-bold text-gray-900">{siteConfig.name}</span>
           </Link>
@@ -150,7 +149,7 @@ const Header: React.FC = () => {
                 {siteConfig.logoUrl ? (
                   <img src={siteConfig.logoUrl} alt={siteConfig.name} className="h-8 w-8 object-contain" />
                 ) : (
-                  <ShoppingBag className="h-8 w-8 text-primary-600" />
+                  <PiggyBank className="h-8 w-8 text-primary-600" />
                 )}
                 <span className="text-xl font-bold text-gray-900">{siteConfig.name}</span>
               </Link>
