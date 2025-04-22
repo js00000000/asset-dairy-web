@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Wallet } from "lucide-react";
 import { fetchAccounts } from "../accounts/account-api";
 import type { Account } from "../accounts/account-types";

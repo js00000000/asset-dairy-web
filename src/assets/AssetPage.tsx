@@ -3,34 +3,41 @@ import { PlusCircle, TrendingUp, Bitcoin, LineChart, Wallet } from 'lucide-react
 import Button from '../components/ui/Button';
 import StockTransactionModal from '../transactions/StockTransactionModal';
 import AccountSummaryList from './AccountSummaryList';
-
+import AssetAccountSummaryTable from './AssetAccountSummaryTable';
 import { fetchTransactions } from '../transactions/transaction-api';
+import { fetchAccounts } from '../accounts/account-api';
 import type { Transaction } from '../transactions/transaction-types';
+import type { Account } from '../accounts/account-types';
 
 const AssetPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
   const [transactions, setTxs] = useState<Transaction[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load transactions from API on mount
+  // Load transactions and accounts from API on mount
   useEffect(() => {
-    const loadTxs = async () => {
+    const loadData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const txs = await fetchTransactions();
+        const [txs, accs] = await Promise.all([
+          fetchTransactions(),
+          fetchAccounts()
+        ]);
         setTxs(txs);
         setAssets(buildAssetsFromTransactions(txs));
+        setAccounts(accs);
       } catch (err: any) {
-        setError(err.message || 'Failed to load transactions');
+        setError(err.message || 'Failed to load data');
       } finally {
         setLoading(false);
       }
     };
-    loadTxs();
+    loadData();
   }, []);
 
   // Helper to rebuild asset list from transactions
@@ -189,6 +196,8 @@ const AssetPage: React.FC = () => {
           ticker={selectedAssetForTx?.ticker}
           assetType={selectedAssetForTx?.type}
         />
+        {/* Asset & Account Summary Table */}
+        <AssetAccountSummaryTable accounts={accounts} assets={assets} />
       </div>
     </div>
   );
