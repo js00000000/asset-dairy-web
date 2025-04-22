@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { PlusCircle, TrendingUp, Bitcoin, LineChart } from 'lucide-react';
 import Button from '../components/ui/Button';
-import StockTransactionModal from '../components/stock/StockTransactionModal';
-import AssetTransactionHistoryModal from '../components/stock/AssetTransactionHistoryModal';
-import { fetchTransactions } from '../services/transaction-api';
-import type { Transaction } from '../types/transaction';
+import StockTransactionModal from '../transactions/StockTransactionModal';
+import AssetTransactionHistoryModal from './AssetTransactionHistoryModal';
+import { fetchTransactions } from '../transactions/transaction-api';
+import type { Transaction } from '../transactions/transaction-types';
 
 const AssetPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);

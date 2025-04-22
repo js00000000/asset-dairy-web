@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bitcoin } from 'lucide-react';
-import Button from '../ui/Button';
-import Input from '../ui/Input';
-import { loadAccounts, getCurrentUser } from '../../services/storage-helpers';
-import { createTransaction, fetchTransactions } from '../../services/transaction-api';
-import type { Transaction } from '../../types/transaction';
-import type { Account } from '../../types/account';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import { loadAccounts, getCurrentUser } from '../lib/storage-helpers';
+import { createTransaction, fetchTransactions } from '../transactions/transaction-api';
+import type { Transaction } from '../transactions/transaction-types';
+import type { Account } from '../accounts/account-types';
 
 interface StockTransactionModalProps {
   open: boolean;

@@ -1,4 +1,4 @@
-import { Account } from '../types/account';
+import { Account } from '../accounts/account-types';
 
 export const mockAccounts: Account[] = [
   { id: '1', name: 'Main Checking', currency: 'USD', balance: 3200.5, ownerId: 's1' },

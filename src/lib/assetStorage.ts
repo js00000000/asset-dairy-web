@@ -1,4 +1,4 @@
-import { Transaction } from '../types/transaction';
+import { Transaction } from '../transactions/transaction-types';
 
 const STORAGE_KEY = 'assetDairy_transactions';
 

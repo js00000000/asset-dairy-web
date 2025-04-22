@@ -1,8 +1,8 @@
 import React from 'react';
 import { X, TrendingUp, Bitcoin } from 'lucide-react';
-import type { Transaction } from '../../types/transaction';
+import type { Transaction } from '../transactions/transaction-types';
 import { useState } from 'react';
-import { updateTransaction, deleteTransaction, fetchTransactions } from '../../services/transaction-api';
+import { updateTransaction, deleteTransaction, fetchTransactions } from '../transactions/transaction-api';
 import { Pencil, Trash2, Check, X as LucideX } from 'lucide-react';
 
 interface AssetTransactionHistoryModalProps {
@@ -23,7 +23,7 @@ const AssetTransactionHistoryModal: React.FC<AssetTransactionHistoryModalProps> 
   const [accounts, setAccounts] = useState<{ id: string; name: string; currency: string }[]>([]);
   React.useEffect(() => {
     // Use ES module import
-    import('../../services/storage-helpers').then(({ getCurrentUser, loadAccounts }) => {
+    import('../lib/storage-helpers').then(({ getCurrentUser, loadAccounts }) => {
       const user = getCurrentUser();
       const all = loadAccounts();
       if (user) {

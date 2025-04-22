@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
-import { fetchAccounts, updateAccount } from "../../services/api";
-import { Account } from "../../types/account";
+import { fetchAccounts, updateAccount } from "../services/api";
+import { Account } from "../accounts/account-types";
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },

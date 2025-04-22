@@ -1,6 +1,6 @@
-import { Transaction } from '../types/transaction';
+import { Transaction } from '../transactions/transaction-types';
 import { getTransactions, setTransactions } from '../lib/assetStorage';
-import { getCurrentUser } from './storage-helpers';
+import { getCurrentUser } from '../lib/storage-helpers';
 
 type UserTransaction = Transaction & { ownerId: string };
 

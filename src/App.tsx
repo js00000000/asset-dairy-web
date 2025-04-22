@@ -8,12 +8,12 @@ import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
-import ProfileEditPage from './pages/ProfileEditPage';
-import ChangePasswordPage from './pages/ChangePasswordPage';
+import ProfilePage from './users/ProfilePage';
+import ProfileEditPage from './users/ProfileEditPage';
+import ChangePasswordPage from './users/ChangePasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
-import AccountListPage from './pages/AccountListPage';
-import AssetPage from './pages/AssetPage';
+import AccountListPage from './accounts/AccountListPage';
+import AssetPage from './assets/AssetPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PlusCircle, Wallet, DollarSign, X } from "lucide-react";
-import { createAccount } from "../../services/api";
-import { useAuthStore } from "../../modules/auth/auth-store";
+import { createAccount } from "../services/api";
+import { useAuthStore } from "../modules/auth/auth-store";
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },

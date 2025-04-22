@@ -1,5 +1,5 @@
-import { Account } from '../types/account';
-import { User } from '../types/user';
+import { Account } from '../accounts/account-types';
+import { User } from '../users/user-types';
 import { mockAccounts } from '../data/mock-accounts';
 
 export const USER_KEY = 'user';

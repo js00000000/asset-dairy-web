@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Wallet, PlusCircle, Loader2, AlertCircle, Pencil, Trash2, X, Check } from "lucide-react";
 import { fetchAccounts, deleteAccount } from "../services/api";
-import { Account } from "../types/account";
-import { AccountCreateModal, AccountEditModal } from "../components/account";
-
+import { Account } from "../accounts/account-types";
+import AccountCreateModal from "./AccountCreateModal";
+import AccountEditModal from "./AccountEditModal";
 
 export default function AccountListPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);

@@ -1,10 +1,10 @@
 // Mock API Service Layer for user/profile/account actions
 // This layer simulates backend endpoints using localStorage and is easy to swap for real HTTP APIs later.
 
-import { User } from '../types/user';
-import { Account } from '../types/account';
+import { User } from '../users/user-types';
+import { Account } from '../accounts/account-types';
 import { mockUsers } from '../data/mock-data';
-import { getCurrentUser, loadAccounts, saveAccounts, USER_KEY } from './storage-helpers';
+import { getCurrentUser, loadAccounts, saveAccounts, USER_KEY } from '../lib/storage-helpers';
 // NOTE: All mock users must include a password field for password change to work.
 
 export async function fetchProfile(): Promise<User | null> {
