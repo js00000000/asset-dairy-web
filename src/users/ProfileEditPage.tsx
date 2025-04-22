@@ -4,8 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from '../users/user-api';
 import { useAuthStore } from '../users/auth-store';
 import {
-  RiskTolerance,
-  InvestmentGoal,
+
   TimeHorizon,
   UserInvestmentProfile,
 } from './user-investment-profile-types';
@@ -18,8 +17,8 @@ const ProfileEditPage: React.FC = () => {
     username: user?.username || '',
     investmentProfile: {
       age: typeof user?.investmentProfile?.age === 'number' ? user.investmentProfile.age : 0,
-      riskTolerance: (user?.investmentProfile?.riskTolerance as RiskTolerance) || 'Conservative',
-      investmentGoal: (user?.investmentProfile?.investmentGoal as InvestmentGoal) || 'Growth',
+      maxAcceptableShortTermLossPercentage: typeof user?.investmentProfile?.maxAcceptableShortTermLossPercentage === 'number' ? user.investmentProfile.maxAcceptableShortTermLossPercentage : 20,
+      expectedAnnualizedRateOfReturn: typeof user?.investmentProfile?.expectedAnnualizedRateOfReturn === 'number' ? user.investmentProfile.expectedAnnualizedRateOfReturn : 8,
       timeHorizon: (user?.investmentProfile?.timeHorizon as TimeHorizon) || 'Medium-term (3-10 years)',
       yearsInvesting: typeof user?.investmentProfile?.yearsInvesting === 'number' ? user.investmentProfile.yearsInvesting : 0,
     },
@@ -39,8 +38,8 @@ const ProfileEditPage: React.FC = () => {
           username: latest.username || '',
           investmentProfile: {
             age: typeof latest.investmentProfile?.age === 'number' ? latest.investmentProfile.age : 0,
-            riskTolerance: (latest.investmentProfile?.riskTolerance as RiskTolerance) || 'Conservative',
-            investmentGoal: (latest.investmentProfile?.investmentGoal as InvestmentGoal) || 'Growth',
+            maxAcceptableShortTermLossPercentage: typeof latest.investmentProfile?.maxAcceptableShortTermLossPercentage === 'number' ? latest.investmentProfile.maxAcceptableShortTermLossPercentage : 20,
+            expectedAnnualizedRateOfReturn: typeof latest.investmentProfile?.expectedAnnualizedRateOfReturn === 'number' ? latest.investmentProfile.expectedAnnualizedRateOfReturn : 8,
             timeHorizon: (latest.investmentProfile?.timeHorizon as TimeHorizon) || 'Medium-term (3-10 years)',
             yearsInvesting: typeof latest.investmentProfile?.yearsInvesting === 'number' ? latest.investmentProfile.yearsInvesting : 0,
           },
@@ -60,8 +59,8 @@ const ProfileEditPage: React.FC = () => {
     const { name, value, type } = e.target;
     if (
       name === 'age' ||
-      name === 'riskTolerance' ||
-      name === 'investmentGoal' ||
+      name === 'maxAcceptableShortTermLossPercentage' ||
+      name === 'expectedAnnualizedRateOfReturn' ||
       name === 'timeHorizon' ||
       name === 'yearsInvesting'
     ) {
@@ -69,7 +68,7 @@ const ProfileEditPage: React.FC = () => {
         ...form,
         investmentProfile: {
           ...form.investmentProfile,
-          [name]: type === 'number' || name === 'age' || name === 'yearsInvesting' ? Number(value) : value,
+          [name]: type === 'number' || name === 'age' || name === 'yearsInvesting' || name === 'expectedAnnualizedRateOfReturn' || name === 'maxAcceptableShortTermLossPercentage' ? Number(value) : value,
         },
       });
     } else {
@@ -190,36 +189,34 @@ const ProfileEditPage: React.FC = () => {
                   <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
                   Risk Tolerance
                 </label>
-                <select
-                  name="riskTolerance"
-                  value={form.investmentProfile.riskTolerance}
+                <input
+                  type="number"
+                  name="maxAcceptableShortTermLossPercentage"
+                  value={form.investmentProfile.maxAcceptableShortTermLossPercentage}
                   onChange={handleChange}
                   className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+                  min={0}
+                  max={100}
+                  step={0.01}
                   required
-                >
-                  <option value="">Select...</option>
-                  <option value="Conservative">Conservative</option>
-                  <option value="Moderate">Moderate</option>
-                  <option value="Aggressive">Aggressive</option>
-                </select>
+                />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M12 4v16"/><path d="M6 8v8"/><path d="M3 12h3"/><path d="M18 8v8"/><path d="M21 12h-3"/></svg>
-                  Investment Goal
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
+                  Expected Annualized Rate of Return (%)
                 </label>
-                <select
-                  name="investmentGoal"
-                  value={form.investmentProfile.investmentGoal}
+                <input
+                  type="number"
+                  name="expectedAnnualizedRateOfReturn"
+                  value={form.investmentProfile.expectedAnnualizedRateOfReturn}
                   onChange={handleChange}
                   className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+                  min={0}
+                  max={100}
+                  step={0.01}
                   required
-                >
-                  <option value="">Select...</option>
-                  <option value="Growth">Growth</option>
-                  <option value="Income">Income</option>
-                  <option value="Savings">Savings</option>
-                </select>
+                />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">

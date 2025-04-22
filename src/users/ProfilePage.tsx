@@ -74,13 +74,13 @@ const ProfilePage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                <span>Risk Tolerance:</span>
-                <span className="font-semibold">{user.investmentProfile.riskTolerance}</span>
+                <span>Max Acceptable Short-Term Loss (%):</span>
+                <span className="font-semibold">{user.investmentProfile.maxAcceptableShortTermLossPercentage}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M12 4v16"/><path d="M6 8v8"/><path d="M3 12h3"/><path d="M18 8v8"/><path d="M21 12h-3"/></svg>
-                <span>Investment Goal:</span>
-                <span className="font-semibold">{user.investmentProfile.investmentGoal}</span>
+                <span>Expected Annualized Rate of Return (%):</span>
+                <span className="font-semibold">{user.investmentProfile.expectedAnnualizedRateOfReturn}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>

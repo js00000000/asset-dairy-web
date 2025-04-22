@@ -2,6 +2,7 @@ import React from 'react';
 import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot } from 'lucide-react';
 
 import type { Account } from '../accounts/account-types';
+import { useAuthStore } from '../users/auth-store';
 
 // Local currency conversion utility
 function convertToUSD(value: number, currency: string): number {
@@ -30,6 +31,9 @@ interface AssetAccountSummaryTableProps {
 }
 
 const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ accounts, assets }) => {
+  // Get user and investment profile
+  const user = useAuthStore((state) => state.user);
+  const investmentProfile = user?.investmentProfile;
   // Export handler: export only assetRows as JSON with ticker, valueUSD, percentage
   const [copied, setCopied] = React.useState(false);
   const [aiCopied, setAiCopied] = React.useState(false);
@@ -60,10 +64,17 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
       type: row.type,
       ticker: row.ticker,
       name: row.name,
-      valueUSD: row.valueUSD,
-      percentage: totalValueUSD > 0 ? (row.valueUSD / totalValueUSD) * 100 : 0,
+      valueUSD: Number(row.valueUSD.toFixed(2)),
+      percentage: totalValueUSD > 0 ? Number(((row.valueUSD / totalValueUSD) * 100).toFixed(2)) : 0,
     }));
-    return JSON.stringify(exportData, null, 2);
+    const today = new Date('2025-04-23T00:00:00.000Z');
+    // Use local time, format YYYY-MM-DD
+    const dateStr = today.toISOString().slice(0, 10);
+    return JSON.stringify({
+      date: dateStr,
+      totalValueUSD: Number(totalValueUSD.toFixed(2)),
+      portfolio: exportData
+    }, null, 2);
   };
 
   const handleCopy = async () => {
@@ -98,12 +109,17 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
 
   const handleAskAICopy = async () => {
     const jsonStr = getPortfolioJson();
-    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on diversification, risk, and possible improvements.\n\nPortfolio Data:\n${jsonStr}`;
+    let profileStr = '';
+    if (investmentProfile) {
+      profileStr = `User Investment Profile:\n- Age: ${investmentProfile.age}\n- Max Acceptable Short-Term Loss: ${investmentProfile.maxAcceptableShortTermLossPercentage}%\n- Expected Annualized Rate of Return: ${investmentProfile.expectedAnnualizedRateOfReturn}%\n- Time Horizon: ${investmentProfile.timeHorizon}\n- Years Investing: ${investmentProfile.yearsInvesting}`;
+    } else {
+      profileStr = 'User Investment Profile: Not provided';
+    }
+    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on diversification, risk, and possible improvements.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
     await navigator.clipboard.writeText(prompt);
     setAiCopied(true);
     setTimeout(() => setAiCopied(false), 1500);
   };
-
 
   // Convert all to USD for calculations
   const assetRows = assets.map(asset => {
