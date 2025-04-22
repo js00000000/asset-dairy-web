@@ -7,6 +7,7 @@ export interface AssetCardProps {
   type: string;
   quantity: number;
   price: number;
+  averagePrice?: number;
   onClick?: () => void;
   isZero?: boolean;
 }
@@ -17,6 +18,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
   type,
   quantity,
   price,
+  averagePrice,
   onClick,
   isZero = false,
 }) => {
@@ -56,13 +58,13 @@ const AssetCard: React.FC<AssetCardProps> = ({
         </div>
       </div>
       <div className="flex gap-6 mt-2">
+        <div className="flex items-center gap-2 text-sm text-gray-400">
+          <span className="font-semibold">Average Price:</span>
+          <span>${averagePrice?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <span className="font-semibold">Gain/Loss:</span>
           <span className="text-green-600 font-bold">+0.00%</span> {/* Placeholder */}
-        </div>
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <span>Last updated:</span>
-          <span>Today</span>
         </div>
       </div>
     </div>

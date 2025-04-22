@@ -43,7 +43,18 @@ const AssetPage: React.FC = () => {
 
   // Helper to rebuild asset list from transactions
   const buildAssetsFromTransactions = useCallback((txs: Transaction[]) => {
-    const assetMap: Record<string, { ticker: string; name: string; type: string; quantity: number; price: number }> = {};
+    // Enhanced asset map to include averagePrice
+    const assetMap: Record<string, {
+      ticker: string;
+      name: string;
+      type: string;
+      quantity: number;
+      price: number;
+      averagePrice: number;
+    }> = {};
+    // For average price calculation
+    const buyData: Record<string, { totalCost: number; totalQty: number }> = {};
+
     txs.forEach(tx => {
       if (!assetMap[tx.ticker]) {
         assetMap[tx.ticker] = {
@@ -52,10 +63,35 @@ const AssetPage: React.FC = () => {
           type: tx.assetType,
           quantity: 0,
           price: 0,
+          averagePrice: 0,
         };
+        buyData[tx.ticker] = { totalCost: 0, totalQty: 0 };
       }
+      // Update quantity and last price
       assetMap[tx.ticker].quantity += tx.type === 'buy' ? tx.quantity : -tx.quantity;
-      assetMap[tx.ticker].price = tx.price; // last price
+      assetMap[tx.ticker].price = tx.price;
+      // For average price: only consider buys
+      if (tx.type === 'buy') {
+        buyData[tx.ticker].totalCost += tx.price * tx.quantity;
+        buyData[tx.ticker].totalQty += tx.quantity;
+      } else if (tx.type === 'sell') {
+        // For weighted average, reduce totalQty by sold amount
+        // Remove cost basis proportionally (FIFO/LIFO not considered, just weighted avg)
+        const sellQty = tx.quantity;
+        if (buyData[tx.ticker].totalQty > 0) {
+          const avg = buyData[tx.ticker].totalCost / buyData[tx.ticker].totalQty;
+          buyData[tx.ticker].totalCost -= avg * sellQty;
+          buyData[tx.ticker].totalQty -= sellQty;
+          if (buyData[tx.ticker].totalQty < 0) buyData[tx.ticker].totalQty = 0;
+          if (buyData[tx.ticker].totalCost < 0) buyData[tx.ticker].totalCost = 0;
+        }
+      }
+    });
+
+    // Set averagePrice for each asset
+    Object.keys(assetMap).forEach(ticker => {
+      const { totalCost, totalQty } = buyData[ticker];
+      assetMap[ticker].averagePrice = totalQty > 0 ? totalCost / totalQty : 0;
     });
 
     return Object.values(assetMap);
@@ -132,7 +168,7 @@ const AssetPage: React.FC = () => {
           </h2>
           <div className="relative z-10">
             <div className="grid md:grid-cols-2 gap-8 relative">
-              {assets.map((asset: { ticker: string; name: string; type: string; quantity: number; price: number }) => (
+              {assets.map((asset: { ticker: string; name: string; type: string; quantity: number; price: number; averagePrice: number }) => (
                 <AssetCard
                   key={asset.ticker}
                   ticker={asset.ticker}
@@ -140,6 +176,7 @@ const AssetPage: React.FC = () => {
                   type={asset.type}
                   quantity={asset.quantity}
                   price={asset.price}
+                  averagePrice={asset.averagePrice}
                   isZero={asset.quantity === 0}
                   onClick={() => setSelectedAssetForTx({ ticker: asset.ticker, type: asset.type })}
                 />
@@ -154,12 +191,10 @@ const AssetPage: React.FC = () => {
             setSelectedAssetForTx(null);
           }}
           onTransactionsChange={handleTransactionsChange}
-          ticker={selectedAssetForTx?.ticker}
-          assetType={selectedAssetForTx?.type}
         />
-        {/* Asset & Account Summary Table */}
-        <AssetAccountSummaryTable accounts={accounts} assets={assets} />
       </div>
+      {/* Asset & Account Summary Table */}
+      <AssetAccountSummaryTable accounts={accounts} assets={assets} />
     </div>
   );
 };
