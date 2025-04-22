@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, Bitcoin } from 'lucide-react';
+import { TrendingUp, TrendingDown, Bitcoin } from 'lucide-react';
 
 export interface AssetCardProps {
   ticker: string;
@@ -62,9 +62,21 @@ const AssetCard: React.FC<AssetCardProps> = ({
           <span className="font-semibold">Average Price:</span>
           <span>${averagePrice?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span className="font-semibold">Gain/Loss:</span>
-          <span className="text-green-600 font-bold">+0.00%</span> {/* Placeholder */}
+        <div className="flex items-center gap-2 text-sm">
+          <span className="font-semibold text-gray-500">Gain/Loss:</span>
+          {typeof averagePrice === 'number' && quantity > 0 ? (() => {
+            const gainLossAbs = (price - averagePrice) * quantity;
+            const gainLossPct = averagePrice !== 0 ? ((price - averagePrice) / averagePrice) * 100 : 0;
+            const isGain = gainLossAbs > 0;
+            const isLoss = gainLossAbs < 0;
+            const color = isGain ? 'text-green-600' : isLoss ? 'text-red-600' : 'text-gray-500';
+            return (
+              <span className={`flex items-center gap-1 font-bold ${color}`}>
+                ${gainLossAbs.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <span className="ml-1 text-xs font-medium">({gainLossPct >= 0 ? '+' : ''}{gainLossPct.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)</span>
+              </span>
+            );
+          })() : <span className="text-gray-400">N/A</span>}
         </div>
       </div>
     </div>
