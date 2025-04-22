@@ -2,13 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { PlusCircle, TrendingUp, Bitcoin, LineChart } from 'lucide-react';
 import Button from '../components/ui/Button';
 import StockTransactionModal from '../transactions/StockTransactionModal';
-import AssetTransactionHistoryModal from './AssetTransactionHistoryModal';
+
 import { fetchTransactions } from '../transactions/transaction-api';
 import type { Transaction } from '../transactions/transaction-types';
 
 const AssetPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [historyModal, setHistoryModal] = useState<null | { ticker: string; name: string; type: string }>(null);
+  const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
   const [transactions, setTxs] = useState<Transaction[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -125,8 +125,8 @@ const AssetPage: React.FC = () => {
                 <div
                   key={asset.ticker}
                   className={`bg-white/90 rounded-3xl shadow-2xl px-8 py-7 flex flex-col gap-5 border border-blue-200 transition-transform group backdrop-blur-xl cursor-pointer relative hover:scale-[1.025] hover:shadow-blue-200/80 ${isZero ? 'opacity-60 grayscale hover:opacity-90 hover:grayscale-0' : ''}`}
-                  onClick={() => setHistoryModal({ ticker: asset.ticker, name: asset.name, type: asset.type })}
-                  title={`View transaction history for ${asset.ticker}`}
+                  onClick={() => setSelectedAssetForTx({ ticker: asset.ticker, type: asset.type })}
+                  title={`Add transaction for ${asset.ticker}`}
                 >
                   {isZero && (
                     <span className="absolute top-4 right-4 bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full shadow">No holdings</span>
@@ -173,15 +173,15 @@ const AssetPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <StockTransactionModal open={modalOpen} onClose={() => setModalOpen(false)} onTransactionsChange={handleTransactionsChange} />
-      <AssetTransactionHistoryModal
-        open={!!historyModal}
-        onClose={() => setHistoryModal(null)}
-        assetTicker={historyModal?.ticker || ''}
-        assetName={historyModal?.name || ''}
-        assetType={historyModal?.type || ''}
-        transactions={transactions}
+      <StockTransactionModal
+        open={modalOpen || !!selectedAssetForTx}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedAssetForTx(null);
+        }}
         onTransactionsChange={handleTransactionsChange}
+        ticker={selectedAssetForTx?.ticker}
+        assetType={selectedAssetForTx?.type}
       />
     </div>
   );

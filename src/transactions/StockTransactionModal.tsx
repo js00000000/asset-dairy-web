@@ -11,9 +11,11 @@ interface StockTransactionModalProps {
   onClose: () => void;
   onTransactionsChange: (newTxs: Transaction[]) => void;
   transaction?: Transaction;
+  ticker?: string;
+  assetType?: string;
 }
 
-const StockTransactionModal = ({ open, onClose, onTransactionsChange, transaction }: StockTransactionModalProps) => {
+const StockTransactionModal = ({ open, onClose, onTransactionsChange, transaction, ticker: propTicker, assetType: propAssetType }: StockTransactionModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>(transaction ? transaction.type : 'buy');
   const [assetType, setAssetType] = useState<'stock' | 'crypto'>(transaction ? transaction.assetType : 'stock');
   const [ticker, setTicker] = useState(transaction ? transaction.ticker : '');
@@ -47,8 +49,9 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange, transactio
   React.useEffect(() => {
     if (open) {
       setType(transaction ? transaction.type : 'buy');
-      setAssetType(transaction ? transaction.assetType : 'stock');
-      setTicker(transaction ? transaction.ticker : '');
+      setAssetType(transaction ? transaction.assetType : (propAssetType === 'stock' || propAssetType === 'crypto' ? propAssetType : 'stock'));
+      setTicker(transaction ? transaction.ticker : (propTicker || ''));
+
       setQuantity(transaction ? String(transaction.quantity) : '');
       setPrice(transaction ? String(transaction.price) : '');
       setAccountId(transaction ? transaction.accountId : '');

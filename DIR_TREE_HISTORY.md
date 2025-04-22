@@ -12,8 +12,7 @@ src/
 │   ├── account-types.ts
 │   └── index.ts
 ├── assets/
-│   ├── AssetPage.tsx
-│   └── AssetTransactionHistoryModal.tsx
+│   └── AssetPage.tsx
 ├── transactions/
 │   ├── StockTransactionModal.tsx
 │   ├── transaction-api.ts
