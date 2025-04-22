@@ -9,6 +9,7 @@ import { fetchTransactions } from '../transactions/transaction-api';
 import { fetchAccounts } from '../accounts/account-api';
 import type { Transaction } from '../transactions/transaction-types';
 import type { Account } from '../accounts/account-types';
+import { getCryptoPrice, getStockPrice } from './asset-api';
 
 const AssetPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -49,7 +50,7 @@ const AssetPage: React.FC = () => {
       name: string;
       type: string;
       quantity: number;
-      price: number;
+      price: number | null;
       averagePrice: number;
     }> = {};
     // For average price calculation
@@ -69,7 +70,6 @@ const AssetPage: React.FC = () => {
       }
       // Update quantity and last price
       assetMap[tx.ticker].quantity += tx.type === 'buy' ? tx.quantity : -tx.quantity;
-      assetMap[tx.ticker].price = tx.price;
       // For average price: only consider buys
       if (tx.type === 'buy') {
         buyData[tx.ticker].totalCost += tx.price * tx.quantity;
@@ -89,8 +89,9 @@ const AssetPage: React.FC = () => {
     });
 
     // Set averagePrice for each asset
-    Object.keys(assetMap).forEach(ticker => {
+    Object.keys(assetMap).forEach(async ticker => {
       const { totalCost, totalQty } = buyData[ticker];
+      assetMap[ticker].price = assetMap[ticker].type === 'stock' ? await getStockPrice(ticker) : await getCryptoPrice(ticker);
       assetMap[ticker].averagePrice = totalQty > 0 ? totalCost / totalQty : 0;
     });
 

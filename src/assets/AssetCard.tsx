@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { TrendingUp, Bitcoin, Loader2, AlertTriangle } from 'lucide-react';
-import { getStockPrice, getCryptoPrice } from './asset-api';
+import React from 'react';
+import { TrendingUp, Bitcoin } from 'lucide-react';
 
 export interface AssetCardProps {
   ticker: string;
@@ -24,35 +23,6 @@ const AssetCard: React.FC<AssetCardProps> = ({
   isZero = false,
 }) => {
   // Real-time price state
-  const [realPrice, setRealPrice] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-    const fetchPrice = async () => {
-      setLoading(true);
-      setError(null);
-      let fetched: number | null = null;
-      try {
-        if (type === 'stock') {
-          fetched = await getStockPrice(ticker);
-        } else if (type === 'crypto') {
-          // For demo: map ticker to CoinGecko id (should be improved for more assets)
-          const id = ticker.toLowerCase();
-          fetched = await getCryptoPrice(id);
-        }
-        if (isMounted) setRealPrice(fetched);
-      } catch (e) {
-        if (isMounted) setError('Failed to fetch real price');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    fetchPrice();
-    return () => { isMounted = false; };
-  }, [ticker, type]);
-
   return (
     <div
       className={`bg-white/90 rounded-3xl shadow-2xl px-8 py-7 flex flex-col gap-5 border border-blue-200 transition-transform group backdrop-blur-xl cursor-pointer relative hover:scale-[1.025] hover:shadow-blue-200/80 ${isZero ? 'opacity-60 grayscale hover:opacity-90 hover:grayscale-0' : ''}`}
@@ -82,14 +52,9 @@ const AssetCard: React.FC<AssetCardProps> = ({
         <div className="flex flex-col">
           <span className="text-lg text-gray-700 font-semibold flex items-center gap-1">
             Price
-            {loading && <Loader2 className="animate-spin w-4 h-4 text-blue-400 ml-1" />}
-            {error && <AlertTriangle className="w-4 h-4 text-yellow-500 ml-1" />}
           </span>
           <span className="text-2xl font-bold text-green-600 tabular-nums">
-            {loading ? <span className="text-gray-400">Loading...</span> :
-              error ? <span className="text-gray-400">N/A</span> :
-              realPrice !== null ? `$${realPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>
-            }
+            {price !== null ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>}
           </span>
         </div>
         <div className="flex flex-col">
