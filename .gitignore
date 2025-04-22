@@ -27,3 +27,5 @@ dist-ssr
 
 # windsurf rules
 .windsurfrules
+
+.env.*
