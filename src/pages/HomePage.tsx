@@ -59,7 +59,7 @@ const HomePage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4">
               <TrendingUp className="w-10 h-10 text-purple-700 mb-2" />
               <h3 className="text-xl font-semibold">Portfolio Tracking</h3>
-              <p className="text-gray-600">Monitor your stock and crypto assets. Visualize performance and allocation.</p>
+              <p className="text-gray-600">Monitor your stock and crypto portfolio. Visualize performance and allocation.</p>
             </div>
             <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4">
               <Coins className="w-10 h-10 text-yellow-600 mb-2" />

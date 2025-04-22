@@ -9,9 +9,9 @@ import { fetchTransactions } from '../transactions/transaction-api';
 import { fetchAccounts } from '../accounts/account-api';
 import type { Transaction } from '../transactions/transaction-types';
 import type { Account } from '../accounts/account-types';
-import { getCryptoPrice, getStockPrice } from './asset-api';
+import { getCryptoPrice, getStockPrice } from './portfolio-api';
 
-const AssetPage: React.FC = () => {
+const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
   const [transactions, setTxs] = useState<Transaction[]>([]);
@@ -128,7 +128,7 @@ const AssetPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-blue-700 animate-pulse text-xl font-semibold">Loading assets...</div>
+        <div className="text-blue-700 animate-pulse text-xl font-semibold">Loading portfolio...</div>
       </div>
     );
   }
@@ -181,10 +181,10 @@ const AssetPage: React.FC = () => {
           </h2>
           <AccountSummaryList accounts={accounts} onUpdated={handleAccountsUpdated} />
         </section>
-        {/* Assets grid */}
+        {/* Portfolio grid */}
         <section className="mb-8">
           <h2 className="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-blue-500" /> Assets
+            <TrendingUp className="w-6 h-6 text-blue-500" /> Portfolio
           </h2>
           <div className="relative z-10">
             <div className="grid md:grid-cols-2 gap-8 relative">
@@ -219,4 +219,4 @@ const AssetPage: React.FC = () => {
   );
 };
 
-export default AssetPage;
+export default PortfolioPage;

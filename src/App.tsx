@@ -12,7 +12,7 @@ import ProfileEditPage from './users/ProfileEditPage';
 import ChangePasswordPage from './users/ChangePasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AccountListPage from './accounts/AccountListPage';
-import AssetPage from './assets/AssetPage';
+import PortfolioPage from './portfolio/PortfolioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import TransactionListPage from './transactions/TransactionListPage';
 
@@ -47,7 +47,7 @@ function App() {
           element: <ProtectedRoute><ChangePasswordPage /></ProtectedRoute>,
         },
         { path: 'accounts', element: <ProtectedRoute><AccountListPage /></ProtectedRoute> },
-        { path: 'asset', element: <ProtectedRoute><AssetPage /></ProtectedRoute> },
+        { path: 'portfolio', element: <ProtectedRoute><PortfolioPage /></ProtectedRoute> },
         { path: 'transactions', element: <ProtectedRoute><TransactionListPage /></ProtectedRoute> },
         // Add more routes as needed
         { path: '*', element: <NotFoundPage /> },

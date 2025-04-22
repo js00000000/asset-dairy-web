@@ -1,4 +1,4 @@
-// src/assets/asset-api.ts
+// src/portfolio/portfolio-api.ts
 // Service for fetching real-time prices for stocks and crypto assets
 
 /**

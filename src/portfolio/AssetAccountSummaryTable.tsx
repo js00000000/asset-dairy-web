@@ -15,7 +15,7 @@ function convertToUSD(value: number, currency: string): number {
   return value * rate;
 }
 
-// Asset type as used in AssetPage
+// Asset type as used in PortfolioPage
 export type AssetSummary = {
   ticker: string;
   name: string;

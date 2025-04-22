@@ -11,8 +11,10 @@ src/
 │   ├── AccountListPage.tsx
 │   ├── account-types.ts
 │   └── index.ts
-├── assets/
-│   └── AssetPage.tsx
+├── portfolio/
+│   ├── PortfolioPage.tsx
+│   ├── portfolio-api.ts
+│   └── AssetAccountSummaryTable.tsx
 ├── transactions/
 │   ├── StockTransactionModal.tsx
 │   ├── transaction-api.ts
