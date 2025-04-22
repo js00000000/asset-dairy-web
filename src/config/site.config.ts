@@ -11,38 +11,11 @@ export const siteConfig = {
     // Add more navigation items as needed
   ],
   footer: {
-    sections: [
-      {
-        label: 'Home',
-        links: [
-          { label: 'Home', href: '/' },
-          { label: 'About', href: '/about' },
-          { label: 'Contact', href: '/contact' },
-        ],
-      },
-      {
-        label: 'Help',
-        links: [
-          { label: 'FAQ', href: '/faq' },
-          { label: 'Returns', href: '/returns' },
-          { label: 'Contact Us', href: '/contact' },
-          { label: 'Privacy Policy', href: '/privacy' },
-        ],
-      },
-      {
-        label: 'Legal',
-        links: [
-          { label: 'Terms', href: '/terms' },
-          { label: 'Privacy', href: '/privacy' },
-          { label: 'Cookies', href: '/cookies' },
-        ],
-      },
-    ],
     socials: [
-      { label: 'Facebook', href: 'https://facebook.com/', icon: 'facebook' },
-      { label: 'Instagram', href: 'https://instagram.com/', icon: 'instagram' },
-      { label: 'Twitter', href: 'https://twitter.com/', icon: 'twitter' },
-      { label: 'Mail', href: 'mailto:info@example.com', icon: 'mail' },
+      { label: 'Facebook', href: 'https://facebook.com/', icon: 'Facebook' },
+      { label: 'Instagram', href: 'https://instagram.com/', icon: 'Instagram' },
+      { label: 'Twitter', href: 'https://twitter.com/', icon: 'Twitter' },
+      { label: 'Mail', href: 'mailto:info@example.com', icon: 'Mail' },
     ],
   },
   theme: {
