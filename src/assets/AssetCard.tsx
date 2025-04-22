@@ -25,47 +25,70 @@ const AssetCard: React.FC<AssetCardProps> = ({
   // Real-time price state
   return (
     <div
-      className={`bg-white/90 rounded-3xl shadow-2xl px-8 py-7 flex flex-col gap-5 border border-blue-200 transition-transform group backdrop-blur-xl cursor-pointer relative hover:scale-[1.025] hover:shadow-blue-200/80 ${isZero ? 'opacity-60 grayscale hover:opacity-90 hover:grayscale-0' : ''}`}
+      className={`bg-white/90 rounded-3xl shadow-2xl px-6 py-6 flex flex-col gap-6 border border-blue-200 transition-transform group backdrop-blur-xl cursor-pointer relative hover:scale-[1.025] hover:shadow-blue-200/80 ${
+        isZero ? 'opacity-60 grayscale hover:opacity-90 hover:grayscale-0' : ''
+      }`}
       onClick={onClick}
       title={`Add transaction for ${ticker}`}
     >
       {isZero && (
-        <span className="absolute top-4 right-4 bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full shadow">No holdings</span>
+        <span className="absolute top-4 right-4 bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full shadow">
+          No holdings
+        </span>
       )}
-      <div className="flex items-center gap-5 mb-2">
-        <div className="bg-blue-50 rounded-xl p-3 shadow group-hover:scale-110 transition-transform">
-          {type === 'stock' ? <TrendingUp className="w-6 h-6 text-blue-600" /> : <Bitcoin className="w-6 h-6 text-yellow-500" />}
-        </div>
-        <div>
-          <div className="text-2xl font-extrabold text-blue-900 flex items-center gap-2 drop-shadow">
-            {ticker}
-            <span className="text-base font-medium text-gray-500">({name})</span>
+
+      {/* Header: Icon, Ticker, Name, Type, Price */}
+      <div className="flex items-center justify-between mb-1 w-full">
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-50 rounded-xl p-3 shadow group-hover:scale-110 transition-transform">
+            {type === 'stock' ? (
+              <TrendingUp className="w-6 h-6 text-blue-600" />
+            ) : (
+              <Bitcoin className="w-6 h-6 text-yellow-500" />
+            )}
           </div>
-          <div className="text-sm text-blue-500 mt-1 font-semibold uppercase tracking-wider">{type}</div>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xl font-extrabold text-blue-900 flex items-center gap-2 drop-shadow">
+              {ticker}
+            </span>
+            <span className="text-xs text-blue-400 font-bold uppercase tracking-widest mt-0.5">
+              {type}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="flex gap-10 items-end">
-        <div className="flex flex-col">
-          <span className="text-lg text-gray-700 font-semibold">Quantity</span>
-          <span className="text-2xl font-bold text-blue-700 tabular-nums">{quantity}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-lg text-gray-700 font-semibold flex items-center gap-1">
-            Price
-          </span>
+        <div className="flex flex-col items-end min-w-[90px]">
+          <span className="text-xs text-gray-500 font-medium">Price</span>
           <span className="text-2xl font-bold text-green-600 tabular-nums">
             {price !== null ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>}
           </span>
         </div>
-        <div className="flex flex-col">
-          <span className="text-lg text-gray-700 font-semibold">Value</span>
-          <span className="text-2xl font-bold text-blue-900 tabular-nums">${(price * quantity).toLocaleString()}</span>
+      </div>
+
+      {/* Divider */}
+      <div className="h-px w-full bg-gradient-to-r from-blue-100 via-blue-200 to-blue-100 mb-1" />
+
+      {/* Main Value Row: Quantity (left) and Value (right) */}
+      <div className="flex flex-row justify-between items-end gap-6 w-full px-1">
+        <div className="flex flex-col items-start">
+          <span className="text-base text-gray-700 font-semibold flex items-center gap-1">Quantity</span>
+          <span className="text-2xl font-bold text-blue-700 tabular-nums break-words">{quantity}</span>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-base text-gray-700 font-semibold flex items-center gap-1">Value</span>
+          <span className="text-2xl font-bold text-blue-900 tabular-nums break-words">${(price * quantity).toLocaleString()}</span>
         </div>
       </div>
-      <div className="flex gap-6 mt-2">
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <span className="font-semibold">Average Price:</span>
-          <span>${averagePrice?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+
+      {/* Divider */}
+      <div className="h-px w-full bg-gradient-to-r from-blue-100 via-blue-200 to-blue-100" />
+
+      {/* Footer: Average Price & Gain/Loss */}
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-2 mt-1">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <span className="font-semibold flex items-center gap-1">
+            Avg. Price:
+          </span>
+          <span className="text-blue-700 font-bold">{averagePrice !== undefined ? `$${averagePrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>}</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <span className="font-semibold text-gray-500">Gain/Loss:</span>
@@ -75,10 +98,13 @@ const AssetCard: React.FC<AssetCardProps> = ({
             const isGain = gainLossAbs > 0;
             const isLoss = gainLossAbs < 0;
             const color = isGain ? 'text-green-600' : isLoss ? 'text-red-600' : 'text-gray-500';
+            const absValue = Math.abs(gainLossAbs).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const absPct = Math.abs(gainLossPct).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const sign = isGain ? '+' : isLoss ? '-' : '';
             return (
-              <span className={`flex items-center gap-1 font-bold ${color}`}>
-                ${gainLossAbs.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                <span className="ml-1 text-xs font-medium">({gainLossPct >= 0 ? '+' : ''}{gainLossPct.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)</span>
+              <span className={`flex flex-col items-start font-bold ${color}`}>
+                <span className="text-base">{sign} ${absValue}</span>
+                <span className="text-xs font-medium mt-0.5 opacity-80">{sign}{absPct}%</span>
               </span>
             );
           })() : <span className="text-gray-400">N/A</span>}
