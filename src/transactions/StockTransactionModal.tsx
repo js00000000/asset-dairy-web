@@ -234,7 +234,7 @@ const StockTransactionModal = ({ open, onClose, onTransactionsChange, transactio
               placeholder="e.g. 150.00"
               value={price}
               onChange={e => setPrice(e.target.value)}
-              type="number"
+              type="float"
               min="0"
               leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
               required

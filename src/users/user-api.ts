@@ -21,15 +21,22 @@ export async function updateProfile(data: Partial<User>): Promise<User> {
 
 export async function login(email: string, password: string): Promise<User | null> {
   await new Promise(res => setTimeout(res, 500));
+  // 1. Check mockUsers
   const allUsers = [...mockUsers];
-  const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) return null;
-  // Password check (mock/local only)
-  if (!user.password || user.password !== password) {
-    return null;
+  let user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (user && user.password === password) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    return user;
   }
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
-  return user;
+  // 2. Check local users
+  const localUsersRaw = localStorage.getItem('local_users');
+  const localUsers: User[] = localUsersRaw ? JSON.parse(localUsersRaw) : [];
+  user = localUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (user && user.password === password) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    return user;
+  }
+  return null;
 }
 
 export async function logout(): Promise<void> {
@@ -39,9 +46,17 @@ export async function logout(): Promise<void> {
 
 export async function signup(name: string, username: string, email: string, password: string): Promise<User> {
   await new Promise(res => setTimeout(res, 500));
+  // Check mock users
   const allUsers = [...mockUsers];
-  const existingUser = allUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
-  if (existingUser) {
+  const existingMock = allUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
+  if (existingMock) {
+    throw new Error('User already exists');
+  }
+  // Check local users
+  const localUsersRaw = localStorage.getItem('local_users');
+  const localUsers: User[] = localUsersRaw ? JSON.parse(localUsersRaw) : [];
+  const existingLocal = localUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
+  if (existingLocal) {
     throw new Error('User already exists');
   }
   // Create demo data for avatar
@@ -54,6 +69,9 @@ export async function signup(name: string, username: string, email: string, pass
     avatar: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     createdAt: new Date().toISOString(),
   };
+  // Save to local users array
+  localStorage.setItem('local_users', JSON.stringify([...localUsers, newUser]));
+  // Also set as current user
   localStorage.setItem(USER_KEY, JSON.stringify(newUser));
   return newUser;
 }

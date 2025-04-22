@@ -64,7 +64,9 @@ export async function getCryptoPrice(ticker: string): Promise<number | null> {
     if (!res.ok) return null;
     const data = await res.json();
     const price = parseFloat(data?.price);
-    return isNaN(price) ? null : price;
+    if (isNaN(price)) return null;
+    localStorage.setItem(key, JSON.stringify({ value: price, timestamp: now }));
+    return price;
   } catch (e) {
     return null;
   }
