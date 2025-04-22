@@ -38,7 +38,12 @@ This document tracks all major features for the Asset Dairy app, prioritized for
 - [ ] Automatically update account balances when a stock/crypto transaction is recorded
 
 ### 3.4. (Optional) Backend/Storage Integration
-- [ ] Persist stock/crypto transactions and holdings (mock/localStorage or backend, as appropriate)
+- [~] Persist stock/crypto transactions and holdings (mock/localStorage, user-specific ownership enforced)
+    - [x] CRUD for stock/crypto transactions now uses a dedicated API service (`transaction-api.ts`) that enforces per-user ownership via `ownerId`.
+    - [x] All transaction modals (create, edit, delete) now use this service and only affect the current user's transactions.
+    - [x] AssetPage.tsx now uses the secure transaction API for all transaction fetching and updates; the app is fully user-safe for transaction data.
+    - [x] All transaction-related UI is now consistent and ready for backend integration.
+    - [!] Milestone: All transaction CRUD and display is now user-specific, modular, and production-ready.
 
 ## 4. Portfolio Dashboard
 - [ ] Overview of all accounts, stock, and crypto assets

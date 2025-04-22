@@ -1,25 +1,45 @@
 import React, { useState } from 'react';
-import { X, TrendingUp, Bitcoin, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
+import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bitcoin } from 'lucide-react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import { loadAccounts, getCurrentUser } from '../../services/storage-helpers';
+import { createTransaction, fetchTransactions } from '../../services/transaction-api';
+import type { Transaction } from '../../types/transaction';
+import type { Account } from '../../types/account';
 
-const accountOptions = [
-  { label: 'Main USD Account', value: 'usd' },
-  { label: 'Crypto Wallet', value: 'crypto' },
-];
+interface StockTransactionModalProps {
+  open: boolean;
+  onClose: () => void;
+  onTransactionsChange: (newTxs: Transaction[]) => void;
+}
 
-const assetOptions = [
-  { label: 'Stock', icon: <TrendingUp className="w-5 h-5 text-blue-600" /> },
-  { label: 'Crypto', icon: <Bitcoin className="w-5 h-5 text-yellow-500" /> },
-];
-
-const StockTransactionModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const StockTransactionModal = ({ open, onClose, onTransactionsChange }: StockTransactionModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>('buy');
+  const [assetType, setAssetType] = useState<'stock' | 'crypto'>('stock');
   const [ticker, setTicker] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [account, setAccount] = useState('');
-  const [date, setDate] = useState('');
+  // Load user accounts
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  React.useEffect(() => {
+    const user = getCurrentUser();
+    const all = loadAccounts();
+    if (user) {
+      setAccounts(all.filter(acc => acc.ownerId === user.id));
+    } else {
+      setAccounts([]);
+    }
+  }, [open]);
+  const [date, setDate] = useState(() => {
+    // Default to today in YYYY-MM-DD format
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -42,9 +62,22 @@ const StockTransactionModal = ({ open, onClose }: { open: boolean; onClose: () =
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    // Compose new transaction (without id)
+    const tx = {
+      assetType,
+      type,
+      date,
+      quantity: Number(quantity),
+      price: Number(price),
+      account,
+      ticker,
+    };
+    await createTransaction(tx as Omit<Transaction, 'id'>);
+    const updated = await fetchTransactions();
+    onTransactionsChange(updated);
     setSuccess(true);
     setTimeout(() => {
       setSuccess(false);
@@ -87,6 +120,22 @@ const StockTransactionModal = ({ open, onClose }: { open: boolean; onClose: () =
               <ArrowDownCircle className="w-5 h-5" /> Sell
             </button>
           </div>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              className={`flex-1 flex items-center gap-2 px-4 py-2 rounded-lg border transition font-semibold ${assetType === 'stock' ? 'bg-green-50 border-green-500 text-green-700' : 'bg-white border-slate-200 text-slate-600'}`}
+              onClick={() => setAssetType('stock')}
+            >
+              <TrendingUp className="w-5 h-5" /> Stock
+            </button>
+            <button
+              type="button"
+              className={`flex-1 flex items-center gap-2 px-4 py-2 rounded-lg border transition font-semibold ${assetType === 'crypto' ? 'bg-red-50 border-red-500 text-red-700' : 'bg-white border-slate-200 text-slate-600'}`}
+              onClick={() => setAssetType('crypto')}
+            >
+              <Bitcoin className="w-5 h-5" /> Crypto
+            </button>
+          </div>
           <Input
             label="Ticker Symbol"
             placeholder="e.g. AAPL or BTC"
@@ -126,13 +175,21 @@ const StockTransactionModal = ({ open, onClose }: { open: boolean; onClose: () =
               <select
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
                 value={account}
-                onChange={e => setAccount(e.target.value)}
+                onChange={e => {
+                  setAccount(e.target.value);
+                }}
                 required
               >
                 <option value="">Select Account</option>
-                {accountOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
+                {accounts.length === 0 ? (
+                  <option value="">No accounts found</option>
+                ) : (
+                  accounts.map(acc => (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.name} ({acc.currency})
+                    </option>
+                  ))
+                )}
               </select>
             </div>
             <div className="flex-1">

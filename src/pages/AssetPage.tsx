@@ -1,40 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PlusCircle, TrendingUp, Bitcoin, LineChart } from 'lucide-react';
 import Button from '../components/ui/Button';
 import StockTransactionModal from '../components/stock/StockTransactionModal';
 import AssetTransactionHistoryModal from '../components/stock/AssetTransactionHistoryModal';
-
-// Demo/mock: all assets with transactions, including those with 0 quantity
-const demoAssets = [
-  {
-    ticker: 'AAPL',
-    name: 'Apple Inc.',
-    type: 'Stock',
-    quantity: 12,
-    price: 172.34,
-    icon: <TrendingUp className="w-6 h-6 text-blue-600" />,
-  },
-  {
-    ticker: 'BTC',
-    name: 'Bitcoin',
-    type: 'Crypto',
-    quantity: 0.25,
-    price: 65000,
-    icon: <Bitcoin className="w-6 h-6 text-yellow-500" />,
-  },
-  {
-    ticker: 'TSLA',
-    name: 'Tesla Inc.',
-    type: 'Stock',
-    quantity: 0,
-    price: 220.0,
-    icon: <TrendingUp className="w-6 h-6 text-purple-500" />,
-  },
-];
+import { fetchTransactions } from '../services/transaction-api';
+import type { Transaction } from '../types/transaction';
 
 const AssetPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [historyModal, setHistoryModal] = useState<null | { ticker: string; name: string; type: string }>(null);
+  const [transactions, setTxs] = useState<Transaction[]>([]);
+  const [assets, setAssets] = useState<any[]>([]);
+
+  // Load transactions from API on mount
+  useEffect(() => {
+    const loadTxs = async () => {
+      const txs = await fetchTransactions();
+      setTxs(txs);
+      setAssets(buildAssetsFromTransactions(txs));
+    };
+    loadTxs();
+  }, []);
+
+  // Helper to rebuild asset list from transactions
+  const buildAssetsFromTransactions = useCallback((txs: Transaction[]) => {
+    const assetMap: Record<string, { ticker: string; name: string; type: string; quantity: number; price: number; icon: JSX.Element }> = {};
+    txs.forEach(tx => {
+      if (!assetMap[tx.ticker]) {
+        assetMap[tx.ticker] = {
+          ticker: tx.ticker,
+          name: tx.ticker,
+          type: tx.assetType,
+          quantity: 0,
+          price: 0,
+          icon: tx.assetType === 'crypto' ? <Bitcoin className="w-6 h-6 text-yellow-500" /> : <TrendingUp className="w-6 h-6 text-blue-600" />,
+        };
+      }
+      assetMap[tx.ticker].quantity += tx.type === 'buy' ? tx.quantity : -tx.quantity;
+      assetMap[tx.ticker].price = tx.price; // last price
+    });
+
+    return Object.values(assetMap);
+  }, []);
+
+  // Handler for transaction changes
+  const handleTransactionsChange = async (_newTxs: Transaction[]) => {
+    // Always re-fetch from API for consistency
+    const txs = await fetchTransactions();
+    setTxs(txs);
+    setAssets(buildAssetsFromTransactions(txs));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
@@ -43,14 +58,16 @@ const AssetPage: React.FC = () => {
           <h1 className="text-3xl md:text-4xl font-extrabold text-blue-900 drop-shadow-lg flex items-center gap-3">
             <LineChart className="w-8 h-8 text-blue-700" /> Asset Portfolio
           </h1>
-          <Button
-            variant="primary"
-            size="lg"
-            className="flex items-center gap-2 shadow-xl"
-            onClick={() => setModalOpen(true)}
-          >
-            <PlusCircle className="w-5 h-5" /> Add Transaction
-          </Button>
+          <div className="flex flex-col items-end gap-2">
+            <Button
+              variant="primary"
+              size="lg"
+              className="flex items-center gap-2 shadow-xl"
+              onClick={() => setModalOpen(true)}
+            >
+              <PlusCircle className="w-5 h-5" /> Add Transaction
+            </Button>
+          </div>
         </div>
         <div className="relative z-10">
           <div className="absolute inset-0 opacity-10 pointer-events-none select-none">
@@ -61,7 +78,7 @@ const AssetPage: React.FC = () => {
             />
           </div>
           <div className="grid md:grid-cols-2 gap-8 relative">
-            {demoAssets.map((asset) => {
+            {assets.map((asset: { ticker: string; name: string; type: string; quantity: number; price: number; icon: JSX.Element }) => {
               const isZero = asset.quantity === 0;
               return (
                 <div
@@ -114,21 +131,16 @@ const AssetPage: React.FC = () => {
             })}
           </div>
         </div>
-        <div className="mt-12 flex justify-center">
-          <img
-            src="https://images.pexels.com/photos/6693657/pexels-photo-6693657.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt="Stock market illustration"
-            className="rounded-xl shadow-2xl max-w-md w-full border-4 border-white/20"
-          />
-        </div>
       </div>
-      <StockTransactionModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <StockTransactionModal open={modalOpen} onClose={() => setModalOpen(false)} onTransactionsChange={handleTransactionsChange} />
       <AssetTransactionHistoryModal
         open={!!historyModal}
         onClose={() => setHistoryModal(null)}
         assetTicker={historyModal?.ticker || ''}
         assetName={historyModal?.name || ''}
         assetType={historyModal?.type || ''}
+        transactions={transactions}
+        onTransactionsChange={handleTransactionsChange}
       />
     </div>
   );
