@@ -8,14 +8,46 @@ import { USER_KEY } from '../lib/storage-helpers';
 export async function fetchProfile(): Promise<User | null> {
   await new Promise(res => setTimeout(res, 300));
   const user = localStorage.getItem(USER_KEY);
-  return user ? JSON.parse(user) : null;
+  if (!user) return null;
+  const parsed = JSON.parse(user);
+  // Ensure investmentProfile is present if it exists
+  return {
+    ...parsed,
+    investmentProfile: parsed.investmentProfile ?? undefined,
+  };
 }
 
 export async function updateProfile(data: Partial<User>): Promise<User> {
   await new Promise(res => setTimeout(res, 300));
   const current = localStorage.getItem(USER_KEY);
-  const updated = { ...JSON.parse(current || '{}'), ...data };
+  const prev = JSON.parse(current || '{}');
+  // Deep merge investmentProfile if present
+  let updated = { ...prev, ...data };
+  if (data.investmentProfile) {
+    updated.investmentProfile = { ...prev.investmentProfile, ...data.investmentProfile };
+  }
   localStorage.setItem(USER_KEY, JSON.stringify(updated));
+
+  // --- Also update local_users array if user exists ---
+  const localUsersRaw = localStorage.getItem('local_users');
+  if (localUsersRaw) {
+    let localUsers = JSON.parse(localUsersRaw);
+    const idx = localUsers.findIndex((u: any) => u.id === updated.id);
+    if (idx !== -1) {
+      // Merge investmentProfile for the matched user
+      localUsers[idx] = {
+        ...localUsers[idx],
+        ...data,
+        investmentProfile: {
+          ...localUsers[idx].investmentProfile,
+          ...data.investmentProfile,
+        },
+      };
+      localStorage.setItem('local_users', JSON.stringify(localUsers));
+    }
+  }
+  // --- End local_users update ---
+
   return updated;
 }
 

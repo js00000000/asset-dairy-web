@@ -58,6 +58,48 @@ const ProfilePage: React.FC = () => {
             <span>{email}</span>
           </div>
         </div>
+
+        {/* Investment Profile Section */}
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold text-blue-700 flex items-center gap-2 mb-3">
+            <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            Investment Profile
+          </h3>
+          {user.investmentProfile ? (
+            <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-2 text-gray-700">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <span>Age:</span>
+                <span className="font-semibold">{user.investmentProfile.age}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Risk Tolerance:</span>
+                <span className="font-semibold">{user.investmentProfile.riskTolerance}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M12 4v16"/><path d="M6 8v8"/><path d="M3 12h3"/><path d="M18 8v8"/><path d="M21 12h-3"/></svg>
+                <span>Investment Goal:</span>
+                <span className="font-semibold">{user.investmentProfile.investmentGoal}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                <span>Time Horizon:</span>
+                <span className="font-semibold">{user.investmentProfile.timeHorizon}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700 col-span-full">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Years Investing:</span>
+                <span className="font-semibold">{user.investmentProfile.yearsInvesting}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-blue-200 bg-blue-50/30 p-6 text-center text-blue-500">
+              No investment profile set.<br />
+              <Link to="/profile/edit" className="inline-block mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold shadow transition">Set Investment Profile</Link>
+            </div>
+          )}
+        </div>
         <div className="mt-8 flex justify-end gap-4">
           <Link
             to="/profile/change-password"

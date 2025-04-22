@@ -1,4 +1,5 @@
 // Unified User type for the entire app
+import type { UserInvestmentProfile } from './user-investment-profile-types';
 export interface User {
   id: string;
   name: string;
@@ -10,4 +11,5 @@ export interface User {
    * Only for mock/localStorage use! Do NOT use in production.
    */
   password?: string;
+  investmentProfile?: UserInvestmentProfile;
 }
