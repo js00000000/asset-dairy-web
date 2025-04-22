@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Search, Menu, X, ShoppingBag, LogOut } from 'lucide-react';
 import siteConfig from '../../config/site.config';
-import { useAuthStore } from '../../modules/auth/auth-store';
+import { useAuthStore } from '../../users/auth-store';
 import Button from '../ui/Button';
 
 const Header: React.FC = () => {

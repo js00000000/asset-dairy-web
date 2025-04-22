@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { UserCircle, Save, ArrowLeft } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import { fetchProfile, updateProfile } from '../services/api';
-import { useAuthStore } from '../modules/auth/auth-store';
+import { fetchProfile, updateProfile } from '../users/user-api';
+import { useAuthStore } from '../users/auth-store';
 
 const ProfileEditPage: React.FC = () => {
   const { user } = useAuthStore();

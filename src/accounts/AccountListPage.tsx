@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Wallet, PlusCircle, Loader2, AlertCircle, Pencil, Trash2, X, Check } from "lucide-react";
-import { fetchAccounts, deleteAccount } from "../services/api";
+import { fetchAccounts, deleteAccount } from "../accounts/account-api";
 import { Account } from "../accounts/account-types";
 import AccountCreateModal from "./AccountCreateModal";
 import AccountEditModal from "./AccountEditModal";

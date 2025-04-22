@@ -11,13 +11,23 @@ const AssetPage: React.FC = () => {
   const [historyModal, setHistoryModal] = useState<null | { ticker: string; name: string; type: string }>(null);
   const [transactions, setTxs] = useState<Transaction[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Load transactions from API on mount
   useEffect(() => {
     const loadTxs = async () => {
-      const txs = await fetchTransactions();
-      setTxs(txs);
-      setAssets(buildAssetsFromTransactions(txs));
+      setLoading(true);
+      setError(null);
+      try {
+        const txs = await fetchTransactions();
+        setTxs(txs);
+        setAssets(buildAssetsFromTransactions(txs));
+      } catch (err: any) {
+        setError(err.message || 'Failed to load transactions');
+      } finally {
+        setLoading(false);
+      }
     };
     loadTxs();
   }, []);
@@ -50,6 +60,37 @@ const AssetPage: React.FC = () => {
     setTxs(txs);
     setAssets(buildAssetsFromTransactions(txs));
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-blue-700 animate-pulse text-xl font-semibold">Loading assets...</div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-600 text-lg font-semibold">{error}</div>
+      </div>
+    );
+  }
+  if (transactions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <LineChart className="w-12 h-12 text-blue-400 mb-4" />
+        <div className="text-slate-600 text-lg mb-2">No transactions found.</div>
+        <Button onClick={() => setModalOpen(true)} className="mt-2">
+          <PlusCircle className="w-5 h-5 mr-2" /> Add Transaction
+        </Button>
+        <StockTransactionModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onTransactionsChange={handleTransactionsChange}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">

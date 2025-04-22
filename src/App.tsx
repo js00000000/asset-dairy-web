@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
-import { initAuthStore } from "./modules/auth/auth-store";
+
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -16,9 +15,19 @@ import AccountListPage from './accounts/AccountListPage';
 import AssetPage from './assets/AssetPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
+import { useEffect } from 'react';
+import { useAuthStore } from './users/auth-store';
+
 function App() {
   useEffect(() => {
-    initAuthStore();
+    const set = useAuthStore.setState;
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      set({ user, isAuthenticated: true, isHydrated: true });
+    } else {
+      set({ isHydrated: true });
+    }
   }, []);
 
   // Routes config for createBrowserRouter

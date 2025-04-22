@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuthStore } from '../modules/auth/auth-store';
+import { useAuthStore } from '../users/auth-store';
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Save, ArrowLeft } from "lucide-react";
 

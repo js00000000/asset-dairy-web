@@ -3,7 +3,7 @@ import { siteConfig } from '../config/site.config';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, ShoppingBag } from 'lucide-react';
-import { useAuthStore } from '../modules/auth/auth-store';
+import { useAuthStore } from '../users/auth-store';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
