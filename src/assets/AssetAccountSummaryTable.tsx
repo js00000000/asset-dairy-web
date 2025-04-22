@@ -71,7 +71,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     // Use local time, format YYYY-MM-DD
     const dateStr = today.toISOString().slice(0, 10);
     return JSON.stringify({
-      date: dateStr,
+      exportDate: dateStr,
       totalValueUSD: Number(totalValueUSD.toFixed(2)),
       portfolio: exportData
     }, null, 2);
@@ -115,7 +115,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     } else {
       profileStr = 'User Investment Profile: Not provided';
     }
-    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on diversification, risk, and possible improvements.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
+    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on possible improvements.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
     await navigator.clipboard.writeText(prompt);
     setAiCopied(true);
     setTimeout(() => setAiCopied(false), 1500);
