@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, TrendingUp } from 'lucide-react';
+import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot } from 'lucide-react';
 
 import type { Account } from '../accounts/account-types';
 
@@ -30,6 +30,81 @@ interface AssetAccountSummaryTableProps {
 }
 
 const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ accounts, assets }) => {
+  // Export handler: export only assetRows as JSON with ticker, valueUSD, percentage
+  const [copied, setCopied] = React.useState(false);
+  const [aiCopied, setAiCopied] = React.useState(false);
+
+  // Helper to get export JSON string
+  const getPortfolioJson = () => {
+    const assetExportRows = assets.map(asset => {
+      const valueUSD = convertToUSD(asset.price * asset.quantity, 'USD');
+      return {
+        type: 'asset',
+        ticker: asset.ticker,
+        name: null,
+        valueUSD,
+      };
+    });
+    const accountExportRows = accounts.map(acc => {
+      const valueUSD = convertToUSD(acc.balance, acc.currency);
+      return {
+        type: 'account',
+        ticker: null,
+        name: acc.name,
+        valueUSD,
+      };
+    });
+    const allExportRows = [...assetExportRows, ...accountExportRows];
+    const totalValueUSD = allExportRows.reduce((sum, row) => sum + row.valueUSD, 0);
+    const exportData = allExportRows.map(row => ({
+      type: row.type,
+      ticker: row.ticker,
+      name: row.name,
+      valueUSD: row.valueUSD,
+      percentage: totalValueUSD > 0 ? (row.valueUSD / totalValueUSD) * 100 : 0,
+    }));
+    return JSON.stringify(exportData, null, 2);
+  };
+
+  const handleCopy = async () => {
+    // Prepare asset rows
+    const assetExportRows = assets.map(asset => {
+      const valueUSD = convertToUSD(asset.price * asset.quantity, 'USD');
+      return {
+        type: 'asset',
+        ticker: asset.ticker,
+        name: null,
+        valueUSD,
+      };
+    });
+    // Prepare account rows
+    const accountExportRows = accounts.map(acc => {
+      const valueUSD = convertToUSD(acc.balance, acc.currency);
+      return {
+        type: 'account',
+        ticker: null,
+        name: acc.name,
+        valueUSD,
+      };
+    });
+    // Combine and calculate total for percentage
+    const allExportRows = [...assetExportRows, ...accountExportRows];
+    const totalValueUSD = allExportRows.reduce((sum, row) => sum + row.valueUSD, 0);
+    const jsonStr = getPortfolioJson();
+    await navigator.clipboard.writeText(jsonStr);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleAskAICopy = async () => {
+    const jsonStr = getPortfolioJson();
+    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on diversification, risk, and possible improvements.\n\nPortfolio Data:\n${jsonStr}`;
+    await navigator.clipboard.writeText(prompt);
+    setAiCopied(true);
+    setTimeout(() => setAiCopied(false), 1500);
+  };
+
+
   // Convert all to USD for calculations
   const assetRows = assets.map(asset => {
     const valueUSD = convertToUSD(asset.price * asset.quantity, 'USD');
@@ -68,11 +143,29 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
 
   return (
     <div className="mt-12 w-full max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-indigo-500" /> Asset & Account Summary
-        </h2>
-        <div className="text-sm text-gray-500 mt-1">Total Value (USD): <span className="font-bold text-indigo-700">${totalValueUSD.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span></div>
+      <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-indigo-500" /> Asset & Account Summary
+          </h2>
+          <div className="text-sm text-gray-500 mt-1">Total Value (USD): <span className="font-bold text-indigo-700">${totalValueUSD.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span></div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center mt-3 sm:mt-0">
+          <button
+            onClick={handleCopy}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white shadow transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 ${copied ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
+            title={copied ? 'Copied!' : 'Copy Asset & Account Summary as JSON'}
+          >
+            {copied ? <ClipboardCheck className="w-4 h-4" /> : <Clipboard className="w-4 h-4" />} {copied ? 'Copied!' : 'Copy JSON'}
+          </button>
+          <button
+            onClick={handleAskAICopy}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white shadow transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 ${aiCopied ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
+            title={aiCopied ? 'Copied!' : 'Copy AI Prompt'}
+          >
+            <Bot className="w-4 h-4" /> {aiCopied ? 'Copied!' : 'Ask AI'}
+          </button>
+        </div>
       </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
