@@ -7,7 +7,6 @@ export interface AssetCardProps {
   name: string;
   type: string;
   quantity: number;
-  price: number;
   averagePrice?: number;
   onClick?: () => void;
   isZero?: boolean;
@@ -18,7 +17,6 @@ const AssetCard: React.FC<AssetCardProps> = ({
   name,
   type,
   quantity,
-  price,
   averagePrice,
   onClick,
   isZero = false,
@@ -94,7 +92,9 @@ const AssetCard: React.FC<AssetCardProps> = ({
         </div>
         <div className="flex flex-col">
           <span className="text-lg text-gray-700 font-semibold">Value</span>
-          <span className="text-2xl font-bold text-blue-900 tabular-nums">${(price * quantity).toLocaleString()}</span>
+          <span className="text-2xl font-bold text-blue-900 tabular-nums">
+            {realPrice !== null ? `${(realPrice * quantity).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>}
+          </span>
         </div>
       </div>
       <div className="flex gap-6 mt-2">
@@ -104,9 +104,9 @@ const AssetCard: React.FC<AssetCardProps> = ({
         </div>
         <div className="flex items-center gap-2 text-sm">
           <span className="font-semibold text-gray-500">Gain/Loss:</span>
-          {typeof averagePrice === 'number' && quantity > 0 ? (() => {
-            const gainLossAbs = (price - averagePrice) * quantity;
-            const gainLossPct = averagePrice !== 0 ? ((price - averagePrice) / averagePrice) * 100 : 0;
+          {typeof averagePrice === 'number' && quantity > 0 && realPrice !== null ? (() => {
+            const gainLossAbs = (realPrice - averagePrice) * quantity;
+            const gainLossPct = averagePrice !== 0 ? ((realPrice - averagePrice) / averagePrice) * 100 : 0;
             const isGain = gainLossAbs > 0;
             const isLoss = gainLossAbs < 0;
             const color = isGain ? 'text-green-600' : isLoss ? 'text-red-600' : 'text-gray-500';

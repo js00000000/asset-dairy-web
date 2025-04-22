@@ -49,7 +49,6 @@ const AssetPage: React.FC = () => {
       name: string;
       type: string;
       quantity: number;
-      price: number;
       averagePrice: number;
     }> = {};
     // For average price calculation
@@ -62,14 +61,12 @@ const AssetPage: React.FC = () => {
           name: tx.ticker,
           type: tx.assetType,
           quantity: 0,
-          price: 0,
           averagePrice: 0,
         };
         buyData[tx.ticker] = { totalCost: 0, totalQty: 0 };
       }
       // Update quantity and last price
       assetMap[tx.ticker].quantity += tx.type === 'buy' ? tx.quantity : -tx.quantity;
-      assetMap[tx.ticker].price = tx.price;
       // For average price: only consider buys
       if (tx.type === 'buy') {
         buyData[tx.ticker].totalCost += tx.price * tx.quantity;
@@ -187,14 +184,13 @@ const AssetPage: React.FC = () => {
           </h2>
           <div className="relative z-10">
             <div className="grid md:grid-cols-2 gap-8 relative">
-              {assets.map((asset: { ticker: string; name: string; type: string; quantity: number; price: number; averagePrice: number }) => (
+              {assets.map((asset: { ticker: string; name: string; type: string; quantity: number; averagePrice: number }) => (
                 <AssetCard
                   key={asset.ticker}
                   ticker={asset.ticker}
                   name={asset.name}
                   type={asset.type}
                   quantity={asset.quantity}
-                  price={asset.price}
                   averagePrice={asset.averagePrice}
                   isZero={asset.quantity === 0}
                   onClick={() => setSelectedAssetForTx({ ticker: asset.ticker, type: asset.type })}
