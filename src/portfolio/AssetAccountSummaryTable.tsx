@@ -115,7 +115,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     } else {
       profileStr = 'User Investment Profile: Not provided';
     }
-    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on possible improvements.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
+    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on possible improvements based on macroeconomic.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
     await navigator.clipboard.writeText(prompt);
     setAiCopied(true);
     setTimeout(() => setAiCopied(false), 1500);
