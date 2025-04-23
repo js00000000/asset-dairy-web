@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bitcoin } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import { Info } from 'lucide-react';
 import { loadAccounts, getCurrentUser } from '../lib/storage-helpers';
 import type { Trade } from '../trades/trade-types';
 import type { Account } from '../accounts/account-types';
@@ -23,6 +24,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
   const [price, setPrice] = useState(trade ? String(trade.price) : '');
   const [accountId, setAccountId] = useState(trade ? trade.accountId : '');
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [reason, setReason] = useState(trade ? trade.reason || '' : '');
 
   React.useEffect(() => {
     const user = getCurrentUser();
@@ -33,6 +35,13 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
       setAccounts([]);
     }
   }, [open]);
+
+  // Reset reason when modal opens/closes or trade changes
+  React.useEffect(() => {
+    if (open) {
+      setReason(trade ? trade.reason || '' : '');
+    }
+  }, [open, trade]);
   const [tradeDate, setTradeDate] = useState(() => {
     if (trade) return trade.tradeDate;
     // Default to today in YYYY-MM-DD format
@@ -100,6 +109,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
         price: Number(price),
         accountId,
         ticker,
+        reason,
       };
       const { updateTrade, fetchTrades } = await import('./trade-api');
       await updateTrade(trade.id, updatedTx);
@@ -120,6 +130,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
         price: Number(price),
         accountId,
         ticker,
+        reason,
       };
       const { createTrade, fetchTrades } = await import('./trade-api');
       await createTrade(tx as Omit<Trade, 'id'>);
@@ -253,6 +264,18 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
                 <Calendar className="w-4 h-4 text-blue-500 absolute right-3 top-3" />
               </div>
             </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-slate-700 flex items-center gap-1">
+              <Info className="w-4 h-4 text-blue-400" /> Reason (optional)
+            </label>
+            <textarea
+              className="w-full min-h-[48px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none resize-y text-sm"
+              placeholder="E.g. Bought on dip, rebalancing, tax loss harvesting, etc."
+              value={reason}
+              onChange={e => setReason(e.target.value)}
+              maxLength={256}
+            />
           </div>
           {error && <div className="text-red-600 font-semibold text-center animate-pulse">{error}</div>}
           {success && <div className="text-green-600 font-semibold text-center animate-pulse">Trade recorded!</div>}

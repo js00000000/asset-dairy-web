@@ -7,4 +7,5 @@ export type Trade = {
   id: number;
   ticker: string;
   assetType: 'stock' | 'crypto';
+  reason?: string; // Optional reason for the trade
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Search, TrendingUp, Bitcoin, Loader2, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
+import ReasonTooltip from '../components/ui/ReasonTooltip';
 import { fetchTrades, deleteTrade } from "./trade-api";
 import type { Trade } from "./trade-types";
 import Button from "../components/ui/Button";
@@ -149,14 +150,14 @@ const TradeListPage: React.FC = () => {
           <table className="min-w-full divide-y divide-slate-100">
             <thead>
               <tr className="text-slate-500 text-xs uppercase">
-                <th className="px-4 py-3 text-left">Trade Date</th>
-                <th className="px-4 py-3 text-left">Type</th>
-                <th className="px-4 py-3 text-left">Asset</th>
-                <th className="px-4 py-3 text-left">Ticker</th>
+                <th className="px-4 py-3 text-center">Trade Date</th>
+                <th className="px-4 py-3 text-center">Type</th>
+                <th className="px-4 py-3 text-center">Asset</th>
+                <th className="px-4 py-3 text-center">Ticker</th>
                 <th className="px-4 py-3 text-right">Quantity</th>
                 <th className="px-4 py-3 text-right">Price</th>
-                <th className="px-4 py-3 text-left">Account</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+                <th className="px-4 py-3 text-right">From Account</th>
+                <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -165,10 +166,10 @@ const TradeListPage: React.FC = () => {
                   key={tx.id}
                   className="hover:bg-slate-50 transition border-b last:border-0"
                 >
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap items-center">
                     {new Date(tx.tradeDate).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-3 flex items-center gap-1">
+                  <td className="px-4 py-3 flex gap-1 items-center">
                     <span
                       className={
                         tx.type === "buy"
@@ -185,15 +186,16 @@ const TradeListPage: React.FC = () => {
                       <span className="capitalize">{tx.assetType}</span>
                     </span>
                   </td>
-                  <td className="px-4 py-3">{tx.ticker}</td>
+                  <td className="px-4 py-3 items-center">{tx.ticker}</td>
                   <td className="px-4 py-3 text-right">{tx.quantity}</td>
                   <td className="px-4 py-3 text-right">${tx.price.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-left">
+                  <td className="px-4 py-3 text-right">
                     {accountMap[tx.accountId]?.name
                       ? `${accountMap[tx.accountId].name} (${accountMap[tx.accountId].currency})`
                       : 'Unknown Account'}
                   </td>
-                  <td className="px-4 py-3 flex gap-2">
+                  <td className="px-4 py-3 flex gap-1">
+                    <ReasonTooltip reason={tx.reason || ''} />
                     {deletingId === tx.id ? (
                       <>
                         <Button
@@ -204,7 +206,6 @@ const TradeListPage: React.FC = () => {
                           title="Cancel Delete"
                         >
                           <span className="sr-only">Cancel Delete</span>
-                          {/* Lucide X icon for cancel */}
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                         </Button>
                         <Button
