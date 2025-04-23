@@ -57,8 +57,8 @@ const TradeListPage: React.FC = () => {
     }
     txs = [...txs].sort((a, b) =>
       sortDesc
-        ? new Date(b.date).getTime() - new Date(a.date).getTime()
-        : new Date(a.date).getTime() - new Date(b.date).getTime()
+        ? new Date(b.tradeDate).getTime() - new Date(a.tradeDate).getTime()
+        : new Date(a.tradeDate).getTime() - new Date(b.tradeDate).getTime()
     );
     return txs;
   }, [trades, filterType, search, sortDesc]);
@@ -149,7 +149,7 @@ const TradeListPage: React.FC = () => {
           <table className="min-w-full divide-y divide-slate-100">
             <thead>
               <tr className="text-slate-500 text-xs uppercase">
-                <th className="px-4 py-3 text-left">Date</th>
+                <th className="px-4 py-3 text-left">Trade Date</th>
                 <th className="px-4 py-3 text-left">Type</th>
                 <th className="px-4 py-3 text-left">Asset</th>
                 <th className="px-4 py-3 text-left">Ticker</th>
@@ -166,7 +166,7 @@ const TradeListPage: React.FC = () => {
                   className="hover:bg-slate-50 transition border-b last:border-0"
                 >
                   <td className="px-4 py-3 whitespace-nowrap">
-                    {new Date(tx.date).toLocaleDateString()}
+                    {new Date(tx.tradeDate).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 flex items-center gap-1">
                     <span

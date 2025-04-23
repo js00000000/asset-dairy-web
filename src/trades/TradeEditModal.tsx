@@ -33,8 +33,8 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
       setAccounts([]);
     }
   }, [open]);
-  const [date, setDate] = useState(() => {
-    if (trade) return trade.date;
+  const [tradeDate, setTradeDate] = useState(() => {
+    if (trade) return trade.tradeDate;
     // Default to today in YYYY-MM-DD format
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -55,7 +55,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
       setQuantity(trade ? String(trade.quantity) : '');
       setPrice(trade ? String(trade.price) : '');
       setAccountId(trade ? trade.accountId : '');
-      setDate(trade ? trade.date : (() => {
+      setTradeDate(trade ? trade.tradeDate : (() => {
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -70,7 +70,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
   if (!open) return null;
 
   const validate = () => {
-    if (!ticker.trim() || !quantity || !price || !accountId || !date) {
+    if (!ticker.trim() || !quantity || !price || !accountId || !tradeDate) {
       setError('All fields are required.');
       return false;
     }
@@ -95,7 +95,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
         ...trade,
         assetType,
         type,
-        date,
+        tradeDate,
         quantity: Number(quantity),
         price: Number(price),
         accountId,
@@ -115,7 +115,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
       const tx = {
         assetType,
         type,
-        date,
+        tradeDate,
         quantity: Number(quantity),
         price: Number(price),
         accountId,
@@ -239,15 +239,15 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
               leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
               required
             />
-            {/* Date */}
+            {/* Trade Date */}
             <div className="flex flex-col">
-              <label className="block text-sm font-medium mb-1 text-slate-700">Date</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700">Trade Date</label>
               <div className="relative">
                 <input
                   type="date"
                   className="w-full h-[42px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                  value={date}
-                  onChange={e => setDate(e.target.value)}
+                  value={tradeDate}
+                  onChange={e => setTradeDate(e.target.value)}
                   required
                 />
                 <Calendar className="w-4 h-4 text-blue-500 absolute right-3 top-3" />
