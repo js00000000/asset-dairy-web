@@ -135,7 +135,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in">
         <button
           className="absolute top-5 right-5 text-slate-400 hover:text-red-400 transition"
           onClick={onClose}
