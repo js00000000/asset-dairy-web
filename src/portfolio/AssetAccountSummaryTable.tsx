@@ -183,38 +183,40 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
           </button>
         </div>
       </div>
-      <table className="min-w-full divide-y divide-gray-200">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Type</th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">Value</th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">% of Total</th>
+            <th className="px-3 py-2 text-left text-xs sm:px-6 sm:py-3 sm:text-sm font-medium text-gray-600 uppercase tracking-wider">Name</th>
+            <th className="px-3 py-2 text-left text-xs sm:px-6 sm:py-3 sm:text-sm font-medium text-gray-600 uppercase tracking-wider">Type</th>
+            <th className="px-3 py-2 text-right text-xs sm:px-6 sm:py-3 sm:text-sm font-medium text-gray-600 uppercase tracking-wider">Value</th>
+            <th className="px-3 py-2 text-right text-xs sm:px-6 sm:py-3 sm:text-sm font-medium text-gray-600 uppercase tracking-wider">% of Total</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-100">
           {summaryRows.map((item: typeof allRows[number] & { percentage: number }) => (
             <tr key={item.id}>
-              <td className="px-6 py-4 whitespace-nowrap flex items-center gap-2">
+              <td className="px-3 py-2 whitespace-nowrap flex items-center gap-2 text-xs sm:px-6 sm:py-4 sm:text-sm">
                 {item.icon || (item.type === 'account' ? <Wallet className="w-4 h-4 text-emerald-500" /> : <TrendingUp className="w-4 h-4 text-blue-500" />)}
                 <span className="font-medium text-gray-800">{item.name}</span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-3 py-2 whitespace-nowrap text-xs sm:px-6 sm:py-4 sm:text-sm">
                 <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${item.type === 'account' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'}`}>{item.type === 'account' ? 'Account' : 'Asset'}</span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right">
+              <td className="px-3 py-2 whitespace-nowrap text-right text-xs sm:px-6 sm:py-4 sm:text-sm">
                 <span className="font-mono text-gray-700">${item.valueUSD.toLocaleString(undefined, { maximumFractionDigits: 2 })} <span className="text-xs text-gray-400">USD</span></span>
                 {item.originalCurrency !== 'USD' && (
                   <div className="text-xs text-gray-400">{item.originalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} {item.originalCurrency}</div>
                 )}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right">
+              <td className="px-3 py-2 whitespace-nowrap text-right text-xs sm:px-6 sm:py-4 sm:text-sm">
                 <span className="font-semibold text-indigo-600">{item.percentage.toFixed(2)}%</span>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 };
