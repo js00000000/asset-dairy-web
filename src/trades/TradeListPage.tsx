@@ -82,25 +82,6 @@ const TradeListPage: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-1 flex items-center gap-2">
-            Trades
-            <span className="text-base font-medium text-slate-400">overview</span>
-          </h1>
-          <p className="text-slate-500">
-            View, search, and add your asset trades.
-          </p>
-        </div>
-        <Button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2"
-          variant="primary"
-        >
-          <Plus className="w-5 h-5" />
-          Add Trade
-        </Button>
-      </div>
       <div className="flex flex-col md:flex-row gap-2 mb-6 items-center">
         <div className="flex gap-2">
           <Button
@@ -143,6 +124,14 @@ const TradeListPage: React.FC = () => {
           >
             <span className="sr-only">Sort</span>
             {sortDesc ? <SortDesc className="w-4 h-4" /> : <SortAsc className="w-4 h-4" />}
+          </Button>
+          <Button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2"
+            variant="primary"
+          >
+            <Plus className="w-5 h-5" />
+            Add Trade
           </Button>
         </div>
       </div>

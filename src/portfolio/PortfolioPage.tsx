@@ -100,8 +100,6 @@ const PortfolioPage: React.FC = () => {
     return Object.values(assetMap);
   }, []);
 
-  // Handler for trade changes
-
   // Callback to reload accounts and trades after edit
   const handleAccountsUpdated = async () => {
     setLoading(true);
@@ -120,6 +118,8 @@ const PortfolioPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // Handler for trade changes
   const handleTradesChange = async (_newTxs: Trade[]) => {
     // Always re-fetch from API for consistency
     const txs = await fetchTrades();
@@ -161,21 +161,6 @@ const PortfolioPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-blue-900 drop-shadow-lg flex items-center gap-3">
-            <LineChart className="w-8 h-8 text-blue-700" /> Asset Portfolio
-          </h1>
-          <div className="flex flex-col items-end gap-2">
-            <Button
-              variant="primary"
-              size="lg"
-              className="flex items-center gap-2 shadow-xl"
-              onClick={() => setModalOpen(true)}
-            >
-              <PlusCircle className="w-5 h-5" /> Add Trade
-            </Button>
-          </div>
-        </div>
         {/* Accounts summary section */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-3">
@@ -199,13 +184,30 @@ const PortfolioPage: React.FC = () => {
           />
         </section>
         {/* Portfolio grid */}
-        <section className="mb-8">
-          <h2 className="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-blue-500" /> Portfolio
-          </h2>
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-blue-500" /> Portfolio
+            </h2>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 border-blue-400 text-blue-700 hover:bg-blue-50"
+              onClick={() => setModalOpen(true)}
+            >
+              <PlusCircle className="w-4 h-4" /> Add Trade
+            </Button>
+          </div>
           <div className="relative z-10">
             <div className="grid md:grid-cols-2 gap-8 relative">
-              {assets.map((asset: { ticker: string; name: string; type: string; quantity: number; price: number; averagePrice: number }) => (
+              {assets.map((asset: {
+                ticker: string;
+                name: string;
+                type: string;
+                quantity: number;
+                price: number;
+                averagePrice: number
+              }) => (
                 <AssetCard
                   key={asset.ticker}
                   ticker={asset.ticker}
