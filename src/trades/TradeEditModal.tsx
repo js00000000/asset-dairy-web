@@ -36,12 +36,6 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
     }
   }, [open]);
 
-  // Reset reason when modal opens/closes or trade changes
-  React.useEffect(() => {
-    if (open) {
-      setReason(trade ? trade.reason || '' : '');
-    }
-  }, [open, trade]);
   const [tradeDate, setTradeDate] = useState(() => {
     if (trade) return trade.tradeDate;
     // Default to today in YYYY-MM-DD format
@@ -60,7 +54,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
       setType(trade ? trade.type : 'buy');
       setAssetType(trade ? trade.assetType : (propAssetType === 'stock' || propAssetType === 'crypto' ? propAssetType : 'stock'));
       setTicker(trade ? trade.ticker : (propTicker || ''));
-
+      setReason(trade ? trade.reason || '' : '');
       setQuantity(trade ? String(trade.quantity) : '');
       setPrice(trade ? String(trade.price) : '');
       setAccountId(trade ? trade.accountId : '');
