@@ -4,7 +4,6 @@ export const siteConfig = {
   description: 'Your modern finance companion. Effortlessly log daily expenses, income, and transfers. Track your stock and crypto portfolios—all in one beautiful dashboard.',
   logoUrl: '', // Add your logo URL or icon component
   nav: [
-    { label: 'Accounts', href: '/accounts' },
     { label: 'Portfolio', href: '/portfolio' },
     { label: 'Trades', href: '/trades' },
     // Add more navigation items as needed

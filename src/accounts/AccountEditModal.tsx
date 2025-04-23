@@ -10,42 +10,55 @@ const currencyOptions = [
 
 interface Props {
   open: boolean;
-  accountId: string | null;
+  accountId?: string | null; // If null or undefined, create mode
   onClose: () => void;
   onUpdated: () => void;
 }
 
+import { createAccount } from "../accounts/account-api";
+import { useAuthStore } from '../users/auth-store';
+
 export default function AccountEditModal({ open, accountId, onClose, onUpdated }: Props) {
+  const { user } = useAuthStore ? useAuthStore() : { user: null };
+  const isCreate = !accountId;
   const [account, setAccount] = useState<Account | null>(null);
   const [name, setName] = useState("");
   const [currency, setCurrency] = useState(currencyOptions[0].value);
   const [balance, setBalance] = useState("");
   const [errors, setErrors] = useState<{ name?: string; balance?: string }>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isCreate);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open || !accountId) return;
-    setLoading(true);
-    fetchAccounts().then(accs => {
-      const found = accs.find(a => a.id === accountId);
-      if (found) {
-        setAccount(found);
-        setName(found.name);
-        setCurrency(found.currency);
-        setBalance(found.balance.toString());
-      }
+    if (!open) return;
+    if (isCreate) {
+      setAccount(null);
+      setName("");
+      setCurrency(currencyOptions[0].value);
+      setBalance("");
       setLoading(false);
-    });
-  }, [open, accountId]);
+    } else if (accountId) {
+      setLoading(true);
+      fetchAccounts().then(accs => {
+        const found = accs.find(a => a.id === accountId);
+        if (found) {
+          setAccount(found);
+          setName(found.name);
+          setCurrency(found.currency);
+          setBalance(found.balance.toString());
+        }
+        setLoading(false);
+      });
+    }
+  }, [open, accountId, isCreate]);
 
   if (!open) return null;
 
   const validate = () => {
     const errs: { name?: string; balance?: string } = {};
     if (!name.trim()) errs.name = "Account name is required.";
-    if (!balance || isNaN(Number(balance))) errs.balance = "Balance must be a number.";
+    if (!balance || isNaN(Number(balance))) errs.balance = isCreate ? "Initial balance must be a number." : "Balance must be a number.";
     return errs;
   };
 
@@ -54,18 +67,27 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
     setApiError(null);
     const errs = validate();
     setErrors(errs);
-    if (Object.keys(errs).length === 0 && account) {
+    if (Object.keys(errs).length === 0) {
       setSubmitting(true);
       try {
-        await updateAccount(account.id, {
-          name: name.trim(),
-          currency,
-          balance: parseFloat(balance),
-        });
+        if (isCreate) {
+          await createAccount({
+            name: name.trim(),
+            currency,
+            balance: parseFloat(balance),
+            ownerId: user?.id || "",
+          });
+        } else if (account) {
+          await updateAccount(account.id, {
+            name: name.trim(),
+            currency,
+            balance: parseFloat(balance),
+          });
+        }
         onUpdated();
         onClose();
       } catch (err) {
-        setApiError("Failed to update account. Please try again.");
+        setApiError(isCreate ? "Failed to create account. Please try again." : "Failed to update account. Please try again.");
       } finally {
         setSubmitting(false);
       }
@@ -85,13 +107,13 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
           </button>
           <div className="flex flex-col items-center gap-4 py-8">
             <Loader2 className="animate-spin w-10 h-10 text-blue-500" />
-            <span className="text-blue-700 font-semibold text-lg">Loading account...</span>
+            <span className="text-blue-700 font-semibold text-lg">{isCreate ? "Preparing form..." : "Loading account..."}</span>
           </div>
         </div>
       </div>
     );
   }
-  if (!account) {
+  if (!isCreate && !account) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in">
@@ -124,7 +146,7 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
         <div className="flex items-center gap-3 mb-6">
           <Wallet className="w-7 h-7 text-blue-600" />
           <h2 className="text-2xl font-extrabold text-blue-900 drop-shadow">
-            Edit Account
+            {isCreate ? "Create Account" : "Edit Account"}
           </h2>
         </div>
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
@@ -168,7 +190,7 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
           </div>
           <div>
             <label htmlFor="balance" className="block text-sm font-medium text-slate-700 mb-1">
-              Balance
+              {isCreate ? "Initial Balance" : "Balance"}
             </label>
             <div className="relative">
               <span className="absolute left-3 top-3 text-slate-400">
@@ -200,7 +222,7 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
             disabled={submitting}
           >
             <Save className="w-5 h-5" />
-            {submitting ? 'Saving...' : 'Save Changes'}
+            {submitting ? (isCreate ? 'Creating...' : 'Saving...') : (isCreate ? 'Create Account' : 'Save Changes')}
           </button>
         </form>
       </div>

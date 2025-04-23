@@ -5,6 +5,7 @@ import Button from '../components/ui/Button';
 import TradeEditModal from '../trades/TradeEditModal';
 import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
+import AccountEditModal from '../accounts/AccountEditModal';
 import { fetchTrades } from '../trades/trade-api';
 import type { Trade } from '../trades/trade-types';
 import { fetchAccounts } from '../accounts/account-api';
@@ -13,6 +14,7 @@ import { getCryptoPrice, getStockPrice } from './portfolio-api';
 
 const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
@@ -176,10 +178,25 @@ const PortfolioPage: React.FC = () => {
         </div>
         {/* Accounts summary section */}
         <section className="mb-12">
-          <h2 className="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
-            <Wallet className="w-6 h-6 text-blue-500" /> Accounts
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-blue-800 flex items-center gap-2">
+              <Wallet className="w-6 h-6 text-blue-500" /> Accounts
+            </h2>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 border-blue-400 text-blue-700 hover:bg-blue-50"
+              onClick={() => setAccountModalOpen(true)}
+            >
+              <PlusCircle className="w-4 h-4" /> Add Account
+            </Button>
+          </div>
           <AccountSummaryList accounts={accounts} onUpdated={handleAccountsUpdated} />
+          <AccountEditModal
+            open={accountModalOpen}
+            onClose={() => setAccountModalOpen(false)}
+            onUpdated={handleAccountsUpdated}
+          />
         </section>
         {/* Portfolio grid */}
         <section className="mb-8">

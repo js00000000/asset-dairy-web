@@ -11,7 +11,6 @@ import ProfilePage from './users/ProfilePage';
 import ProfileEditPage from './users/ProfileEditPage';
 import ChangePasswordPage from './users/ChangePasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
-import AccountListPage from './accounts/AccountListPage';
 import PortfolioPage from './portfolio/PortfolioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import TradeListPage from './trades/TradeListPage';
@@ -46,7 +45,6 @@ function App() {
           path: 'profile/change-password',
           element: <ProtectedRoute><ChangePasswordPage /></ProtectedRoute>,
         },
-        { path: 'accounts', element: <ProtectedRoute><AccountListPage /></ProtectedRoute> },
         { path: 'portfolio', element: <ProtectedRoute><PortfolioPage /></ProtectedRoute> },
         { path: 'trades', element: <ProtectedRoute><TradeListPage /></ProtectedRoute> },
         // Add more routes as needed

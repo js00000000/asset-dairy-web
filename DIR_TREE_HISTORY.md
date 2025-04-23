@@ -8,8 +8,8 @@ src/
 ├── accounts/
 │   ├── AccountCreateModal.tsx
 │   ├── AccountEditModal.tsx
-│   ├── AccountListPage.tsx
 │   ├── account-types.ts
+│   ├── AccountCard.tsx
 │   └── index.ts
 ├── portfolio/
 │   ├── PortfolioPage.tsx
