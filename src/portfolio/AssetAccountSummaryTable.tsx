@@ -43,7 +43,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     const assetExportRows = assets.map(asset => {
       const valueUSD = convertToUSD(asset.price * asset.quantity, 'USD');
       return {
-        type: 'asset',
+        type: asset.type,
         ticker: asset.ticker,
         name: null,
         valueUSD,
@@ -52,7 +52,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     const accountExportRows = accounts.map(acc => {
       const valueUSD = convertToUSD(acc.balance, acc.currency);
       return {
-        type: 'account',
+        type: 'cash',
         ticker: null,
         name: acc.name,
         valueUSD,
@@ -82,7 +82,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     const assetExportRows = assets.map(asset => {
       const valueUSD = convertToUSD(asset.price * asset.quantity, 'USD');
       return {
-        type: 'asset',
+        type: asset.type,
         ticker: asset.ticker,
         name: null,
         valueUSD,
@@ -92,7 +92,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     const accountExportRows = accounts.map(acc => {
       const valueUSD = convertToUSD(acc.balance, acc.currency);
       return {
-        type: 'account',
+        type: 'cash',
         ticker: null,
         name: acc.name,
         valueUSD,
@@ -127,7 +127,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     return {
       id: asset.ticker,
       name: asset.ticker,
-      type: 'asset' as const,
+      type: asset.type,
       valueUSD,
       displayValue: valueUSD,
       currency: 'USD',
@@ -141,7 +141,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     return {
       id: acc.id,
       name: acc.name,
-      type: 'account' as const,
+      type: 'cash',
       valueUSD,
       displayValue: valueUSD,
       currency: 'USD',
@@ -197,11 +197,11 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
           {summaryRows.map((item: typeof allRows[number] & { percentage: number }) => (
             <tr key={item.id}>
               <td className="px-3 py-2 whitespace-nowrap flex items-center gap-2 text-xs sm:px-6 sm:py-4 sm:text-sm">
-                {item.icon || (item.type === 'account' ? <Wallet className="w-4 h-4 text-emerald-500" /> : <TrendingUp className="w-4 h-4 text-blue-500" />)}
+                {item.icon || (item.type === 'cash' ? <Wallet className="w-4 h-4 text-emerald-500" /> : <TrendingUp className="w-4 h-4 text-blue-500" />)}
                 <span className="font-medium text-gray-800">{item.name}</span>
               </td>
               <td className="px-3 py-2 whitespace-nowrap text-xs sm:px-6 sm:py-4 sm:text-sm">
-                <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${item.type === 'account' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'}`}>{item.type === 'account' ? 'Account' : 'Asset'}</span>
+                <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${item.type === 'cash' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'}`}>{item.type === 'cash' ? 'cash' : item.type}</span>
               </td>
               <td className="px-3 py-2 whitespace-nowrap text-right text-xs sm:px-6 sm:py-4 sm:text-sm">
                 <span className="font-mono text-gray-700">${item.valueUSD.toLocaleString(undefined, { maximumFractionDigits: 2 })} <span className="text-xs text-gray-400">USD</span></span>
