@@ -74,19 +74,37 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 border border-slate-200 dark:border-slate-700 flex flex-col items-center">
-          <Loader2 className="animate-spin w-8 h-8 text-blue-500 mb-2" />
-          <span className="text-blue-500 font-medium">Loading account...</span>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in">
+          <button
+            className="absolute top-5 right-5 text-slate-400 cursor-not-allowed"
+            aria-label="Close"
+            disabled
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="flex flex-col items-center gap-4 py-8">
+            <Loader2 className="animate-spin w-10 h-10 text-blue-500" />
+            <span className="text-blue-700 font-semibold text-lg">Loading account...</span>
+          </div>
         </div>
       </div>
     );
   }
   if (!account) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 border border-slate-200 dark:border-slate-700 flex flex-col items-center">
-          <span className="text-red-600 font-medium text-lg">Account not found.</span>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in">
+          <button
+            className="absolute top-5 right-5 text-slate-400"
+            aria-label="Close"
+            onClick={onClose}
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="flex flex-col items-center gap-4 py-8">
+            <span className="text-red-600 font-bold text-lg">Account not found.</span>
+          </div>
         </div>
       </div>
     );
@@ -118,7 +136,7 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
               <input
                 id="account-name"
                 type="text"
-                className={`block w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.name ? 'border-red-500' : 'border-slate-300'}`}
+                className={`pl-10 block w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.name ? 'border-red-500' : 'border-slate-300'}`}
                 value={name}
                 onChange={e => setName(e.target.value)}
                 autoComplete="off"
