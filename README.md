@@ -38,7 +38,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 - **TypeScript** for type safety
 
 ## Project Structure
-This project follows a strict domain-driven folder structure for clarity, scalability, and maintainability. Each domain folder contains its own pages, components, types, and API/services. The current structure is as follows:
+This project follows a strict domain-driven folder structure for clarity, scalability, and maintainability. Each domain folder contains its own pages, components, types, and API/services. The current structure is as follows (as of 2025-04-25):
 
 ```
 src/
@@ -48,17 +48,52 @@ src/
 │   ├── account-api.ts
 │   ├── account-types.ts
 │   └── index.ts
+├── auth/            # Authentication domain
+│   ├── auth-api.ts
+│   └── auth-store.ts
+├── components/
+│   ├── ProtectedRoute.tsx
+│   ├── layout/
+│   └── ui/
+├── config/
+│   └── site.config.ts
+├── layouts/
+│   ├── Footer.tsx
+│   ├── Header.tsx
+│   └── MainLayout.tsx
+├── lib/
+│   ├── assetStorage.ts
+│   ├── storage-helpers.ts
+│   └── utils.ts
+├── pages/
+│   ├── HomePage.tsx
+│   ├── LoginPage.tsx
+│   ├── NotFoundPage.tsx
+│   └── RegisterPage.tsx
 ├── portfolio/       # Portfolio and asset tracking (pages, types, API)
 │   ├── AccountSummaryList.tsx
 │   ├── AssetAccountSummaryTable.tsx
 │   ├── AssetCard.tsx
 │   ├── PortfolioPage.tsx
 │   └── portfolio-api.ts
+├── profile/         # User profile domain
+│   ├── ChangePasswordPage.tsx
+│   ├── ProfileEditPage.tsx
+│   ├── ProfilePage.tsx
+│   ├── profile-api.ts
+│   ├── user-investment-profile-types.ts
+│   └── user-types.ts
 ├── trades/          # Trades logging and history
 │   ├── TradeEditModal.tsx
 │   ├── TradeListPage.tsx
 │   ├── trade-api.ts
 │   └── trade-types.ts
+├── App.tsx
+├── index.css
+├── main.tsx
+├── vite-env.d.ts
+```
+
 ├── users/           # User profiles, authentication, settings
 │   ├── ChangePasswordPage.tsx
 │   ├── ProfileEditPage.tsx
