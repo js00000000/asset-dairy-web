@@ -3,9 +3,9 @@ import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bi
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { Info } from 'lucide-react';
-import { loadAccounts, getCurrentUser } from '../lib/storage-helpers';
 import type { Trade } from '../trades/trade-types';
 import type { Account } from '../accounts/account-types';
+import { fetchAccounts } from '../accounts/account-api';
 
 interface TradeEditModalProps {
   open: boolean;
@@ -27,13 +27,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
   const [reason, setReason] = useState(trade ? trade.reason || '' : '');
 
   React.useEffect(() => {
-    const user = getCurrentUser();
-    const all = loadAccounts();
-    if (user) {
-      setAccounts(all.filter(acc => acc.ownerId === user.id));
-    } else {
-      setAccounts([]);
-    }
+    fetchAccounts().then(setAccounts);
   }, [open]);
 
   const [tradeDate, setTradeDate] = useState(() => {

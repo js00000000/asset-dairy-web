@@ -33,6 +33,7 @@ export async function login(email: string, password: string): Promise<User | nul
 export async function logout(): Promise<void> {
   localStorage.removeItem(JWT_TOKEN);
   localStorage.removeItem(USER_KEY);
+  window.location.reload();
 }
 
 export async function refreshAuth(): Promise<string> {
@@ -109,7 +110,7 @@ export async function authFetch(input: RequestInfo, init: RequestInit = {}, retr
       await refreshAuth();
       return await authFetch(input, init, false);
     } catch {
-      throw new Error('Authentication expired. Please log in again.');
+      await logout();
     }
   }
   return response;
