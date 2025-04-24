@@ -69,7 +69,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
       <div className="flex flex-row justify-between items-end gap-6 w-full px-1">
         <div className="flex flex-col items-start">
           <span className="text-base text-gray-700 font-semibold flex items-center gap-1">Quantity</span>
-          <span className="text-2xl font-bold text-blue-700 tabular-nums break-words">{quantity}</span>
+          <span className="text-2xl font-bold text-blue-700 tabular-nums break-words">{quantity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 6 })}</span>
         </div>
         <div className="flex flex-col items-end">
           <span className="text-base text-gray-700 font-semibold flex items-center gap-1">Value</span>
