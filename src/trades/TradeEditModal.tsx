@@ -26,7 +26,13 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModal
   const [tradeDate, setTradeDate] = useState(trade ? trade.tradeDate.split('T')[0] : '');
 
   React.useEffect(() => {
-    fetchAccounts().then(setAccounts);
+    fetchAccounts().then((fetched) => {
+      setAccounts(fetched);
+      // If creating (no trade) and no accountId, set to first account
+      if (!trade && fetched.length > 0 && !accountId) {
+        setAccountId(fetched[0].id);
+      }
+    });
   }, [open]);
 
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +47,14 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModal
       setReason(trade ? trade.reason || '' : '');
       setQuantity(trade ? String(trade.quantity) : '');
       setPrice(trade ? String(trade.price) : '');
-      setAccountId(trade ? trade.accountId : '');
+      // If creating (no trade), default to first account if available
+      if (trade) {
+        setAccountId(trade.accountId);
+      } else if (accounts.length > 0) {
+        setAccountId(accounts[0].id);
+      } else {
+        setAccountId('');
+      }
       setTradeDate(trade ? trade.tradeDate.split('T')[0] : (() => {
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -52,7 +65,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModal
       setError(null);
       setSuccess(false);
     }
-  }, [open, trade]);
+  }, [open, trade, accounts]);
 
   if (!open) return null;
 
