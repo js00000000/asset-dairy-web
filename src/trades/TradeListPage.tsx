@@ -82,181 +82,183 @@ const TradeListPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
-      <div className="flex flex-col md:flex-row gap-2 mb-6 items-center">
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setFilterType("all")}
-            variant={filterType === "all" ? "secondary" : "ghost"}
-            className="flex items-center gap-1"
-          >
-            All
-          </Button>
-          <Button
-            onClick={() => setFilterType("stock")}
-            variant={filterType === "stock" ? "secondary" : "ghost"}
-            className="flex items-center gap-1"
-          >
-            <TrendingUp className="w-4 h-4" />
-            Stock
-          </Button>
-          <Button
-            onClick={() => setFilterType("crypto")}
-            variant={filterType === "crypto" ? "secondary" : "ghost"}
-            className="flex items-center gap-1"
-          >
-            <Bitcoin className="w-4 h-4" />
-            Crypto
-          </Button>
-        </div>
-        <div className="flex-1" />
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by ticker (e.g. AAPL, BTC)"
-            className="w-48"
-            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
-          />
-          <Button
-            variant="ghost"
-            onClick={() => setSortDesc((v) => !v)}
-            title={sortDesc ? "Sort by date (desc)" : "Sort by date (asc)"}
-          >
-            <span className="sr-only">Sort</span>
-            {sortDesc ? <SortDesc className="w-4 h-4" /> : <SortAsc className="w-4 h-4" />}
-          </Button>
-          <Button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2"
-            variant="primary"
-          >
-            <Plus className="w-5 h-5" />
-            Add Trade
-          </Button>
-        </div>
-      </div>
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-            <span className="ml-3 text-slate-500">Loading trades...</span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-2 mb-6 items-center">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setFilterType("all")}
+              variant={filterType === "all" ? "secondary" : "ghost"}
+              className="flex items-center gap-1"
+            >
+              All
+            </Button>
+            <Button
+              onClick={() => setFilterType("stock")}
+              variant={filterType === "stock" ? "secondary" : "ghost"}
+              className="flex items-center gap-1"
+            >
+              <TrendingUp className="w-4 h-4" />
+              Stock
+            </Button>
+            <Button
+              onClick={() => setFilterType("crypto")}
+              variant={filterType === "crypto" ? "secondary" : "ghost"}
+              className="flex items-center gap-1"
+            >
+              <Bitcoin className="w-4 h-4" />
+              Crypto
+            </Button>
           </div>
-        ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-            <span>No trades found.</span>
+          <div className="flex-1" />
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by ticker (e.g. AAPL, BTC)"
+              className="w-48"
+              leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+            />
+            <Button
+              variant="ghost"
+              onClick={() => setSortDesc((v) => !v)}
+              title={sortDesc ? "Sort by date (desc)" : "Sort by date (asc)"}
+            >
+              <span className="sr-only">Sort</span>
+              {sortDesc ? <SortDesc className="w-4 h-4" /> : <SortAsc className="w-4 h-4" />}
+            </Button>
+            <Button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2"
+              variant="primary"
+            >
+              <Plus className="w-5 h-5" />
+              Add Trade
+            </Button>
           </div>
-        ) : (
-          <table className="min-w-full divide-y divide-slate-100">
-            <thead>
-              <tr className="text-slate-500 text-xs uppercase">
-                <th className="px-4 py-3 text-center">Trade Date</th>
-                <th className="px-4 py-3 text-center">Type</th>
-                <th className="px-4 py-3 text-center">Asset</th>
-                <th className="px-4 py-3 text-center">Ticker</th>
-                <th className="px-4 py-3 text-right">Quantity</th>
-                <th className="px-4 py-3 text-right">Price</th>
-                <th className="px-4 py-3 text-right">From Account</th>
-                <th className="px-4 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((tx) => (
-                <tr
-                  key={tx.id}
-                  className="hover:bg-slate-50 transition border-b last:border-0"
-                >
-                  <td className="px-4 py-3 whitespace-nowrap items-center">
-                    {new Date(tx.tradeDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 flex gap-1 items-center">
-                    <span
-                      className={
-                        tx.type === "buy"
-                          ? "text-green-600 font-medium"
-                          : "text-red-600 font-medium"
-                      }
-                    >
-                      {tx.type}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1">
-                      {assetTypeIcons[tx.assetType]}
-                      <span className="capitalize">{tx.assetType}</span>
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 items-center">{tx.ticker}</td>
-                  <td className="px-4 py-3 text-right">{tx.quantity}</td>
-                  <td className="px-4 py-3 text-right">${tx.price.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-right">
-                    {accountMap[tx.accountId]?.name
-                      ? `${accountMap[tx.accountId].name} (${accountMap[tx.accountId].currency})`
-                      : 'Unknown Account'}
-                  </td>
-                  <td className="px-4 py-3 flex gap-1">
-                    <ReasonTooltip reason={tx.reason || ''} />
-                    {deletingId === tx.id ? (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-slate-500 hover:bg-slate-100"
-                          onClick={() => setDeletingId(null)}
-                          title="Cancel Delete"
-                        >
-                          <span className="sr-only">Cancel Delete</span>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          className="text-red-600 hover:bg-red-100"
-                          onClick={() => handleDelete(tx.id)}
-                          title="Confirm Delete"
-                        >
-                          <span className="sr-only">Confirm Delete</span>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => { setEditTx(tx); setShowModal(true); }}
-                          title="Edit"
-                          className="text-blue-500 hover:bg-blue-50"
-                        >
-                          <span className="sr-only">Edit</span>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => setDeletingId(tx.id)}
-                          title="Delete"
-                          className="text-red-500 hover:bg-red-50"
-                          disabled={deletingId === tx.id}
-                        >
-                          <span className="sr-only">Delete</span>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </>
-                    )}
-                  </td>
+        </div>
+        <div className="bg-white rounded-xl shadow overflow-x-auto">
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+              <span className="ml-3 text-slate-500">Loading trades...</span>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+              <span>No trades found.</span>
+            </div>
+          ) : (
+            <table className="min-w-full divide-y divide-slate-100">
+              <thead>
+                <tr className="text-slate-500 text-xs uppercase">
+                  <th className="px-4 py-3 text-center">Trade Date</th>
+                  <th className="px-4 py-3 text-center">Type</th>
+                  <th className="px-4 py-3 text-center">Asset</th>
+                  <th className="px-4 py-3 text-center">Ticker</th>
+                  <th className="px-4 py-3 text-right">Quantity</th>
+                  <th className="px-4 py-3 text-right">Price</th>
+                  <th className="px-4 py-3 text-right">From Account</th>
+                  <th className="px-4 py-3 text-center">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {filtered.map((tx) => (
+                  <tr
+                    key={tx.id}
+                    className="hover:bg-slate-50 transition border-b last:border-0"
+                  >
+                    <td className="px-4 py-3 whitespace-nowrap items-center">
+                      {new Date(tx.tradeDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 flex gap-1 items-center">
+                      <span
+                        className={
+                          tx.type === "buy"
+                            ? "text-green-600 font-medium"
+                            : "text-red-600 font-medium"
+                        }
+                      >
+                        {tx.type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="inline-flex items-center gap-1">
+                        {assetTypeIcons[tx.assetType]}
+                        <span className="capitalize">{tx.assetType}</span>
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 items-center">{tx.ticker}</td>
+                    <td className="px-4 py-3 text-right">{tx.quantity}</td>
+                    <td className="px-4 py-3 text-right">${tx.price.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-right">
+                      {accountMap[tx.accountId]?.name
+                        ? `${accountMap[tx.accountId].name} (${accountMap[tx.accountId].currency})`
+                        : 'Unknown Account'}
+                    </td>
+                    <td className="px-4 py-3 flex gap-1">
+                      <ReasonTooltip reason={tx.reason || ''} />
+                      {deletingId === tx.id ? (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-slate-500 hover:bg-slate-100"
+                            onClick={() => setDeletingId(null)}
+                            title="Cancel Delete"
+                          >
+                            <span className="sr-only">Cancel Delete</span>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            className="text-red-600 hover:bg-red-100"
+                            onClick={() => handleDelete(tx.id)}
+                            title="Confirm Delete"
+                          >
+                            <span className="sr-only">Confirm Delete</span>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => { setEditTx(tx); setShowModal(true); }}
+                            title="Edit"
+                            className="text-blue-500 hover:bg-blue-50"
+                          >
+                            <span className="sr-only">Edit</span>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setDeletingId(tx.id)}
+                            title="Delete"
+                            className="text-red-500 hover:bg-red-50"
+                            disabled={deletingId === tx.id}
+                          >
+                            <span className="sr-only">Delete</span>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        <TradeEditModal
+          open={showModal}
+          onClose={() => { setShowModal(false); setEditTx(null); }}
+          onTradesChange={handleTradesChange}
+          trade={editTx || undefined}
+        />
       </div>
-      <TradeEditModal
-        open={showModal}
-        onClose={() => { setShowModal(false); setEditTx(null); }}
-        onTradesChange={handleTradesChange}
-        trade={editTx || undefined}
-      />
     </div>
   );
 };
