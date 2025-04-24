@@ -1,6 +1,5 @@
 import { Account } from '../accounts/account-types';
 import { User } from '../users/user-types';
-import { mockAccounts } from '../data/mock-accounts';
 
 export const USER_KEY = 'user';
 export const ACCOUNTS_KEY = 'accounts';
@@ -16,10 +15,12 @@ export function loadAccounts(): Account[] {
     try {
       return JSON.parse(local);
     } catch {
-      return [...mockAccounts];
+      // No fallback mock data
+      return [];
     }
   }
-  return [...mockAccounts];
+  // No fallback mock data
+  return [];
 }
 
 export function saveAccounts(accounts: Account[]) {

@@ -81,7 +81,8 @@ src/
 │   ├── assetStorage.ts
 │   ├── storage-helpers.ts
 │   └── utils.ts
-├── data/            # Mock/test data
+├── accounts/         # Account domain
+├── users/           # User domain
 │   ├── mock-accounts.ts
 │   └── mock-data.ts
 ├── pages/           # App-wide pages (Home, Login, Register, NotFound)

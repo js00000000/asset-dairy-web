@@ -5,9 +5,7 @@
 ## Current Directory Structure (as of 2025-04-24)
 
 src/
-├── accounts/
-│   ├── AccountCard.tsx
-│   ├── AccountEditModal.tsx
+├── accounts/         # Account domain
 │   ├── account-api.ts
 │   ├── account-types.ts
 │   └── index.ts
@@ -22,7 +20,7 @@ src/
 │   ├── TradeListPage.tsx
 │   ├── trade-api.ts
 │   └── trade-types.ts
-├── users/
+├── users/           # User domain
 │   ├── ChangePasswordPage.tsx
 │   ├── ProfileEditPage.tsx
 │   ├── ProfilePage.tsx
@@ -36,8 +34,16 @@ src/
 │   └── ui/
 ├── config/
 │   └── site.config.ts
-├── data/
-│   ├── mock-accounts.ts
+├── accounts/
+│   ├── account-types.ts
+
+├── users/
+│   ├── user-types.ts
+
+├── lib/
+│   ├── storage-helpers.ts
+├── ... (other unchanged structure)
+
 │   └── mock-data.ts
 ├── layouts/
 │   ├── Footer.tsx

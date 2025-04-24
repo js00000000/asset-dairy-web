@@ -2,8 +2,8 @@
 // Extracted from services/api.ts
 
 import { User } from './user-types';
-import { mockUsers } from '../data/mock-data';
 import { USER_KEY } from '../lib/storage-helpers';
+
 
 export async function fetchProfile(): Promise<User | null> {
   await new Promise(res => setTimeout(res, 300));
@@ -53,17 +53,10 @@ export async function updateProfile(data: Partial<User>): Promise<User> {
 
 export async function login(email: string, password: string): Promise<User | null> {
   await new Promise(res => setTimeout(res, 500));
-  // 1. Check mockUsers
-  const allUsers = [...mockUsers];
-  let user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (user && user.password === password) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    return user;
-  }
-  // 2. Check local users
+  // Only check local users
   const localUsersRaw = localStorage.getItem('local_users');
   const localUsers: User[] = localUsersRaw ? JSON.parse(localUsersRaw) : [];
-  user = localUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+  const user = localUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
   if (user && user.password === password) {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
@@ -78,13 +71,7 @@ export async function logout(): Promise<void> {
 
 export async function signup(name: string, username: string, email: string, password: string): Promise<User> {
   await new Promise(res => setTimeout(res, 500));
-  // Check mock users
-  const allUsers = [...mockUsers];
-  const existingMock = allUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
-  if (existingMock) {
-    throw new Error('User already exists');
-  }
-  // Check local users
+  // Only check local users
   const localUsersRaw = localStorage.getItem('local_users');
   const localUsers: User[] = localUsersRaw ? JSON.parse(localUsersRaw) : [];
   const existingLocal = localUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
