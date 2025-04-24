@@ -137,7 +137,7 @@ const TradeListPage: React.FC = () => {
             </Button>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow overflow-x-auto">
+        <div className="bg-white rounded-xl shadow overflow-x-auto hidden sm:block">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -250,6 +250,106 @@ const TradeListPage: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          )}
+        </div>
+
+        <div className="sm:hidden">
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+              <span className="ml-3 text-slate-500">Loading trades...</span>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+              <span>No trades found.</span>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {filtered.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="bg-white rounded-xl shadow p-4 flex flex-col gap-2 border border-slate-100"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <span>{new Date(tx.tradeDate).toLocaleDateString()}</span>
+                      <span className="inline-flex items-center gap-1">
+                        {assetTypeIcons[tx.assetType]}
+                        <span className="capitalize">{tx.assetType}</span>
+                      </span>
+                      <span className={tx.type === 'buy' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                        {tx.type}
+                      </span>
+                    </div>
+                    <div className="flex gap-1 items-center">
+                      <ReasonTooltip reason={tx.reason || ''} />
+                      {deletingId === tx.id ? (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-slate-500 hover:bg-slate-100"
+                            onClick={() => setDeletingId(null)}
+                            title="Cancel Delete"
+                          >
+                            <span className="sr-only">Cancel Delete</span>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            className="text-red-600 hover:bg-red-100"
+                            onClick={() => handleDelete(tx.id)}
+                            title="Confirm Delete"
+                          >
+                            <span className="sr-only">Confirm Delete</span>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => { setEditTx(tx); setShowModal(true); }}
+                            title="Edit"
+                            className="text-blue-500 hover:bg-blue-50"
+                          >
+                            <span className="sr-only">Edit</span>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setDeletingId(tx.id)}
+                            title="Delete"
+                            className="text-red-500 hover:bg-red-50"
+                            disabled={deletingId === tx.id}
+                          >
+                            <span className="sr-only">Delete</span>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+                    <div>
+                      <span className="font-semibold text-slate-700">Ticker:</span> {tx.ticker}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-slate-700">Quantity:</span> {tx.quantity}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-slate-700">Price:</span> ${tx.price.toFixed(2)}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-slate-700">Account:</span> {accountMap[tx.accountId]?.name ? `${accountMap[tx.accountId].name} (${accountMap[tx.accountId].currency})` : 'Unknown Account'}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
         <TradeEditModal
