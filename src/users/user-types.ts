@@ -7,9 +7,5 @@ export interface User {
   avatar: string;
   createdAt: string;
   username: string;
-  /**
-   * Only for mock/localStorage use! Do NOT use in production.
-   */
-  password?: string;
   investmentProfile?: UserInvestmentProfile;
 }

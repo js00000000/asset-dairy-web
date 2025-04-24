@@ -4,47 +4,40 @@
  */
 
 import { Account } from './account-types';
-import { getCurrentUser, loadAccounts, saveAccounts } from '../lib/storage-helpers';
+import { authGet, authPost, authPut, authDelete } from '../users/user-api';
 
 export async function fetchAccounts(): Promise<Account[]> {
-  await new Promise(res => setTimeout(res, 400));
-  const user = getCurrentUser();
-  if (!user) return [];
-  const accounts = loadAccounts();
-  return accounts.filter(acc => acc.ownerId === user.id);
+  const res = await authGet('/accounts');
+  if (!res.ok) {
+    throw new Error('Failed to fetch accounts');
+  }
+  return await res.json();
 }
 
 export async function createAccount(account: Omit<Account, 'id'>): Promise<Account> {
-  await new Promise(res => setTimeout(res, 400));
-  const accounts = loadAccounts();
-  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-  const newAccount: Account = { ...account, id };
-  accounts.push(newAccount);
-  saveAccounts(accounts);
-  return newAccount;
+  const res = await authPost('/accounts', account);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err || 'Failed to create account');
+  }
+  return await res.json();
 }
 
+
 export async function updateAccount(id: string, data: Partial<Omit<Account, 'id'>>): Promise<Account> {
-  await new Promise(res => setTimeout(res, 400));
-  const user = getCurrentUser();
-  if (!user) throw new Error('Not authenticated');
-  const accounts = loadAccounts();
-  const idx = accounts.findIndex(acc => acc.id === id);
-  if (idx === -1) throw new Error('Account not found');
-  if (accounts[idx].ownerId !== user.id) throw new Error('Cannot edit account you do not own');
-  accounts[idx] = { ...accounts[idx], ...data };
-  saveAccounts(accounts);
-  return accounts[idx];
+  const res = await authPut(`/accounts/${id}`, data);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err || 'Failed to update account');
+  }
+  return await res.json();
 }
 
 export async function deleteAccount(id: string): Promise<void> {
-  await new Promise(res => setTimeout(res, 400));
-  const user = getCurrentUser();
-  if (!user) throw new Error('Not authenticated');
-  const accounts = loadAccounts();
-  const idx = accounts.findIndex(acc => acc.id === id);
-  if (idx === -1) throw new Error('Account not found');
-  if (accounts[idx].ownerId !== user.id) throw new Error('Cannot delete account you do not own');
-  accounts.splice(idx, 1);
-  saveAccounts(accounts);
+  const res = await authDelete(`/accounts/${id}`);
+  if (!res.ok && res.status !== 204) {
+    const err = await res.text();
+    throw new Error(err || 'Failed to delete account');
+  }
 }
+

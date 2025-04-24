@@ -2,6 +2,7 @@ import { Account } from '../accounts/account-types';
 import { User } from '../users/user-types';
 
 export const USER_KEY = 'user';
+export const JWT_TOKEN = 'jwt_token';
 export const ACCOUNTS_KEY = 'accounts';
 
 export function getCurrentUser(): User | null {

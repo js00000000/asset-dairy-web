@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { login as apiLogin, signup as apiSignup, changePassword as apiChangePassword } from './user-api';
+import { USER_KEY, JWT_TOKEN } from '../lib/storage-helpers';
 import { User } from './user-types';
 
 interface AuthState {
@@ -40,7 +41,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const user = await apiLogin(email, password);
       if (!user) throw new Error('Invalid credentials');
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
       set({ user, isAuthenticated: true, isLoading: false });
     } catch (error: any) {
       set({ error: error.message || 'Login failed', isLoading: false });
@@ -51,16 +52,27 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const user = await apiSignup(name, username, email, password);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
       set({ user, isAuthenticated: true, isLoading: false });
     } catch (error: any) {
       set({ error: error.message || 'Signup failed', isLoading: false });
     }
   },
 
-  logout() {
-    localStorage.removeItem('user');
+  async logout() {
+    await import('./user-api').then(api => api.logout());
     set({ user: null, isAuthenticated: false });
+  },
+
+  async refreshAuth() {
+    set({ isLoading: true, error: null });
+    try {
+      const { refreshAuth } = await import('./user-api');
+      await refreshAuth();
+      set({ isLoading: false });
+    } catch (error: any) {
+      set({ error: error.message || 'Token refresh failed', isLoading: false });
+    }
   },
 
   updateUser(user: User) {

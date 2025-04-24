@@ -29,6 +29,51 @@
         }
       }
     },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Refresh access token",
+        "description": "Obtain a new access token using the refresh token cookie.",
+        "responses": {
+          "200": {
+            "description": "New access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string", "description": "JWT access token" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid or expired refresh token" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "description": "Logs out the user and clears the refresh token cookie.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Logged out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
     "/auth/sign-up": {
       "post": {
         "summary": "Sign up",
@@ -57,7 +102,7 @@
         }
       }
     },
-    "/users/me": {
+    "/profile": {
       "get": {
         "summary": "Get current user profile",
         "security": [{ "bearerAuth": [] }],
