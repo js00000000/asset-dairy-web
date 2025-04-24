@@ -52,16 +52,30 @@ export async function updateProfile(data: Partial<User>): Promise<User> {
 }
 
 export async function login(email: string, password: string): Promise<User | null> {
-  await new Promise(res => setTimeout(res, 500));
-  // Only check local users
-  const localUsersRaw = localStorage.getItem('local_users');
-  const localUsers: User[] = localUsersRaw ? JSON.parse(localUsersRaw) : [];
-  const user = localUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (user && user.password === password) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    return user;
+  const response = await fetch('http://localhost:3000/auth/sign-in', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    // Attempt to parse error message from backend
+    let errMsg = 'Login failed';
+    try {
+      const data = await response.json();
+      errMsg = data.message || errMsg;
+    } catch {}
+    throw new Error(errMsg);
   }
-  return null;
+
+  const data = await response.json();
+  // data: { token: string, user: User }
+  const user: User = data.user;
+  // Future: store data.token for auth
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  return user;
 }
 
 export async function logout(): Promise<void> {
