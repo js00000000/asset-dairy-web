@@ -148,22 +148,7 @@ const PortfolioPage: React.FC = () => {
       </div>
     );
   }
-  if (trades.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <LineChart className="w-12 h-12 text-blue-400 mb-4" />
-        <div className="text-slate-600 text-lg mb-2">No trades found.</div>
-        <Button onClick={() => setModalOpen(true)} className="mt-2">
-          <PlusCircle className="w-5 h-5 mr-2" /> Add Trade
-        </Button>
-        <TradeEditModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onTradesChange={handleTradesChange}
-        />
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
@@ -175,15 +160,22 @@ const PortfolioPage: React.FC = () => {
               <Wallet className="w-6 h-6 text-blue-500" /> Accounts
             </h2>
             <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2 border-blue-400 text-blue-700 hover:bg-blue-50"
-              onClick={() => setAccountModalOpen(true)}
-            >
-              <PlusCircle className="w-4 h-4" /> Add Account
-            </Button>
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2 border-blue-400 text-blue-700 hover:bg-blue-50"
+            onClick={() => setAccountModalOpen(true)}
+          >
+            <PlusCircle className="w-4 h-4" /> Add Account
+          </Button>
           </div>
-          <AccountSummaryList accounts={accounts} onUpdated={handleAccountsUpdated} />
+          {accounts.length === 0 && (
+            <div className="flex items-center gap-2 text-slate-400 italic mb-3">
+              <Wallet className="w-4 h-4" /> No account
+            </div>
+          )}
+          {accounts.length > 0 && (
+            <AccountSummaryList accounts={accounts} onUpdated={handleAccountsUpdated} />
+          )}
           <AccountEditModal
             open={accountModalOpen}
             onClose={() => setAccountModalOpen(false)}
@@ -205,9 +197,14 @@ const PortfolioPage: React.FC = () => {
               <PlusCircle className="w-4 h-4" /> Add Trade
             </Button>
           </div>
+          {assets.length === 0 && (
+            <div className="flex items-center gap-2 text-slate-400 italic mb-3">
+              <LineChart className="w-4 h-4" /> No trade
+            </div>
+          )}
           <div className="relative z-10">
             <div className="grid md:grid-cols-2 gap-8 relative">
-              {assets.map((asset: {
+              {assets.length > 0 && assets.map((asset: {
                 ticker: string;
                 name: string;
                 type: string;
