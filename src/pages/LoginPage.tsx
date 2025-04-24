@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/portfolio');
     }
   }, [isAuthenticated, navigate]);
   
@@ -39,7 +39,6 @@ const LoginPage: React.FC = () => {
       // Error is already handled in the auth store
     }
   };
-
   
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

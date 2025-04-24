@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/portfolio');
     }
   }, [isAuthenticated, navigate]);
   
