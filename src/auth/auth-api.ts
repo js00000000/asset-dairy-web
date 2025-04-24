@@ -95,7 +95,9 @@ export async function authFetch(input: RequestInfo, init: RequestInit = {}, retr
 }
 
 export function authGet(path: string, init: RequestInit = {}): Promise<Response> {
-  return authFetch(`${API_BASE}${path}`, { ...init, method: 'GET' });
+  const headers = new Headers(init.headers || {});
+  headers.set("ngrok-skip-browser-warning", "true");
+  return authFetch(`${API_BASE}${path}`, { ...init, method: 'GET', headers });
 }
 
 export function authPost(path: string, body?: any, init: RequestInit = {}): Promise<Response> {
