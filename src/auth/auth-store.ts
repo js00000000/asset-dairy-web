@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { login as apiLogin, signup as apiSignup, changePassword as apiChangePassword, logout as apiLogout, refreshAuth as apiRefreshAuth } from './auth-api';
+import { login as apiLogin, signup as apiSignup, logout as apiLogout, refreshAuth as apiRefreshAuth } from './auth-api';
+import { changePassword as apiChangePassword } from '../profile/profile-api';
 import { USER_KEY } from '../lib/storage-helpers';
 import { User } from '../profile/user-types';
 
@@ -26,8 +27,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   async changePassword(currentPassword: string, newPassword: string) {
     set({ isLoading: true, error: null });
     try {
-      const updatedUser = await apiChangePassword(currentPassword, newPassword);
-      set({ user: updatedUser, isLoading: false });
+      await apiChangePassword(currentPassword, newPassword);
+      set({ isLoading: false });
     } catch (error: any) {
       set({
         error: error.message || 'Password change failed',

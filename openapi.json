@@ -87,7 +87,7 @@
         }
       }
     },
-    "/auth/change-password": {
+    "/profile/change-password": {
       "post": {
         "summary": "Change password",
         "security": [{ "bearerAuth": [] }],

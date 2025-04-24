@@ -45,7 +45,7 @@ const ChangePasswordPage: React.FC = () => {
       setTimeout(() => {
         setSuccess(false);
         navigate("/profile");
-      }, 1500);
+      }, 1000);
     } catch (err) {
       // error state handled by store
     }

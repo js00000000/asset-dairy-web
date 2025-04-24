@@ -2,7 +2,7 @@
 import { User } from '../profile/user-types';
 import { USER_KEY, JWT_TOKEN } from '../lib/storage-helpers';
 
-const API_BASE = 'http://localhost:3000';
+export const API_BASE = import.meta.env.VITE_BACKEND_HOST;
 
 export async function login(email: string, password: string): Promise<User | null> {
   const response = await fetch(`${API_BASE}/auth/sign-in`, {
@@ -62,28 +62,6 @@ export async function signup(name: string, username: string, email: string, pass
   });
   if (!response.ok) {
     let errMsg = 'Signup failed';
-    try {
-      const data = await response.json();
-      errMsg = data.message || errMsg;
-    } catch {}
-    throw new Error(errMsg);
-  }
-  const data = await response.json();
-  return data.user;
-}
-
-export async function changePassword(currentPassword: string, newPassword: string): Promise<User> {
-  const token = localStorage.getItem(JWT_TOKEN);
-  const response = await fetch(`${API_BASE}/auth/change-password`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ currentPassword, newPassword }),
-  });
-  if (!response.ok) {
-    let errMsg = 'Change password failed';
     try {
       const data = await response.json();
       errMsg = data.message || errMsg;
