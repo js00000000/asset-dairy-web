@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { login as apiLogin, signup as apiSignup, changePassword as apiChangePassword } from './user-api';
-import { USER_KEY, JWT_TOKEN } from '../lib/storage-helpers';
-import { User } from './user-types';
+import { login as apiLogin, signup as apiSignup, changePassword as apiChangePassword, logout as apiLogout, refreshAuth as apiRefreshAuth } from './auth-api';
+import { USER_KEY } from '../lib/storage-helpers';
+import { User } from '../profile/user-types';
 
 interface AuthState {
   user: User | null;
@@ -60,15 +60,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   async logout() {
-    await import('./user-api').then(api => api.logout());
+    await apiLogout();
     set({ user: null, isAuthenticated: false });
   },
 
   async refreshAuth() {
     set({ isLoading: true, error: null });
     try {
-      const { refreshAuth } = await import('./user-api');
-      await refreshAuth();
+      await apiRefreshAuth();
       set({ isLoading: false });
     } catch (error: any) {
       set({ error: error.message || 'Token refresh failed', isLoading: false });

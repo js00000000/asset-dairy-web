@@ -1,5 +1,5 @@
 import { Account } from '../accounts/account-types';
-import { User } from '../users/user-types';
+import { User } from '../profile/user-types';
 
 export const USER_KEY = 'user';
 export const JWT_TOKEN = 'jwt_token';

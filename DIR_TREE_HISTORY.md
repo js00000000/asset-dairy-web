@@ -25,7 +25,8 @@ src/
 │   ├── ProfileEditPage.tsx
 │   ├── ProfilePage.tsx
 │   ├── auth-store.ts
-│   ├── user-api.ts
+│   ├── auth-api.ts      # NEW: authentication API (was in user-api.ts)
+│   ├── profile-api.ts   # NEW: profile API (was in user-api.ts)
 │   ├── user-investment-profile-types.ts
 │   └── user-types.ts
 ├── components/

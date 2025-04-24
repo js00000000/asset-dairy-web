@@ -4,7 +4,7 @@
  */
 
 import { Account } from './account-types';
-import { authGet, authPost, authPut, authDelete } from '../users/user-api';
+import { authGet, authPost, authPut, authDelete } from '../auth/auth-api';
 
 export async function fetchAccounts(): Promise<Account[]> {
   const res = await authGet('/accounts');

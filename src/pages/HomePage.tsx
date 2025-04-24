@@ -1,24 +1,24 @@
 import React from 'react';
-import { PiggyBank, TrendingUp, Wallet, Coins, PlusCircle, FileBarChart2, LayoutDashboard, Star } from 'lucide-react';
+import { PiggyBank, TrendingUp, Wallet, Coins, PlusCircle, FileBarChart2, LayoutDashboard, Star, UserCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 const testimonials = [
   {
     name: 'Alex Chen',
     title: 'Product Manager',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+
     quote: 'Asset Dairy transformed the way I track my investments and expenses. The dashboards are beautiful and intuitive!'
   },
   {
     name: 'Sophie Lee',
     title: 'Crypto Enthusiast',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+
     quote: 'The portfolio tracking is top-notch. I love the quick actions and the clean UI.'
   },
   {
     name: 'Michael Tan',
     title: 'Finance Blogger',
-    avatar: 'https://randomuser.me/api/portraits/men/85.jpg',
+
     quote: 'Finally, a finance app that looks as good as it works. Highly recommended!'
   }
 ];
@@ -140,7 +140,9 @@ const HomePage: React.FC = () => {
           <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch">
             {testimonials.map((t) => (
               <div key={t.name} className="bg-blue-50 rounded-2xl shadow-lg p-8 flex flex-col items-center text-center gap-4 flex-1 animate-fade-in-up delay-100">
-                <img src={t.avatar} alt={t.name} className="w-16 h-16 rounded-full border-4 border-blue-200 shadow-md mb-2" />
+                <span className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 border-4 border-blue-200 shadow-md mb-2">
+                  <UserCircle className="w-8 h-8 text-blue-400" />
+                </span>
                 <p className="text-lg italic text-blue-900 mb-2">“{t.quote}”</p>
                 <span className="font-semibold text-blue-800">{t.name}</span>
                 <span className="text-blue-400 text-sm">{t.title}</span>

@@ -16,7 +16,7 @@ interface Props {
 }
 
 import { createAccount } from "../accounts/account-api";
-import { useAuthStore } from '../users/auth-store';
+import { useAuthStore } from '../auth/auth-store';
 
 export default function AccountEditModal({ open, accountId, onClose, onUpdated }: Props) {
   const { user } = useAuthStore ? useAuthStore() : { user: null };

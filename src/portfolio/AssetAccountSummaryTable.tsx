@@ -2,7 +2,7 @@ import React from 'react';
 import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot } from 'lucide-react';
 
 import type { Account } from '../accounts/account-types';
-import { useAuthStore } from '../users/auth-store';
+import { useAuthStore } from '../auth/auth-store';
 
 // Local currency conversion utility
 function convertToUSD(value: number, currency: string): number {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { UserCircle, Mail, Loader2 } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import { useAuthStore } from '../users/auth-store';
-import { fetchProfile } from '../users/user-api';
+import { useAuthStore } from '../auth/auth-store';
+import { fetchProfile } from './profile-api';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuthStore();
@@ -34,19 +34,14 @@ const ProfilePage: React.FC = () => {
   if (!user) {
     return <Navigate to="/" replace />;
   }
-  const { avatar, name, username, email} = user;
+  const { name, username, email} = user;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
       <div className="w-full max-w-xl bg-white shadow-xl rounded-3xl p-8 relative">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <img
-              src={avatar}
-              alt="Avatar"
-              className="w-32 h-32 rounded-full object-cover border-4 border-blue-300 shadow-lg"
-            />
-            <span className="absolute bottom-2 right-2 bg-blue-100 p-2 rounded-full shadow">
-              <UserCircle className="w-6 h-6 text-blue-500" />
+            <span className="w-32 h-32 flex items-center justify-center rounded-full bg-blue-100 border-4 border-blue-300 shadow-lg">
+              <UserCircle className="w-20 h-20 text-blue-400" />
             </span>
           </div>
           <h2 className="text-2xl font-bold text-gray-800">{name}</h2>

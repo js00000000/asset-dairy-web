@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { UserCircle, Save, ArrowLeft } from "lucide-react";
-import { Link, Navigate } from "react-router-dom";
-import { fetchProfile, updateProfile } from '../users/user-api';
-import { useAuthStore } from '../users/auth-store';
-import {
-
-  TimeHorizon,
-  UserInvestmentProfile,
-} from './user-investment-profile-types';
+import { Navigate } from "react-router-dom";
+import { fetchProfile, updateProfile } from './profile-api';
+import { useAuthStore } from '../auth/auth-store';
+import { TimeHorizon } from './user-investment-profile-types';
 
 const ProfileEditPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -23,7 +19,7 @@ const ProfileEditPage: React.FC = () => {
       yearsInvesting: typeof user?.investmentProfile?.yearsInvesting === 'number' ? user.investmentProfile.yearsInvesting : 0,
     },
   });
-  const [avatar, setAvatar] = useState(user?.avatar || '');
+  
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +40,7 @@ const ProfileEditPage: React.FC = () => {
             yearsInvesting: typeof latest.investmentProfile?.yearsInvesting === 'number' ? latest.investmentProfile.yearsInvesting : 0,
           },
         });
-        setAvatar(latest.avatar || '');
+        
       }
     }
     loadProfile();
@@ -76,24 +72,15 @@ const ProfileEditPage: React.FC = () => {
     }
   };
 
-
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      // Demo: show local preview only
-      setAvatar(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
     try {
-      // Persist profile (simulate avatar upload by just storing the preview URL)
+
       const updated = await updateProfile({
         ...form,
-        avatar: avatar || user.avatar,
+
         investmentProfile: {
           ...form.investmentProfile,
         },
@@ -113,29 +100,18 @@ const ProfileEditPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
       <div className="w-full max-w-xl bg-white shadow-2xl rounded-3xl p-8 relative">
-        <Link
-          to="/profile"
+        <a
+          href="/profile"
           className="absolute left-6 top-6 flex items-center gap-2 text-blue-500 hover:text-blue-700 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Back</span>
-        </Link>
+        </a>
         <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6 mt-6">
           <div className="relative">
-            <img
-              src={avatar}
-              alt="Avatar Preview"
-              className="w-32 h-32 rounded-full object-cover border-4 border-blue-300 shadow-lg"
-            />
-            <label className="absolute bottom-2 right-2 bg-blue-100 p-2 rounded-full shadow cursor-pointer hover:bg-blue-200 transition-colors">
-              <UserCircle className="w-6 h-6 text-blue-500" />
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleAvatarChange}
-              />
-            </label>
+            <span className="w-32 h-32 flex items-center justify-center rounded-full bg-blue-100 border-4 border-blue-300 shadow-lg">
+              <UserCircle className="w-20 h-20 text-blue-400" />
+            </span>
           </div>
           <div className="w-full space-y-5">
             <div>

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Menu, X, PiggyBank, LogOut } from 'lucide-react';
 import siteConfig from '../../config/site.config';
-import { useAuthStore } from '../../users/auth-store';
+import { useAuthStore } from '../../auth/auth-store';
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

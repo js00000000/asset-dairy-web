@@ -1,5 +1,5 @@
 import { Trade } from '../trades/trade-types';
-import { authGet, authPost, authPut, authDelete } from '../users/user-api';
+import { authGet, authPost, authPut, authDelete } from '../auth/auth-api';
 
 export async function fetchTrades(): Promise<Trade[]> {
   const res = await authGet('/trades');
