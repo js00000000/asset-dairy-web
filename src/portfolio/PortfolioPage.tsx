@@ -90,6 +90,13 @@ const PortfolioPage: React.FC = () => {
       }
     });
 
+    // remove asset in assetMap which quantity is 0
+    Object.keys(assetMap).forEach(ticker => {
+      if (assetMap[ticker].quantity === 0) {
+        delete assetMap[ticker];
+      }
+    });
+
     // Set averagePrice for each asset
     Object.keys(assetMap).forEach(async ticker => {
       const { totalCost, totalQty } = buyData[ticker];

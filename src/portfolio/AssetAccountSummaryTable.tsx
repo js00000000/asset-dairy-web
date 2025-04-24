@@ -22,6 +22,7 @@ export type AssetSummary = {
   type: string;
   quantity: number;
   price: number;
+  averagePrice: number;
   icon?: React.ReactNode;
 };
 
@@ -45,8 +46,10 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
       return {
         type: asset.type,
         ticker: asset.ticker,
-        name: null,
+        assetName: null,
         valueUSD,
+        currentPrice: asset.price,
+        averageCost: asset.averagePrice,
       };
     });
     const accountExportRows = accounts.map(acc => {
@@ -54,25 +57,29 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
       return {
         type: 'cash',
         ticker: null,
-        name: acc.name,
+        assetName: acc.name,
         valueUSD,
+        averageCost: 0,
+        currentPrice: 0,
       };
     });
     const allExportRows = [...assetExportRows, ...accountExportRows];
-    const totalValueUSD = allExportRows.reduce((sum, row) => sum + row.valueUSD, 0);
+    const totalValueUsd = allExportRows.reduce((sum, row) => sum + row.valueUSD, 0);
     const exportData = allExportRows.map(row => ({
-      type: row.type,
+      assetType: row.type,
       ticker: row.ticker,
-      name: row.name,
-      valueUSD: Number(row.valueUSD.toFixed(2)),
-      percentage: totalValueUSD > 0 ? Number(((row.valueUSD / totalValueUSD) * 100).toFixed(2)) : 0,
+      assetName: row.assetName,
+      valueUsd: Number(row.valueUSD.toFixed(2)),
+      percentage: totalValueUsd > 0 ? Number(((row.valueUSD / totalValueUsd) * 100).toFixed(2)) : 0,
+      currentPrice: Number(row.currentPrice.toFixed(2)),
+      averageCost: Number(row.averageCost.toFixed(2)),
     }));
     const today = new Date('2025-04-23T00:00:00.000Z');
     // Use local time, format YYYY-MM-DD
     const dateStr = today.toISOString().slice(0, 10);
     return JSON.stringify({
       exportDate: dateStr,
-      totalValueUSD: Number(totalValueUSD.toFixed(2)),
+      totalValueUsd: Number(totalValueUsd.toFixed(2)),
       portfolio: exportData
     }, null, 2);
   };
@@ -92,7 +99,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     } else {
       profileStr = 'User Investment Profile: Not provided';
     }
-    const prompt = `You are an investment advisor.Here is my portfolio data in JSON. Please review and provide advice on possible improvements based on macroeconomic.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
+    const prompt = `You are an senior investment advisor. Here is my portfolio data in JSON. Please review and provide advices on possible improvements based on macroeconomic to reach my investment goal.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
     await navigator.clipboard.writeText(prompt);
     setAiCopied(true);
     setTimeout(() => setAiCopied(false), 1500);
