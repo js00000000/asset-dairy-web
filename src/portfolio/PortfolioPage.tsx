@@ -16,7 +16,6 @@ const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
-  const [trades, setTrades] = useState<Trade[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +31,6 @@ const PortfolioPage: React.FC = () => {
           fetchTrades(),
           fetchAccounts()
         ]);
-        setTrades(txs);
         setAssets(buildAssetsFromTrades(txs));
         setAccounts(accs);
       } catch (err: any) {
@@ -116,7 +114,6 @@ const PortfolioPage: React.FC = () => {
         fetchTrades(),
         fetchAccounts()
       ]);
-      setTrades(txs);
       setAssets(buildAssetsFromTrades(txs));
       setAccounts(accs);
     } catch (err: any) {
@@ -130,7 +127,6 @@ const PortfolioPage: React.FC = () => {
   const handleTradesChange = async (_newTxs: Trade[]) => {
     // Always re-fetch from API for consistency
     const txs = await fetchTrades();
-    setTrades(txs);
     setAssets(buildAssetsFromTrades(txs));
   };
 
