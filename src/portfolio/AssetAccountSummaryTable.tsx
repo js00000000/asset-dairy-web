@@ -78,29 +78,6 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
   };
 
   const handleCopy = async () => {
-    // Prepare asset rows
-    const assetExportRows = assets.map(asset => {
-      const valueUSD = convertToUSD(asset.price * asset.quantity, 'USD');
-      return {
-        type: asset.type,
-        ticker: asset.ticker,
-        name: null,
-        valueUSD,
-      };
-    });
-    // Prepare account rows
-    const accountExportRows = accounts.map(acc => {
-      const valueUSD = convertToUSD(acc.balance, acc.currency);
-      return {
-        type: 'cash',
-        ticker: null,
-        name: acc.name,
-        valueUSD,
-      };
-    });
-    // Combine and calculate total for percentage
-    const allExportRows = [...assetExportRows, ...accountExportRows];
-    const totalValueUSD = allExportRows.reduce((sum, row) => sum + row.valueUSD, 0);
     const jsonStr = getPortfolioJson();
     await navigator.clipboard.writeText(jsonStr);
     setCopied(true);
@@ -115,7 +92,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
     } else {
       profileStr = 'User Investment Profile: Not provided';
     }
-    const prompt = `Here is my portfolio data in JSON. Please review and provide advice on possible improvements based on macroeconomic.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
+    const prompt = `You are an investment advisor.Here is my portfolio data in JSON. Please review and provide advice on possible improvements based on macroeconomic.\n\n${profileStr}\n\nPortfolio Data:\n${jsonStr}`;
     await navigator.clipboard.writeText(prompt);
     setAiCopied(true);
     setTimeout(() => setAiCopied(false), 1500);
