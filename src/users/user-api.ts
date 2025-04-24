@@ -70,29 +70,26 @@ export async function logout(): Promise<void> {
 }
 
 export async function signup(name: string, username: string, email: string, password: string): Promise<User> {
-  await new Promise(res => setTimeout(res, 500));
-  // Only check local users
-  const localUsersRaw = localStorage.getItem('local_users');
-  const localUsers: User[] = localUsersRaw ? JSON.parse(localUsersRaw) : [];
-  const existingLocal = localUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
-  if (existingLocal) {
-    throw new Error('User already exists');
+  const response = await fetch('http://localhost:3000/auth/sign-up', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, username, email, password }),
+  });
+
+  if (!response.ok) {
+    // Attempt to parse error message from backend
+    let errMsg = 'Signup failed';
+    try {
+      const data = await response.json();
+      errMsg = data.message || errMsg;
+    } catch {}
+    throw new Error(errMsg);
   }
-  // Create demo data for avatar
-  const newUser: User = {
-    id: `new-${Date.now()}`,
-    name,
-    username,
-    email,
-    password,
-    avatar: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    createdAt: new Date().toISOString(),
-  };
-  // Save to local users array
-  localStorage.setItem('local_users', JSON.stringify([...localUsers, newUser]));
-  // Also set as current user
-  localStorage.setItem(USER_KEY, JSON.stringify(newUser));
-  return newUser;
+
+  const user: User = await response.json();
+  return user;
 }
 
 export async function changePassword(currentPassword: string, newPassword: string): Promise<User> {
