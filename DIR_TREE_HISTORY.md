@@ -2,43 +2,51 @@
 
 # This file tracks the EVOLUTION of your directory structure. Legacy/BEFORE trees have been removed for clarity.
 
-## Current Directory Structure (as of 2025-04-22)
+## Current Directory Structure (as of 2025-04-24)
 
 src/
 ├── accounts/
-│   ├── AccountCreateModal.tsx
-│   ├── AccountEditModal.tsx
-│   ├── account-types.ts
 │   ├── AccountCard.tsx
+│   ├── AccountEditModal.tsx
+│   ├── account-api.ts
+│   ├── account-types.ts
 │   └── index.ts
 ├── portfolio/
+│   ├── AccountSummaryList.tsx
+│   ├── AssetAccountSummaryTable.tsx
+│   ├── AssetCard.tsx
 │   ├── PortfolioPage.tsx
-│   ├── portfolio-api.ts
-│   └── AssetAccountSummaryTable.tsx
+│   └── portfolio-api.ts
 ├── trades/
 │   ├── TradeEditModal.tsx
+│   ├── TradeListPage.tsx
 │   ├── trade-api.ts
 │   └── trade-types.ts
 ├── users/
 │   ├── ChangePasswordPage.tsx
 │   ├── ProfileEditPage.tsx
 │   ├── ProfilePage.tsx
+│   ├── auth-store.ts
+│   ├── user-api.ts
+│   ├── user-investment-profile-types.ts
 │   └── user-types.ts
 ├── components/
 │   ├── ProtectedRoute.tsx
-│   ├── account/
 │   ├── layout/
-│   ├── stock/
 │   └── ui/
+├── config/
+│   └── site.config.ts
+├── data/
+│   ├── mock-accounts.ts
+│   └── mock-data.ts
+├── layouts/
+│   ├── Footer.tsx
+│   ├── Header.tsx
+│   └── MainLayout.tsx
 ├── lib/
 │   ├── assetStorage.ts
 │   ├── storage-helpers.ts
 │   └── utils.ts
-├── data/
-│   ├── mock-accounts.ts
-│   └── mock-data.ts
-├── services/
-│   └── api.ts
 ├── pages/
 │   ├── HomePage.tsx
 │   ├── LoginPage.tsx
@@ -48,7 +56,6 @@ src/
 ├── index.css
 ├── main.tsx
 ├── vite-env.d.ts
-└── ... (other folders: config, layouts, modules, store)
 
 ---
 

@@ -38,22 +38,61 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 - **TypeScript** for type safety
 
 ## Project Structure
-This project follows a strict domain-driven folder structure for clarity, scalability, and maintainability. Each domain folder contains its own pages, components, types, and API/services:
+This project follows a strict domain-driven folder structure for clarity, scalability, and maintainability. Each domain folder contains its own pages, components, types, and API/services. The current structure is as follows:
 
 ```
 src/
-├── accounts/        # Account management domain (pages, types, API)
-├── assets/          # Asset & portfolio management domain
+├── accounts/        # Account management (pages, types, API, modals)
+│   ├── AccountCard.tsx
+│   ├── AccountEditModal.tsx
+│   ├── account-api.ts
+│   ├── account-types.ts
+│   └── index.ts
+├── portfolio/       # Portfolio and asset tracking (pages, types, API)
+│   ├── AccountSummaryList.tsx
+│   ├── AssetAccountSummaryTable.tsx
+│   ├── AssetCard.tsx
+│   ├── PortfolioPage.tsx
+│   └── portfolio-api.ts
 ├── trades/          # Trades logging and history
+│   ├── TradeEditModal.tsx
+│   ├── TradeListPage.tsx
+│   ├── trade-api.ts
+│   └── trade-types.ts
 ├── users/           # User profiles, authentication, settings
+│   ├── ChangePasswordPage.tsx
+│   ├── ProfileEditPage.tsx
+│   ├── ProfilePage.tsx
+│   ├── auth-store.ts
+│   ├── user-api.ts
+│   ├── user-investment-profile-types.ts
+│   └── user-types.ts
 ├── components/      # Shared UI components
-│   ├── ui/          # Generic, reusable UI elements
-│   └── layout/      # App-wide layout components (Header, Footer, etc.)
+│   ├── ProtectedRoute.tsx
+│   ├── layout/      # App-wide layout components (Header, Footer, etc.)
+│   └── ui/          # Generic, reusable UI elements
+├── config/          # App/site configuration
+│   └── site.config.ts
 ├── layouts/         # Layout wrappers
+│   ├── Footer.tsx
+│   ├── Header.tsx
+│   └── MainLayout.tsx
 ├── lib/             # Utilities and helpers
+│   ├── assetStorage.ts
+│   ├── storage-helpers.ts
+│   └── utils.ts
 ├── data/            # Mock/test data
+│   ├── mock-accounts.ts
+│   └── mock-data.ts
 ├── pages/           # App-wide pages (Home, Login, Register, NotFound)
-└── config/          # App/site configuration
+│   ├── HomePage.tsx
+│   ├── LoginPage.tsx
+│   ├── NotFoundPage.tsx
+│   └── RegisterPage.tsx
+├── App.tsx
+├── index.css
+├── main.tsx
+├── vite-env.d.ts
 ```
 - Types/interfaces are placed in their primary domain folder (e.g., `accounts/account-types.ts`).
 - Only global types go in `src/types/` (if needed).
