@@ -6,8 +6,8 @@ import type { Trade } from "./trade-types";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import TradeEditModal from "./TradeEditModal";
-import { loadAccounts } from "../lib/storage-helpers";
 import type { Account } from "../accounts/account-types";
+import { fetchAccounts } from "../accounts/account-api";
 
 // Extend StockTradeModal with edit capability via props
 // (Assume modal handles initialValues and edit mode if trade prop is passed)
@@ -31,7 +31,7 @@ const TradeListPage: React.FC = () => {
   // Load accounts once on mount
   const [accounts, setAccounts] = useState<Account[]>([]);
   useEffect(() => {
-    setAccounts(loadAccounts());
+    fetchAccounts().then(setAccounts);
   }, []);
 
   // Map accountId to Account

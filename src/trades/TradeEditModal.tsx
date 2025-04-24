@@ -12,11 +12,9 @@ interface TradeEditModalProps {
   onClose: () => void;
   onTradesChange: (newTxs: Trade[]) => void;
   trade?: Trade;
-  ticker?: string;
-  assetType?: string;
 }
 
-const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTicker, assetType: propAssetType }: TradeEditModalProps) => {
+const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>(trade ? trade.type : 'buy');
   const [assetType, setAssetType] = useState<'stock' | 'crypto'>(trade ? trade.assetType : 'stock');
   const [ticker, setTicker] = useState(trade ? trade.ticker : '');
@@ -25,20 +23,12 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
   const [accountId, setAccountId] = useState(trade ? trade.accountId : '');
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [reason, setReason] = useState(trade ? trade.reason || '' : '');
+  const [tradeDate, setTradeDate] = useState(trade ? trade.tradeDate.split('T')[0] : '');
 
   React.useEffect(() => {
     fetchAccounts().then(setAccounts);
   }, [open]);
 
-  const [tradeDate, setTradeDate] = useState(() => {
-    if (trade) return trade.tradeDate;
-    // Default to today in YYYY-MM-DD format
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -46,13 +36,13 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: propTick
   React.useEffect(() => {
     if (open) {
       setType(trade ? trade.type : 'buy');
-      setAssetType(trade ? trade.assetType : (propAssetType === 'stock' || propAssetType === 'crypto' ? propAssetType : 'stock'));
-      setTicker(trade ? trade.ticker : (propTicker || ''));
+      setAssetType(trade ? trade.assetType : 'stock');
+      setTicker(trade ? trade.ticker : '');
       setReason(trade ? trade.reason || '' : '');
       setQuantity(trade ? String(trade.quantity) : '');
       setPrice(trade ? String(trade.price) : '');
       setAccountId(trade ? trade.accountId : '');
-      setTradeDate(trade ? trade.tradeDate : (() => {
+      setTradeDate(trade ? trade.tradeDate.split('T')[0] : (() => {
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
