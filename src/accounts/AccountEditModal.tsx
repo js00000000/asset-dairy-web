@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
 import { fetchAccounts, updateAccount } from "../accounts/account-api";
 import { Account } from "../accounts/account-types";
+import { createAccount } from "../accounts/account-api";
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },
@@ -15,11 +16,7 @@ interface Props {
   onUpdated: () => void;
 }
 
-import { createAccount } from "../accounts/account-api";
-import { useAuthStore } from '../auth/auth-store';
-
 export default function AccountEditModal({ open, accountId, onClose, onUpdated }: Props) {
-  const { user } = useAuthStore ? useAuthStore() : { user: null };
   const isCreate = !accountId;
   const [account, setAccount] = useState<Account | null>(null);
   const [name, setName] = useState("");
@@ -75,7 +72,6 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
             name: name.trim(),
             currency,
             balance: parseFloat(balance),
-            ownerId: user?.id || "",
           });
         } else if (account) {
           await updateAccount(account.id, {
