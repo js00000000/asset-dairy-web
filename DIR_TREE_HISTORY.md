@@ -20,10 +20,9 @@ src/
 │   └── ui/
 ├── config/
 │   └── site.config.ts
-├── layouts/
-│   ├── Footer.tsx
-│   ├── Header.tsx
-│   └── MainLayout.tsx
+# MIGRATION (2025-04-25):
+# The src/layouts/ directory and its files (Footer.tsx, Header.tsx, MainLayout.tsx) have been removed.
+# All layout components now reside in src/components/layout/ according to project structure rules.
 ├── lib/
 │   ├── assetStorage.ts
 │   ├── storage-helpers.ts
