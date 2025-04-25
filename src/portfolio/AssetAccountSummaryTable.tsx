@@ -179,7 +179,17 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
           <button
             onClick={handleAskAICopy}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white shadow transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 ${aiCopied ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
-            title={aiCopied ? 'Copied!' : 'Copy AI Prompt'}
+            title={
+              loadingProfile
+                ? 'Loading your investment profile...'
+                : !investmentProfile
+                ? 'No investment profile found. Please complete your profile first.'
+                : aiCopied
+                ? 'Copied!'
+                : 'Copy AI Prompt'
+            }
+            disabled={loadingProfile || !investmentProfile}
+            style={{ opacity: loadingProfile || !investmentProfile ? 0.6 : 1, cursor: loadingProfile || !investmentProfile ? 'not-allowed' : 'pointer' }}
           >
             <Bot className="w-4 h-4" /> {aiCopied ? 'Copied!' : 'Ask AI'}
           </button>
