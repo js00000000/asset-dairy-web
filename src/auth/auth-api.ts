@@ -1,10 +1,9 @@
 // Domain-specific API functions for authentication actions
-import { User } from '../profile/user-types';
-import { USER_KEY, JWT_TOKEN } from '../lib/storage-helpers';
+import { JWT_TOKEN } from '../lib/storage-helpers';
 
 export const API_BASE = import.meta.env.VITE_BACKEND_HOST;
 
-export async function login(email: string, password: string): Promise<User | null> {
+export async function login(email: string, password: string): Promise<void> {
   const response = await fetch(`${API_BASE}/auth/sign-in`, {
     method: 'POST',
     headers: {
@@ -23,16 +22,12 @@ export async function login(email: string, password: string): Promise<User | nul
   }
 
   const data = await response.json();
-  const user: User = data.user;
   const token: string = data.token;
   localStorage.setItem(JWT_TOKEN, token);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
-  return user;
 }
 
 export async function logout(): Promise<void> {
   localStorage.removeItem(JWT_TOKEN);
-  localStorage.removeItem(USER_KEY);
 }
 
 export async function refreshAuth(): Promise<string> {
@@ -51,7 +46,7 @@ export async function refreshAuth(): Promise<string> {
   return data.token;
 }
 
-export async function signup(name: string, username: string, email: string, password: string): Promise<User> {
+export async function signup(name: string, username: string, email: string, password: string): Promise<void> {
   const response = await fetch(`${API_BASE}/auth/sign-up`, {
     method: 'POST',
     headers: {
@@ -67,8 +62,6 @@ export async function signup(name: string, username: string, email: string, pass
     } catch {}
     throw new Error(errMsg);
   }
-  const data = await response.json();
-  return data.user;
 }
 
 /**

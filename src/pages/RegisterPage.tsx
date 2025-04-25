@@ -48,7 +48,6 @@ const RegisterPage: React.FC = () => {
     
     try {
       await signup(name, username, email, password);
-      navigate('/');
     } catch (error) {
       // Error is already handled in the auth store
     }
