@@ -55,7 +55,7 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
   const validate = () => {
     const errs: { name?: string; balance?: string } = {};
     if (!name.trim()) errs.name = "Account name is required.";
-    if (!balance || isNaN(Number(balance))) errs.balance = isCreate ? "Initial balance must be a number." : "Balance must be a number.";
+    if (!balance || isNaN(Number(balance))) errs.balance = "Balance must be a number.";
     return errs;
   };
 
