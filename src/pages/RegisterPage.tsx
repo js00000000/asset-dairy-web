@@ -14,7 +14,8 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState('');
-  
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [countdown, setCountdown] = useState(3);
   const { signup, isLoading, error, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
@@ -23,38 +24,76 @@ const RegisterPage: React.FC = () => {
       navigate('/portfolio');
     }
   }, [isAuthenticated, navigate]);
-  
+
+  React.useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (signupSuccess && countdown > 0) {
+      timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    } else if (signupSuccess && countdown === 0) {
+      navigate('/login');
+    }
+    return () => clearTimeout(timer);
+  }, [signupSuccess, countdown, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Basic validation
     if (!name.trim() || !username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setFormError('All fields are required');
       return;
     }
-    
     if (password !== confirmPassword) {
       setFormError('Passwords do not match');
       return;
     }
-    
     if (password.length < 6) {
       setFormError('Password must be at least 6 characters');
       return;
     }
-    
-    // Clear form error
     setFormError('');
-    
     try {
       await signup(name, username, email, password);
+      setSignupSuccess(true);
+      setCountdown(3);
     } catch (error) {
       // Error is already handled in the auth store
     }
   };
+
+  const handleGoLogin = () => {
+    navigate('/login');
+  };
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/portfolio');
+    }
+  }, [isAuthenticated, navigate]);
   
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {/* Signup Success Modal */}
+      {signupSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full flex flex-col items-center border border-primary-100 animate-fade-in">
+            <div className="flex flex-col items-center mb-4">
+              <div className="bg-primary-100 rounded-full p-3 mb-2">
+                <User className="w-8 h-8 text-primary-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">Registration Successful!</h3>
+              <p className="text-gray-600 text-center mb-2">Your account has been created.<br />You can now log in to access your portfolio.</p>
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full mb-3"
+              onClick={handleGoLogin}
+            >
+              Go to Login
+            </Button>
+            <div className="text-gray-500 text-sm">Redirecting in <span className="font-semibold text-primary-600">{countdown}</span> second{countdown !== 1 ? 's' : ''}...</div>
+          </div>
+        </div>
+      )}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

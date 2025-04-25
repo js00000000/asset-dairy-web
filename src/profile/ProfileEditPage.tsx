@@ -2,21 +2,26 @@ import React, { useState, useEffect } from "react";
 import { UserCircle, Save, ArrowLeft } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
-import { useAuthStore } from '../auth/auth-store';
 import { TimeHorizon } from './user-investment-profile-types';
+import type { User } from './user-types';
+import { useAuthStore } from '../auth/auth-store';
 
 const ProfileEditPage: React.FC = () => {
-  const { user } = useAuthStore();
-  const updateUser = useAuthStore((state) => state.updateUser);
+  const { isAuthenticated } = useAuthStore();
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  const [user, updateUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
-    name: user?.name || '',
-    username: user?.username || '',
+    name: '',
+    username: '',
     investmentProfile: {
-      age: typeof user?.investmentProfile?.age === 'number' ? user.investmentProfile.age : 0,
-      maxAcceptableShortTermLossPercentage: typeof user?.investmentProfile?.maxAcceptableShortTermLossPercentage === 'number' ? user.investmentProfile.maxAcceptableShortTermLossPercentage : 20,
-      expectedAnnualizedRateOfReturn: typeof user?.investmentProfile?.expectedAnnualizedRateOfReturn === 'number' ? user.investmentProfile.expectedAnnualizedRateOfReturn : 8,
-      timeHorizon: (user?.investmentProfile?.timeHorizon as TimeHorizon) || 'Medium-term (3-10 years)',
-      yearsInvesting: typeof user?.investmentProfile?.yearsInvesting === 'number' ? user.investmentProfile.yearsInvesting : 0,
+      age: 0,
+      maxAcceptableShortTermLossPercentage: 20,
+      expectedAnnualizedRateOfReturn: 8,
+      timeHorizon: 'Medium-term (3-10 years)',
+      yearsInvesting: 0,
     },
   });
   
@@ -29,6 +34,7 @@ const ProfileEditPage: React.FC = () => {
     async function loadProfile() {
       const latest = await fetchProfile();
       if (latest) {
+        updateUser(latest);
         setForm({
           name: latest.name || '',
           username: latest.username || '',
@@ -40,15 +46,10 @@ const ProfileEditPage: React.FC = () => {
             yearsInvesting: typeof latest.investmentProfile?.yearsInvesting === 'number' ? latest.investmentProfile.yearsInvesting : 0,
           },
         });
-        
       }
     }
     loadProfile();
   }, []);
-
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
 
   // Handlers
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -80,9 +81,9 @@ const ProfileEditPage: React.FC = () => {
 
       const updated = await updateProfile({
         ...form,
-
         investmentProfile: {
           ...form.investmentProfile,
+          timeHorizon: form.investmentProfile.timeHorizon as TimeHorizon,
         },
       });
       // Update zustand store directly with new user

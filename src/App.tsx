@@ -17,14 +17,14 @@ import TradeListPage from './trades/TradeListPage';
 
 import { useEffect } from 'react';
 import { useAuthStore } from './auth/auth-store';
+import { JWT_TOKEN } from './lib/storage-helpers';
 
 function App() {
   useEffect(() => {
     const set = useAuthStore.setState;
-    const userJson = localStorage.getItem('user');
-    if (userJson) {
-      const user = JSON.parse(userJson);
-      set({ user, isAuthenticated: true, isHydrated: true });
+    const token = localStorage.getItem(JWT_TOKEN);
+    if (token) {
+      set({ isAuthenticated: true, isHydrated: true });
     } else {
       set({ isHydrated: true });
     }
@@ -39,8 +39,8 @@ function App() {
         { index: true, element: <HomePage /> },
         { path: 'login', element: <LoginPage /> },
         { path: 'register', element: <RegisterPage /> },
-        { path: 'profile', element: <ProfilePage /> },
-        { path: 'profile/edit', element: <ProfileEditPage /> },
+        { path: 'profile', element: <ProtectedRoute><ProfilePage /></ProtectedRoute> },
+        { path: 'profile/edit', element: <ProtectedRoute><ProfileEditPage /></ProtectedRoute> },
         {
           path: 'profile/change-password',
           element: <ProtectedRoute><ChangePasswordPage /></ProtectedRoute>,

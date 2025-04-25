@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { UserCircle, Mail, Loader2 } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import { useAuthStore } from '../auth/auth-store';
 import { fetchProfile } from './profile-api';
+import type { User } from './user-types';
+import { useAuthStore } from '../auth/auth-store';
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuthStore();
-  const updateUser = useAuthStore((state) => state.updateUser);
+  const { isAuthenticated } = useAuthStore();
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  const [user, updateUser ] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,11 +34,7 @@ const ProfilePage: React.FC = () => {
       </div>
     );
   }
-
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-  const { name, username, email} = user;
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
       <div className="w-full max-w-xl bg-white shadow-xl rounded-3xl p-8 relative">
@@ -44,13 +44,13 @@ const ProfilePage: React.FC = () => {
               <UserCircle className="w-20 h-20 text-blue-400" />
             </span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
-          <div className="text-gray-500 font-mono text-sm">@{username}</div>
+          <h2 className="text-2xl font-bold text-gray-800">{user?.name}</h2>
+          <div className="text-gray-500 font-mono text-sm">@{user?.username}</div>
         </div>
         <div className="flex flex-col gap-2 w-full mt-6">
           <div className="flex items-center gap-2 text-gray-700">
             <Mail className="w-5 h-5 text-blue-400" />
-            <span>{email}</span>
+            <span>{user?.email}</span>
           </div>
         </div>
 
@@ -60,7 +60,7 @@ const ProfilePage: React.FC = () => {
             <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             Investment Profile
           </h3>
-          {user.investmentProfile ? (
+          {user?.investmentProfile ? (
             <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center gap-2 text-gray-700">
                 <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
