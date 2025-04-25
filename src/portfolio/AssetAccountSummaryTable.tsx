@@ -2,7 +2,9 @@ import React from 'react';
 import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot } from 'lucide-react';
 
 import type { Account } from '../accounts/account-types';
-import { useAuthStore } from '../auth/auth-store';
+import { useEffect, useState } from 'react';
+import { fetchProfile } from '../profile/profile-api';
+import type { User } from '../profile/user-types';
 
 // Local currency conversion utility
 function convertToUSD(value: number, currency: string): number {
@@ -32,8 +34,22 @@ interface AssetAccountSummaryTableProps {
 }
 
 const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ accounts, assets }) => {
-  // Get user and investment profile
-  const user = useAuthStore((state) => state.user);
+  // Get user and investment profile from profile API
+  const [user, setUser] = useState<User | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const profile = await fetchProfile();
+        setUser(profile);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoadingProfile(false);
+      }
+    }
+    loadProfile();
+  }, []);
   const investmentProfile = user?.investmentProfile;
   // Export handler: export only assetRows as JSON with ticker, valueUSD, percentage
   const [copied, setCopied] = React.useState(false);
@@ -94,7 +110,9 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
   const handleAskAICopy = async () => {
     const jsonStr = getPortfolioJson();
     let profileStr = '';
-    if (investmentProfile) {
+    if (loadingProfile) {
+      profileStr = 'User Investment Profile: Loading...';
+    } else if (investmentProfile) {
       profileStr = `User Investment Profile:\n- Age: ${investmentProfile.age}\n- Max Acceptable Short-Term Loss: ${investmentProfile.maxAcceptableShortTermLossPercentage}%\n- Expected Annualized Rate of Return: ${investmentProfile.expectedAnnualizedRateOfReturn}%\n- Time Horizon: ${investmentProfile.timeHorizon}\n- Years Investing: ${investmentProfile.yearsInvesting}`;
     } else {
       profileStr = 'User Investment Profile: Not provided';
