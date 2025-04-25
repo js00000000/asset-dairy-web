@@ -33,7 +33,6 @@ export async function login(email: string, password: string): Promise<User | nul
 export async function logout(): Promise<void> {
   localStorage.removeItem(JWT_TOKEN);
   localStorage.removeItem(USER_KEY);
-  window.location.reload();
 }
 
 export async function refreshAuth(): Promise<string> {

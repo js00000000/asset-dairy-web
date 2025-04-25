@@ -64,7 +64,7 @@ const Header: React.FC = () => {
                 <button
                   onClick={() => {
                     logout();
-                    navigate('/', { replace: true });
+                    navigate('/', { replace: true })
                   }}
                   className="ml-2 p-2 rounded-lg bg-red-600 text-white shadow hover:bg-red-700 transition flex items-center justify-center"
                   aria-label="Sign Out"
