@@ -3,7 +3,6 @@ import { UserCircle, Save, ArrowLeft } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
-import type { User } from './user-types';
 import { useAuthStore } from '../auth/auth-store';
 
 const ProfileEditPage: React.FC = () => {
@@ -11,8 +10,6 @@ const ProfileEditPage: React.FC = () => {
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  const [user, updateUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
     name: '',
     username: '',
@@ -34,7 +31,6 @@ const ProfileEditPage: React.FC = () => {
     async function loadProfile() {
       const latest = await fetchProfile();
       if (latest) {
-        updateUser(latest);
         setForm({
           name: latest.name || '',
           username: latest.username || '',
@@ -78,16 +74,13 @@ const ProfileEditPage: React.FC = () => {
     setSaving(true);
     setError(null);
     try {
-
-      const updated = await updateProfile({
+      await updateProfile({
         ...form,
         investmentProfile: {
           ...form.investmentProfile,
           timeHorizon: form.investmentProfile.timeHorizon as TimeHorizon,
         },
       });
-      // Update zustand store directly with new user
-      updateUser(updated);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
