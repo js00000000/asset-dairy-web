@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { login as apiLogin, signup as apiSignup, logout as apiLogout, refreshAuth as apiRefreshAuth } from './auth-api';
+import { login as apiLogin, signup as apiSignup, logout as apiLogout } from './auth-api';
 import { changePassword as apiChangePassword } from '../profile/profile-api';
 
 interface AuthState {
@@ -56,15 +56,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   async logout() {
     await apiLogout();
     set({ isAuthenticated: false });
-  },
-
-  async refreshAuth() {
-    set({ isLoading: true, error: null });
-    try {
-      await apiRefreshAuth();
-      set({ isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message || 'Token refresh failed', isLoading: false });
-    }
   },
 }));
