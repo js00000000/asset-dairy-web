@@ -1,29 +1,21 @@
 // Domain-specific API functions for authentication actions
 import { ACCESS_TOKEN } from '../lib/storage-helpers';
+import { apiNoAuth } from '../lib/api';
 
 export const API_BASE = import.meta.env.VITE_BACKEND_HOST;
 
 export async function login(email: string, password: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/auth/sign-in`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-
-  if (!response.ok) {
+  try {
+    const response = await apiNoAuth.post(`/auth/sign-in`, { email, password });
+    const token: string = response.data.token;
+    localStorage.setItem(ACCESS_TOKEN, token);
+  } catch (error: any) {
     let errMsg = 'Login failed';
-    try {
-      const data = await response.json();
-      errMsg = data.message || errMsg;
-    } catch {}
+    if (error.response?.data?.message) {
+      errMsg = error.response.data.message;
+    }
     throw new Error(errMsg);
   }
-
-  const data = await response.json();
-  const token: string = data.token;
-  localStorage.setItem(ACCESS_TOKEN, token);
 }
 
 export async function logout(): Promise<void> {
@@ -31,19 +23,13 @@ export async function logout(): Promise<void> {
 }
 
 export async function signup(name: string, username: string, email: string, password: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/auth/sign-up`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name, username, email, password }),
-  });
-  if (!response.ok) {
+  try {
+    await apiNoAuth.post(`/auth/sign-up`, { name, username, email, password });
+  } catch (error: any) {
     let errMsg = 'Signup failed';
-    try {
-      const data = await response.json();
-      errMsg = data.message || errMsg;
-    } catch {}
+    if (error.response?.data?.message) {
+      errMsg = error.response.data.message;
+    }
     throw new Error(errMsg);
   }
 }
