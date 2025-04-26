@@ -4,40 +4,41 @@
  */
 
 import { Account } from './account-types';
-import { authGet, authPost, authPut, authDelete } from '../auth/auth-api';
+import api from '../lib/api';
 
 export async function fetchAccounts(): Promise<Account[]> {
-  const res = await authGet('/accounts');
-  if (!res.ok) {
-    throw new Error('Failed to fetch accounts');
+  try {
+    const res = await api.get<Account[]>('/accounts');
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || 'Failed to fetch accounts');
   }
-  return await res.json();
 }
 
 export async function createAccount(account: Omit<Account, 'id'>): Promise<Account> {
-  const res = await authPost('/accounts', account);
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err || 'Failed to create account');
+  try {
+    const res = await api.post<Account>('/accounts', account);
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || 'Failed to create account');
   }
-  return await res.json();
 }
 
 
 export async function updateAccount(id: string, data: Partial<Omit<Account, 'id'>>): Promise<Account> {
-  const res = await authPut(`/accounts/${id}`, data);
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err || 'Failed to update account');
+  try {
+    const res = await api.put<Account>(`/accounts/${id}`, data);
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || 'Failed to update account');
   }
-  return await res.json();
 }
 
 export async function deleteAccount(id: string): Promise<void> {
-  const res = await authDelete(`/accounts/${id}`);
-  if (!res.ok && res.status !== 204) {
-    const err = await res.text();
-    throw new Error(err || 'Failed to delete account');
+  try {
+    await api.delete(`/accounts/${id}`);
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || 'Failed to delete account');
   }
 }
 
