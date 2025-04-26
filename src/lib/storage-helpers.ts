@@ -1,1 +1,1 @@
-export const JWT_TOKEN = 'jwt_token';
+export const ACCESS_TOKEN = 'access_token';

@@ -1,5 +1,5 @@
 // Domain-specific API functions for authentication actions
-import { JWT_TOKEN } from '../lib/storage-helpers';
+import { ACCESS_TOKEN } from '../lib/storage-helpers';
 
 export const API_BASE = import.meta.env.VITE_BACKEND_HOST;
 
@@ -23,15 +23,15 @@ export async function login(email: string, password: string): Promise<void> {
 
   const data = await response.json();
   const token: string = data.token;
-  localStorage.setItem(JWT_TOKEN, token);
+  localStorage.setItem(ACCESS_TOKEN, token);
 }
 
 export async function logout(): Promise<void> {
-  localStorage.removeItem(JWT_TOKEN);
+  localStorage.removeItem(ACCESS_TOKEN);
 }
 
 export async function refreshAuth(): Promise<string> {
-  const token = localStorage.getItem(JWT_TOKEN);
+  const token = localStorage.getItem(ACCESS_TOKEN);
   if (!token) throw new Error('No token');
   const response = await fetch(`${API_BASE}/auth/refresh`, {
     method: 'POST',
@@ -42,7 +42,7 @@ export async function refreshAuth(): Promise<string> {
   });
   if (!response.ok) throw new Error('Failed to refresh token');
   const data = await response.json();
-  localStorage.setItem(JWT_TOKEN, data.token);
+  localStorage.setItem(ACCESS_TOKEN, data.token);
   return data.token;
 }
 

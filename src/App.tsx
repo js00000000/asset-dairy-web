@@ -17,12 +17,12 @@ import TradeListPage from './trades/TradeListPage';
 
 import { useEffect } from 'react';
 import { useAuthStore } from './auth/auth-store';
-import { JWT_TOKEN } from './lib/storage-helpers';
+import { ACCESS_TOKEN } from './lib/storage-helpers';
 
 function App() {
   useEffect(() => {
     const set = useAuthStore.setState;
-    const token = localStorage.getItem(JWT_TOKEN);
+    const token = localStorage.getItem(ACCESS_TOKEN);
     if (token) {
       set({ isAuthenticated: true, isHydrated: true });
     } else {

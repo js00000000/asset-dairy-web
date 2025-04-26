@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { JWT_TOKEN } from './storage-helpers';
+import { ACCESS_TOKEN } from './storage-helpers';
 
 // Create an Axios instance
 const api = axios.create({
@@ -10,7 +10,7 @@ const api = axios.create({
 // Request interceptor: Add auth token from localStorage
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(JWT_TOKEN);
+    const token = localStorage.getItem(ACCESS_TOKEN);
 
     if (token) {
       config.headers = config.headers || {};
@@ -42,11 +42,11 @@ api.interceptors.response.use(
           }
         );
         const newToken = refreshResponse.data.token;
-        localStorage.setItem(JWT_TOKEN, newToken);
+        localStorage.setItem(ACCESS_TOKEN, newToken);
         originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem(JWT_TOKEN);
+        localStorage.removeItem(ACCESS_TOKEN);
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
