@@ -19,20 +19,7 @@ import { useAuthStore } from './auth/auth-store';
 
 function App() {
   useEffect(() => {
-    const set = useAuthStore.setState;
-    const checkAuth = async () => {
-      set({ isHydrated: true });
-      if (useAuthStore.getState().isAccessTokenValid()) {
-        set({ isAuthenticated: true });
-      } else {
-        try {
-          await useAuthStore.getState().refreshAccessToken();
-        } catch (err) {
-          await useAuthStore.getState().logout();
-        }
-      }
-    };
-    checkAuth();
+    useAuthStore.getState().checkAuth();
   }, []);
 
   // Routes config for createBrowserRouter
