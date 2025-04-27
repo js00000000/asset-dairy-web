@@ -229,6 +229,8 @@ const PortfolioPage: React.FC = () => {
             setSelectedAssetForTx(null);
           }}
           onTradesChange={handleTradesChange}
+          ticker={selectedAssetForTx?.ticker}
+          assetType={selectedAssetForTx?.type === 'stock' || selectedAssetForTx?.type === 'crypto' ? selectedAssetForTx.type : undefined}
         />
       </div>
       {/* Asset & Account Summary Table */}

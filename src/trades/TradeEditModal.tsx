@@ -12,12 +12,14 @@ interface TradeEditModalProps {
   onClose: () => void;
   onTradesChange: (newTxs: Trade[]) => void;
   trade?: Trade;
+  ticker?: string;
+  assetType?: 'stock' | 'crypto';
 }
 
-const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModalProps) => {
+const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialTicker, assetType: initialAssetType }: TradeEditModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>(trade ? trade.type : 'buy');
-  const [assetType, setAssetType] = useState<'stock' | 'crypto'>(trade ? trade.assetType : 'stock');
-  const [ticker, setTicker] = useState(trade ? trade.ticker : '');
+  const [assetType, setAssetType] = useState<'stock' | 'crypto'>(trade ? trade.assetType : (initialAssetType || 'stock'));
+  const [ticker, setTicker] = useState(trade ? trade.ticker : (initialTicker || ''));
   const [quantity, setQuantity] = useState(trade ? String(trade.quantity) : '');
   const [price, setPrice] = useState(trade ? String(trade.price) : '');
   const [accountId, setAccountId] = useState(trade ? trade.accountId : '');
@@ -42,8 +44,8 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModal
   React.useEffect(() => {
     if (open) {
       setType(trade ? trade.type : 'buy');
-      setAssetType(trade ? trade.assetType : 'stock');
-      setTicker(trade ? trade.ticker : '');
+      setAssetType(trade ? trade.assetType : (initialAssetType || 'stock'));
+      setTicker(trade ? trade.ticker : (initialTicker || ''));
       setReason(trade ? trade.reason || '' : '');
       setQuantity(trade ? String(trade.quantity) : '');
       setPrice(trade ? String(trade.price) : '');
@@ -65,7 +67,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade }: TradeEditModal
       setError(null);
       setSuccess(false);
     }
-  }, [open, trade, accounts]);
+  }, [open, trade, accounts, initialTicker, initialAssetType]);
 
   if (!open) return null;
 
