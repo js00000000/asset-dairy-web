@@ -14,20 +14,25 @@ import NotFoundPage from './pages/NotFoundPage';
 import PortfolioPage from './portfolio/PortfolioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import TradeListPage from './trades/TradeListPage';
-
 import { useEffect } from 'react';
 import { useAuthStore } from './auth/auth-store';
-import { ACCESS_TOKEN } from './lib/storage-helpers';
 
 function App() {
   useEffect(() => {
     const set = useAuthStore.setState;
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token) {
-      set({ isAuthenticated: true, isHydrated: true });
-    } else {
+    const checkAuth = async () => {
       set({ isHydrated: true });
-    }
+      if (useAuthStore.getState().isAccessTokenValid()) {
+        set({ isAuthenticated: true });
+      } else {
+        try {
+          await useAuthStore.getState().refreshAccessToken();
+        } catch (err) {
+          await useAuthStore.getState().logout();
+        }
+      }
+    };
+    checkAuth();
   }, []);
 
   // Routes config for createBrowserRouter

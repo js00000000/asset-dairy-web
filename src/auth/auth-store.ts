@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { login as apiLogin, signup as apiSignup, logout as apiLogout } from './auth-api';
+import { login as apiLogin, signup as apiSignup, logout as apiLogout, refreshAccessToken as apiRefreshAccessToken } from './auth-api';
 import { changePassword as apiChangePassword } from '../profile/profile-api';
+import { ACCESS_TOKEN } from '../lib/storage-helpers';
+import { isJwtExpired } from '../lib/jwt-utils';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -10,7 +12,9 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshAccessToken: () => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  isAccessTokenValid: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -53,8 +57,27 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  async refreshAccessToken() {
+    try {
+      const newToken = await apiRefreshAccessToken();
+      if (newToken) {
+        localStorage.setItem(ACCESS_TOKEN, newToken);
+        set({ isAuthenticated: true });
+      } else {
+        throw new Error('Failed to refresh access token. Please log in again.');
+      }
+    } catch (err) {
+      throw new Error('Failed to refresh access token. Please log in again.');
+    }
+  },
+
   async logout() {
     await apiLogout();
     set({ isAuthenticated: false });
+  },
+
+  isAccessTokenValid() {
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    return !!token && !isJwtExpired(token);
   },
 }));
