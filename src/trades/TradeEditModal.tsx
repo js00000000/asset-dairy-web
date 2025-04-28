@@ -244,7 +244,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
             placeholder="e.g. AAPL or BTC"
             value={ticker}
             onChange={e => setTicker(e.target.value.toUpperCase())}
-            leftIcon={<TrendingUp className="w-5 h-5 text-blue-600" />}
+            leftIcon={assetType === 'stock' ? <TrendingUp className="w-5 h-5 text-blue-600" /> : <Bitcoin className='w-5 h-5 text-yellow-500' />}
             rightIcon={isValidatingTicker ? <Loader2 className="w-5 h-5 text-blue-500 animate-spin" /> : undefined}
             required
             fullWidth
@@ -256,7 +256,6 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
               value={quantity}
               onChange={e => setQuantity(e.target.value)}
               type="number"
-              leftIcon={<DollarSign className="w-5 h-5 text-green-600" />}
               required
             />
             {/* From Account */}
@@ -282,17 +281,6 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-2">
-            {/* Price per Unit */}
-            <Input
-              label={`Price per Unit (${currency})`}
-              placeholder="e.g. 150.00"
-              value={price}
-              onChange={e => setPrice(e.target.value)}
-              type="float"
-              min="0"
-              leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
-              required
-            />
             {/* Currency Selection */}
             <div className="flex flex-col">
               <label className="block text-sm font-medium mb-1 text-slate-700">Currency</label>
@@ -306,21 +294,29 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
                 <option value="TWD">TWD</option>
               </select>
             </div>
+            {/* Price per Unit */}
+            <Input
+              label={`Price per Unit (${currency})`}
+              placeholder="e.g. 150.00"
+              value={price}
+              onChange={e => setPrice(e.target.value)}
+              type="float"
+              min="0"
+              leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
+              required
+            />
           </div>
           <div className="grid grid-cols-2 gap-3 mb-2">
             {/* Trade Date */}
             <div className="flex flex-col">
-              <label className="block text-sm font-medium mb-1 text-slate-700">Trade Date</label>
-              <div className="relative">
-                <input
-                  type="date"
-                  className="w-full h-[42px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                  value={tradeDate}
-                  onChange={e => setTradeDate(e.target.value)}
-                  required
-                />
-                <Calendar className="w-4 h-4 text-blue-500 absolute right-3 top-3" />
-              </div>
+              <Input
+                type="date"
+                label='Trade Date'
+                className="w-full h-[42px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                value={tradeDate}
+                onChange={e => setTradeDate(e.target.value)}
+                required
+              />
             </div>
           </div>
           <div>
@@ -352,7 +348,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
             className="mt-2 w-full flex items-center justify-center gap-2"
             disabled={!isTickerValid}
           >
-            {type === 'buy' ? <ArrowUpCircle className="w-5 h-5" /> : <ArrowDownCircle className="w-5 h-5" />} Record {type === 'buy' ? 'Buy' : 'Sell'}
+            Record {type === 'buy' ? 'Buy' : 'Sell'}
           </Button>
         </form>
       </div>
