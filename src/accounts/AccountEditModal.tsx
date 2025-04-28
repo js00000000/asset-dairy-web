@@ -3,6 +3,7 @@ import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
 import { fetchAccounts, updateAccount } from "../accounts/account-api";
 import { Account } from "../accounts/account-types";
 import { createAccount } from "../accounts/account-api";
+import Input from "../components/ui/Input";
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },
@@ -147,26 +148,18 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
         </div>
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="account-name" className="block text-sm font-medium text-slate-700 mb-1">
-              Account Name
-            </label>
-            <div className="relative">
-              <input
-                id="account-name"
-                type="text"
-                className={`pl-10 block w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.name ? 'border-red-500' : 'border-slate-300'}`}
-                value={name}
-                onChange={e => setName(e.target.value)}
-                autoComplete="off"
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? 'account-name-error' : undefined}
-                disabled={submitting}
-              />
-              <Wallet className="w-4 h-4 text-blue-400 absolute left-3 top-3" />
-            </div>
-            {errors.name && (
-              <p id="account-name-error" className="mt-1 text-xs text-red-600">{errors.name}</p>
-            )}
+            <Input
+              id="account-name"
+              type="text"
+              label="Account Name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              autoComplete="off"
+              error={errors.name}
+              leftIcon={<Wallet className="w-4 h-4 text-blue-400" />}
+              disabled={submitting}
+              fullWidth
+            />
           </div>
           <div>
             <label htmlFor="currency" className="block text-sm font-medium text-slate-700 mb-1">
@@ -185,29 +178,19 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
             </select>
           </div>
           <div>
-            <label htmlFor="balance" className="block text-sm font-medium text-slate-700 mb-1">
-              {isCreate ? "Initial Balance" : "Balance"}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-3 text-slate-400">
-                <DollarSign className="w-4 h-4" />
-              </span>
-              <input
-                id="balance"
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                className={`pl-10 block w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.balance ? 'border-red-500' : 'border-slate-300'}`}
-                value={balance}
-                onChange={e => setBalance(e.target.value)}
-                aria-invalid={!!errors.balance}
-                aria-describedby={errors.balance ? 'balance-error' : undefined}
-                disabled={submitting}
-              />
-            </div>
-            {errors.balance && (
-              <p id="balance-error" className="mt-1 text-xs text-red-600">{errors.balance}</p>
-            )}
+            <Input
+              id="balance"
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              label={isCreate ? "Initial Balance" : "Balance"}
+              value={balance}
+              onChange={e => setBalance(e.target.value)}
+              error={errors.balance}
+              leftIcon={<DollarSign className="w-4 h-4 text-slate-400" />}
+              disabled={submitting}
+              fullWidth
+            />
           </div>
           {apiError && (
             <div className="text-red-600 font-semibold text-center animate-pulse">{apiError}</div>

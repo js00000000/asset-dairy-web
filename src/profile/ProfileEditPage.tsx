@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
 import { useAuthStore } from '../auth/auth-store';
+import Input from "../components/ui/Input";
 
 const ProfileEditPage: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
@@ -108,89 +109,92 @@ const ProfileEditPage: React.FC = () => {
             </span>
           </div>
           <div className="w-full space-y-5">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                <span>Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-                required
-                minLength={2}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                <span>Username</span>
-              </label>
-              <input
-                type="text"
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-                required
-                minLength={2}
-              />
-            </div>
+            <Input
+              type="text"
+              name="name"
+              label="Name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              minLength={2}
+              fullWidth
+            />
+            <Input
+              type="text"
+              name="username"
+              label="Username"
+              value={form.username}
+              onChange={handleChange}
+              required
+              minLength={2}
+              fullWidth
+            />
             {/* Investment Profile Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50/40 border border-blue-100 rounded-2xl p-6 mb-6">
+              <Input
+                type="number"
+                name="age"
+                label="Age"
+                value={form.investmentProfile.age}
+                onChange={handleChange}
+                min={0}
+                max={120}
+                required
+                leftIcon={
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 16v-4"/>
+                    <path d="M12 8h.01"/>
+                  </svg>
+                }
+                fullWidth
+              />
+              <Input
+                type="number"
+                name="maxAcceptableShortTermLossPercentage"
+                label="Risk Tolerance"
+                value={form.investmentProfile.maxAcceptableShortTermLossPercentage}
+                onChange={handleChange}
+                min={0}
+                max={100}
+                step={0.01}
+                required
+                leftIcon={
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                    <polyline points="2 17 12 22 22 17"/>
+                    <polyline points="2 12 12 17 22 12"/>
+                  </svg>
+                }
+                fullWidth
+              />
+              <Input
+                type="number"
+                name="expectedAnnualizedRateOfReturn"
+                label="Expected Annualized Rate of Return (%)"
+                value={form.investmentProfile.expectedAnnualizedRateOfReturn}
+                onChange={handleChange}
+                min={0}
+                max={100}
+                step={0.01}
+                required
+                leftIcon={
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M4 21v-2a4 4 0 0 1 3-3.87"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                }
+                fullWidth
+              />
               <div>
                 <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                  Age
-                </label>
-                <input
-                  type="number"
-                  name="age"
-                  value={form.investmentProfile.age}
-                  onChange={handleChange}
-                  className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-                  min={0}
-                  max={120}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                  Risk Tolerance
-                </label>
-                <input
-                  type="number"
-                  name="maxAcceptableShortTermLossPercentage"
-                  value={form.investmentProfile.maxAcceptableShortTermLossPercentage}
-                  onChange={handleChange}
-                  className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-                  min={0}
-                  max={100}
-                  step={0.01}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
-                  Expected Annualized Rate of Return (%)
-                </label>
-                <input
-                  type="number"
-                  name="expectedAnnualizedRateOfReturn"
-                  value={form.investmentProfile.expectedAnnualizedRateOfReturn}
-                  onChange={handleChange}
-                  className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-                  min={0}
-                  max={100}
-                  step={0.01}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <path d="M16 2v4"/>
+                    <path d="M8 2v4"/>
+                    <path d="M3 10h18"/>
+                  </svg>
                   Time Horizon
                 </label>
                 <select
@@ -207,19 +211,23 @@ const ProfileEditPage: React.FC = () => {
                 </select>
               </div>
               <div className="col-span-full">
-                <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
-                  Years Investing
-                </label>
-                <input
+                <Input
                   type="number"
                   name="yearsInvesting"
+                  label="Years Investing"
                   value={form.investmentProfile.yearsInvesting}
                   onChange={handleChange}
-                  className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
                   min={0}
                   max={100}
                   required
+                  leftIcon={
+                    <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M4 21v-2a4 4 0 0 1 3-3.87"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  }
+                  fullWidth
                 />
               </div>
             </div>

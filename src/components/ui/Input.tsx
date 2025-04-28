@@ -7,6 +7,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   error?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  rightIconOnClick?: () => void;
   fullWidth?: boolean;
 }
 
@@ -17,7 +18,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     helperText, 
     error, 
     leftIcon, 
-    rightIcon, 
+    rightIcon,
+    rightIconOnClick,
     fullWidth = false,
     id, 
     ...props 
@@ -62,7 +64,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
           
           {rightIcon && (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+            <div 
+              className={cn(
+                "absolute inset-y-0 right-0 flex items-center pr-3",
+                rightIconOnClick ? "cursor-pointer" : "pointer-events-none"
+              )}
+              onClick={rightIconOnClick}
+            >
               {rightIcon}
             </div>
           )}

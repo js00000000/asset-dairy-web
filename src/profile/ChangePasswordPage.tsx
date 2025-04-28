@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuthStore } from '../auth/auth-store';
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Save, ArrowLeft } from "lucide-react";
+import Input from "../components/ui/Input";
 
 const ChangePasswordPage: React.FC = () => {
   const { changePassword, isLoading, error } = useAuthStore();
@@ -63,78 +64,42 @@ const ChangePasswordPage: React.FC = () => {
         </Link>
         <h2 className="text-2xl font-bold text-center mb-6">Change Password</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-3">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-blue-400" />
-              Current Password
-            </label>
-            <div className="relative">
-              <input
-                type={showCurrent ? "text" : "password"}
-                className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm pr-10"
-                value={current}
-                onChange={e => setCurrent(e.target.value)}
-                autoComplete="current-password"
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-400"
-                onClick={() => setShowCurrent(s => !s)}
-                tabIndex={-1}
-              >
-                {showCurrent ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-blue-400" />
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showNext ? "text" : "password"}
-                className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm pr-10"
-                value={next}
-                onChange={e => setNext(e.target.value)}
-                autoComplete="new-password"
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-400"
-                onClick={() => setShowNext(s => !s)}
-                tabIndex={-1}
-              >
-                {showNext ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-blue-400" />
-              Confirm New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm pr-10"
-                value={confirm}
-                onChange={e => setConfirm(e.target.value)}
-                autoComplete="new-password"
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-400"
-                onClick={() => setShowConfirm(s => !s)}
-                tabIndex={-1}
-              >
-                {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
+          <Input
+            type={showCurrent ? "text" : "password"}
+            label="Current Password"
+            value={current}
+            onChange={e => setCurrent(e.target.value)}
+            autoComplete="current-password"
+            required
+            leftIcon={<Lock className="w-4 h-4 text-blue-400" />}
+            rightIcon={showCurrent ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            rightIconOnClick={() => setShowCurrent(s => !s)}
+            fullWidth
+          />
+          <Input
+            type={showNext ? "text" : "password"}
+            label="New Password"
+            value={next}
+            onChange={e => setNext(e.target.value)}
+            autoComplete="new-password"
+            required
+            leftIcon={<Lock className="w-4 h-4 text-blue-400" />}
+            rightIcon={showNext ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            rightIconOnClick={() => setShowNext(s => !s)}
+            fullWidth
+          />
+          <Input
+            type={showConfirm ? "text" : "password"}
+            label="Confirm New Password"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+            autoComplete="new-password"
+            required
+            leftIcon={<Lock className="w-4 h-4 text-blue-400" />}
+            rightIcon={showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            rightIconOnClick={() => setShowConfirm(s => !s)}
+            fullWidth
+          />
           {formError && (
             <div className="text-red-600 font-semibold text-center mt-2 animate-pulse">
               {formError}
