@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusCircle, TrendingUp, LineChart, Wallet } from 'lucide-react';
 import AssetCard from './AssetCard';
 import Button from '../components/ui/Button';
@@ -31,7 +31,7 @@ const PortfolioPage: React.FC = () => {
           fetchTrades(),
           fetchAccounts()
         ]);
-        setAssets(buildAssetsFromTrades(txs));
+        setAssets(await buildAssetsFromTrades(txs));
         setAccounts(accs);
       } catch (err: any) {
         setError(err.message || 'Failed to load data');
@@ -43,7 +43,7 @@ const PortfolioPage: React.FC = () => {
   }, []);
 
   // Helper to rebuild asset list from trades
-  const buildAssetsFromTrades = useCallback((txs: Trade[]) => {
+  const buildAssetsFromTrades = async (txs: Trade[]) => {
     // Enhanced asset map to include averagePrice
     const assetMap: Record<string, {
       ticker: string;
@@ -96,14 +96,17 @@ const PortfolioPage: React.FC = () => {
     });
 
     // Set averagePrice for each asset
-    Object.keys(assetMap).forEach(async ticker => {
+    const assetEntries = Object.entries(assetMap);
+    await Promise.all(assetEntries.map(async ([ticker, asset]) => {
       const { totalCost, totalQty } = buyData[ticker];
-      assetMap[ticker].price = assetMap[ticker].type === 'stock' ? await getStockPrice(ticker) : await getCryptoPrice(ticker);
-      assetMap[ticker].averagePrice = totalQty > 0 ? totalCost / totalQty : 0;
-    });
+      asset.price = asset.type === 'stock'
+        ? await getStockPrice(ticker)
+        : await getCryptoPrice(ticker);
+      asset.averagePrice = totalQty > 0 ? totalCost / totalQty : 0;
+    }));
 
     return Object.values(assetMap);
-  }, []);
+  };
 
   // Callback to reload accounts and trades after edit
   const handleAccountsUpdated = async () => {
@@ -114,7 +117,7 @@ const PortfolioPage: React.FC = () => {
         fetchTrades(),
         fetchAccounts()
       ]);
-      setAssets(buildAssetsFromTrades(txs));
+      setAssets(await buildAssetsFromTrades(txs));
       setAccounts(accs);
     } catch (err: any) {
       setError(err.message || 'Failed to reload data');
@@ -127,7 +130,7 @@ const PortfolioPage: React.FC = () => {
   const handleTradesChange = async (_newTxs: Trade[]) => {
     // Always re-fetch from API for consistency
     const txs = await fetchTrades();
-    setAssets(buildAssetsFromTrades(txs));
+    setAssets(await buildAssetsFromTrades(txs));
   };
 
   if (loading) {
