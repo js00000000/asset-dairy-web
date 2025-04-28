@@ -26,6 +26,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [reason, setReason] = useState(trade ? trade.reason || '' : '');
   const [tradeDate, setTradeDate] = useState(trade ? trade.tradeDate.split('T')[0] : '');
+  const [currency, setCurrency] = useState<'USD' | 'TWD'>(trade ? trade.currency : 'USD');
 
   React.useEffect(() => {
     fetchAccounts().then((fetched) => {
@@ -49,6 +50,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
       setReason(trade ? trade.reason || '' : '');
       setQuantity(trade ? String(trade.quantity) : '');
       setPrice(trade ? String(trade.price) : '');
+      setCurrency(trade ? trade.currency : 'USD');
       // If creating (no trade), default to first account if available
       if (trade) {
         setAccountId(trade.accountId);
@@ -103,6 +105,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
         accountId,
         ticker,
         reason,
+        currency,
       };
       const { updateTrade, fetchTrades } = await import('./trade-api');
       await updateTrade(trade.id, updatedTx);
@@ -124,6 +127,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
         accountId,
         ticker,
         reason,
+        currency,
       };
       const { createTrade, fetchTrades } = await import('./trade-api');
       await createTrade(tx as Omit<Trade, 'id'>);
@@ -234,7 +238,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
           <div className="grid grid-cols-2 gap-3 mb-2">
             {/* Price per Unit */}
             <Input
-              label="Price per Unit (USD)"
+              label={`Price per Unit (${currency})`}
               placeholder="e.g. 150.00"
               value={price}
               onChange={e => setPrice(e.target.value)}
@@ -243,6 +247,21 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
               leftIcon={<DollarSign className="w-5 h-5 text-blue-600" />}
               required
             />
+            {/* Currency Selection */}
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium mb-1 text-slate-700">Currency</label>
+              <select
+                className="w-full h-[42px] rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                value={currency}
+                onChange={e => setCurrency(e.target.value as 'USD' | 'TWD')}
+                required
+              >
+                <option value="USD">USD</option>
+                <option value="TWD">TWD</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 mb-2">
             {/* Trade Date */}
             <div className="flex flex-col">
               <label className="block text-sm font-medium mb-1 text-slate-700">Trade Date</label>

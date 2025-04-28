@@ -44,7 +44,7 @@ const PortfolioPage: React.FC = () => {
 
   // Helper to rebuild asset list from trades
   const buildAssetsFromTrades = async (txs: Trade[]) => {
-    // Enhanced asset map to include averagePrice
+    // Enhanced asset map to include averagePrice and currency
     const assetMap: Record<string, {
       ticker: string;
       name: string;
@@ -52,6 +52,7 @@ const PortfolioPage: React.FC = () => {
       quantity: number;
       price: number | null;
       averagePrice: number;
+      currency: 'USD' | 'TWD';
     }> = {};
     // For average price calculation
     const buyData: Record<string, { totalCost: number; totalQty: number }> = {};
@@ -65,6 +66,7 @@ const PortfolioPage: React.FC = () => {
           quantity: 0,
           price: 0,
           averagePrice: 0,
+          currency: tx.currency,
         };
         buyData[tx.ticker] = { totalCost: 0, totalQty: 0 };
       }
