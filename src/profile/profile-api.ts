@@ -1,6 +1,6 @@
 // Domain-specific API functions for user profile actions
 import { User } from './user-types';
-import api from '../lib/api';
+import api from '@/lib/api';
 
 export async function fetchProfile(): Promise<User | null> {
   try {

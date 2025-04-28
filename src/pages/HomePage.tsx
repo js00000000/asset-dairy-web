@@ -1,6 +1,6 @@
 import React from 'react';
 import { PiggyBank, TrendingUp, Wallet, Coins, PlusCircle, FileBarChart2, LayoutDashboard, Star, UserCircle } from 'lucide-react';
-import Button from '../components/ui/Button';
+import Button from '@/components/ui/Button';
 
 const testimonials = [
   {

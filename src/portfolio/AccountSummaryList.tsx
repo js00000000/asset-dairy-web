@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import AccountCard from "../accounts/AccountCard";
-import type { Account } from "../accounts/account-types";
-import AccountEditModal from "../accounts/AccountEditModal";
+import AccountCard from '@/accounts/AccountCard';
+import type { Account } from '@/accounts/account-types';
+import AccountEditModal from '@/accounts/AccountEditModal';
 
 interface AccountSummaryListProps {
   accounts: Account[];

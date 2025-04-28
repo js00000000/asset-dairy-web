@@ -1,10 +1,9 @@
 import React from 'react';
 import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot } from 'lucide-react';
-
-import type { Account } from '../accounts/account-types';
+import type { Account } from '@/accounts/account-types';
 import { useEffect, useState } from 'react';
-import { fetchProfile } from '../profile/profile-api';
-import type { User } from '../profile/user-types';
+import { fetchProfile } from '@/profile/profile-api';
+import type { User } from '@/profile/user-types';
 
 // Local currency conversion utility
 function convertToUSD(value: number, currency: string): number {

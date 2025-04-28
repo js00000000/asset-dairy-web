@@ -1,6 +1,6 @@
 // Domain-specific API functions for authentication actions
-import { ACCESS_TOKEN } from '../lib/storage-helpers';
-import api, { apiNoAuth } from '../lib/api';
+import { ACCESS_TOKEN } from '@/lib/storage-helpers';
+import api, { apiNoAuth } from '@/lib/api';
 
 export const API_BASE = import.meta.env.VITE_BACKEND_HOST;
 

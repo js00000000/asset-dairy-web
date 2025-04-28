@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
 import { LucideProps } from 'lucide-react';
-import siteConfig from '../../config/site.config';
+import siteConfig from '@/config/site.config';
 
 const Footer: React.FC = () => {
   return (

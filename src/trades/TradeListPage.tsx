@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Search, TrendingUp, Bitcoin, Loader2, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
-import ReasonTooltip from '../components/ui/ReasonTooltip';
-import { fetchTrades, deleteTrade } from "./trade-api";
-import type { Trade } from "./trade-types";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
-import TradeEditModal from "./TradeEditModal";
-import type { Account } from "../accounts/account-types";
-import { fetchAccounts } from "../accounts/account-api";
+import ReasonTooltip from '@/components/ui/ReasonTooltip';
+import { fetchTrades, deleteTrade } from './trade-api';
+import type { Trade } from './trade-types';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import TradeEditModal from './TradeEditModal';
+import type { Account } from '@/accounts/account-types';
+import { fetchAccounts } from '@/accounts/account-api';
 
 const assetTypeIcons = {
   stock: <TrendingUp className="w-4 h-4 text-blue-500" />,

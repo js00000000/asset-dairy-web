@@ -4,7 +4,7 @@
  */
 
 import { Account } from './account-types';
-import api from '../lib/api';
+import api from '@/lib/api';
 
 export async function fetchAccounts(): Promise<Account[]> {
   try {

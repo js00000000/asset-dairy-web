@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Wallet, Trash2 } from "lucide-react";
-import type { Account } from "./account-types";
-import { deleteAccount } from "./account-api";
-import Button from "../components/ui/Button";
+import type { Account } from './account-types';
+import { deleteAccount } from './account-api';
+import Button from '@/components/ui/Button';
 
 export interface AccountCardProps {
   account: Account;

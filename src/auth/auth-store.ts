@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { login as apiLogin, signup as apiSignup, logout as apiLogout, refreshAccessToken as apiRefreshAccessToken } from './auth-api';
-import { changePassword as apiChangePassword } from '../profile/profile-api';
-import { ACCESS_TOKEN } from '../lib/storage-helpers';
-import { isJwtExpired } from '../lib/jwt-utils';
+import { changePassword as apiChangePassword } from '@/profile/profile-api';
+import { ACCESS_TOKEN } from '@/lib/storage-helpers';
+import { isJwtExpired } from '@/lib/jwt-utils';
 
 interface AuthState {
   isAuthenticated: boolean;

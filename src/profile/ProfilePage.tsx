@@ -3,7 +3,7 @@ import { UserCircle, Mail, Loader2 } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { fetchProfile } from './profile-api';
 import type { User } from './user-types';
-import { useAuthStore } from '../auth/auth-store';
+import { useAuthStore } from '@/auth/auth-store';
 
 const ProfilePage: React.FC = () => {
   const { isAuthenticated } = useAuthStore();

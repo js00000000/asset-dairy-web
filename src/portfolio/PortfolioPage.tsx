@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, TrendingUp, LineChart, Wallet } from 'lucide-react';
 import AssetCard from './AssetCard';
-import Button from '../components/ui/Button';
-import TradeEditModal from '../trades/TradeEditModal';
+import Button from '@/components/ui/Button';
+import TradeEditModal from '@/trades/TradeEditModal';
 import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
-import AccountEditModal from '../accounts/AccountEditModal';
-import { fetchTrades } from '../trades/trade-api';
-import type { Trade } from '../trades/trade-types';
-import { fetchAccounts } from '../accounts/account-api';
-import type { Account } from '../accounts/account-types';
-import { getCryptoPrice, getStockPrice } from '../lib/realTimePrice-api';
+import AccountEditModal from '@/accounts/AccountEditModal';
+import { fetchTrades } from '@/trades/trade-api';
+import type { Trade } from '@/trades/trade-types';
+import { fetchAccounts } from '@/accounts/account-api';
+import type { Account } from '@/accounts/account-types';
+import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
 
 const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);

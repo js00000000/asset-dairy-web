@@ -1,5 +1,5 @@
-import { Trade } from '../trades/trade-types';
-import api from '../lib/api';
+import { Trade } from './trade-types';
+import api from '@/lib/api';
 
 export async function fetchTrades(): Promise<Trade[]> {
   try {

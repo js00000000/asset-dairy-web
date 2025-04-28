@@ -3,8 +3,8 @@ import { UserCircle, Save, ArrowLeft } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
-import { useAuthStore } from '../auth/auth-store';
-import Input from "../components/ui/Input";
+import { useAuthStore } from '@/auth/auth-store';
+import Input from '@/components/ui/Input';
 
 const ProfileEditPage: React.FC = () => {
   const { isAuthenticated } = useAuthStore();

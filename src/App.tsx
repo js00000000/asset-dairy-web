@@ -3,19 +3,19 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
-import Layout from './components/layout/Layout';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './profile/ProfilePage';
-import ProfileEditPage from './profile/ProfileEditPage';
-import ChangePasswordPage from './profile/ChangePasswordPage';
-import NotFoundPage from './pages/NotFoundPage';
-import PortfolioPage from './portfolio/PortfolioPage';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import TradeListPage from './trades/TradeListPage';
+import Layout from '@/components/layout/Layout';
+import HomePage from '@/pages/HomePage';
+import LoginPage from '@/pages/LoginPage';
+import RegisterPage from '@/pages/RegisterPage';
+import ProfilePage from '@/profile/ProfilePage';
+import ProfileEditPage from '@/profile/ProfileEditPage';
+import ChangePasswordPage from '@/profile/ChangePasswordPage';
+import NotFoundPage from '@/pages/NotFoundPage';
+import PortfolioPage from '@/portfolio/PortfolioPage';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import TradeListPage from '@/trades/TradeListPage';
 import { useEffect } from 'react';
-import { useAuthStore } from './auth/auth-store';
+import { useAuthStore } from '@/auth/auth-store';
 
 function App() {
   useEffect(() => {

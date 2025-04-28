@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { ACCESS_TOKEN } from './storage-helpers';
+import { ACCESS_TOKEN } from '@/lib/storage-helpers';
 
 /**
  * Factory to create Axios instances with or without auth interceptors.

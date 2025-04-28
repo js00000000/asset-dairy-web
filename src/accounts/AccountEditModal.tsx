@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
-import { fetchAccounts, updateAccount } from "../accounts/account-api";
-import { Account } from "../accounts/account-types";
-import { createAccount } from "../accounts/account-api";
-import Input from "../components/ui/Input";
+import { Account } from './account-types';
+import { createAccount, fetchAccounts, updateAccount } from './account-api';
+import Input from '@/components/ui/Input';
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },

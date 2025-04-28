@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { siteConfig } from '../config/site.config';
+import { siteConfig } from '@/config/site.config';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, ShoppingBag } from 'lucide-react';
-import { useAuthStore } from '../auth/auth-store';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import { useAuthStore } from '@/auth/auth-store';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');

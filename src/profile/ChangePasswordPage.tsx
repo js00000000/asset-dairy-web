@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useAuthStore } from '../auth/auth-store';
+import { useAuthStore } from '@/auth/auth-store';
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Save, ArrowLeft } from "lucide-react";
-import Input from "../components/ui/Input";
+import Input from '@/components/ui/Input';
 
 const ChangePasswordPage: React.FC = () => {
   const { changePassword, isLoading, error } = useAuthStore();

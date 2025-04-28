@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bitcoin, Loader2 } from 'lucide-react';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import { X, TrendingUp, DollarSign, ArrowDownCircle, ArrowUpCircle, Bitcoin, Loader2 } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import { Info } from 'lucide-react';
-import type { Trade } from '../trades/trade-types';
-import type { Account } from '../accounts/account-types';
-import { fetchAccounts } from '../accounts/account-api';
-import { getStockPrice, getCryptoPrice } from '../lib/realTimePrice-api';
+import type { Trade } from './trade-types';
+import type { Account } from '@/accounts/account-types';
+import { fetchAccounts } from '@/accounts/account-api';
+import { getStockPrice, getCryptoPrice } from '@/lib/realTimePrice-api';
 
 interface TradeEditModalProps {
   open: boolean;

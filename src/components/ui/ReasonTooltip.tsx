@@ -1,6 +1,6 @@
 import React from "react";
 import { Info } from "lucide-react";
-import Button from "./Button";
+import Button from './Button';
 
 interface ReasonTooltipProps {
   reason: string;
