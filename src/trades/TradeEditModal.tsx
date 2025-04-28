@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bitcoin } from 'lucide-react';
+import { X, TrendingUp, DollarSign, Calendar, ArrowDownCircle, ArrowUpCircle, Bitcoin, Loader2 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { Info } from 'lucide-react';
 import type { Trade } from '../trades/trade-types';
 import type { Account } from '../accounts/account-types';
 import { fetchAccounts } from '../accounts/account-api';
+import { getStockPrice, getCryptoPrice } from '../portfolio/portfolio-api';
 
 interface TradeEditModalProps {
   open: boolean;
@@ -27,6 +28,8 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   const [reason, setReason] = useState(trade ? trade.reason || '' : '');
   const [tradeDate, setTradeDate] = useState(trade ? trade.tradeDate.split('T')[0] : '');
   const [currency, setCurrency] = useState<'USD' | 'TWD'>(trade ? trade.currency : 'USD');
+  const [isValidatingTicker, setIsValidatingTicker] = useState(false);
+  const [isTickerValid, setIsTickerValid] = useState(false);
 
   React.useEffect(() => {
     fetchAccounts().then((fetched) => {
@@ -71,11 +74,53 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
     }
   }, [open, trade, accounts, initialTicker, initialAssetType]);
 
+  const validateTicker = async (newTicker: string) => {
+    if (!newTicker.trim()) {
+      setError(null);
+      return;
+    }
+
+    setIsValidatingTicker(true);
+    setIsTickerValid(false);
+    setError(null);
+
+    try {
+      const price = assetType === 'stock' 
+        ? await getStockPrice(newTicker)
+        : await getCryptoPrice(newTicker);
+
+      if (price === null) {
+        setError(`Invalid ${assetType} ticker symbol`);
+      } else {
+        setPrice(String(price));
+        setIsTickerValid(true);
+        setError(null);
+      }
+    } catch (err) {
+      setError(`Failed to validate ${assetType} ticker`);
+    } finally {
+      setIsValidatingTicker(false);
+    }
+  };
+
+  // Validate ticker when it changes
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      validateTicker(ticker);
+    }, 500); // Debounce for 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [ticker, assetType]);
+
   if (!open) return null;
 
   const validate = () => {
     if (!ticker.trim() || !quantity || !price || !accountId || !tradeDate) {
       setError('All fields are required.');
+      return false;
+    }
+    if (isValidatingTicker) {
+      setError('Please wait for ticker validation to complete.');
       return false;
     }
     if (isNaN(Number(quantity)) || Number(quantity) <= 0) {
@@ -194,15 +239,22 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
               <Bitcoin className="w-5 h-5" /> Crypto
             </button>
           </div>
-          <Input
-            label="Ticker Symbol"
-            placeholder="e.g. AAPL or BTC"
-            value={ticker}
-            onChange={e => setTicker(e.target.value.toUpperCase())}
-            leftIcon={<TrendingUp className="w-5 h-5 text-blue-600" />}
-            required
-            fullWidth
-          />
+          <div className="relative">
+            <Input
+              label="Ticker Symbol"
+              placeholder="e.g. AAPL or BTC"
+              value={ticker}
+              onChange={e => setTicker(e.target.value.toUpperCase())}
+              leftIcon={<TrendingUp className="w-5 h-5 text-blue-600" />}
+              required
+              fullWidth
+            />
+            {isValidatingTicker && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-3 mb-2">
             <Input
               label="Quantity"
@@ -289,13 +341,22 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
               maxLength={256}
             />
           </div>
-          {error && <div className="text-red-600 font-semibold text-center animate-pulse">{error}</div>}
-          {success && <div className="text-green-600 font-semibold text-center animate-pulse">Trade recorded!</div>}
+          {error && (
+            <div className="text-red-600 font-semibold text-center animate-pulse bg-red-50 p-3 rounded-lg border border-red-200">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="text-green-600 font-semibold text-center animate-pulse bg-green-50 p-3 rounded-lg border border-green-200">
+              Trade recorded!
+            </div>
+          )}
           <Button
             type="submit"
             variant="primary"
             size="lg"
             className="mt-2 w-full flex items-center justify-center gap-2"
+            disabled={!isTickerValid}
           >
             {type === 'buy' ? <ArrowUpCircle className="w-5 h-5" /> : <ArrowDownCircle className="w-5 h-5" />} Record {type === 'buy' ? 'Buy' : 'Sell'}
           </Button>
