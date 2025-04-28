@@ -22,12 +22,28 @@ export async function getStockPrice(symbol: string): Promise<number | null> {
   // Get API key from env (Vite convention)
   const apiKey = import.meta.env.VITE_FMP_API_KEY || 'demo';
   try {
-    const res = await fetch(
-      `https://financialmodelingprep.com/api/v3/quote-short/${encodeURIComponent(symbol)}?apikey=${apiKey}`
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    const price = data && Array.isArray(data) && data[0]?.price;
+    // Check if symbol is a number (e.g., "2330")
+    const isNumeric = /^\d+$/.test(symbol);
+    let price: number | null = null;
+
+    if (isNumeric) {
+      // Use FinMind API for Taiwan stocks
+      const res = await fetch(`https://api.web.finmindtrade.com/v2/taiwan_stock_analysis?stock_id=${symbol}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data.status === 200 && data.data?.StockPrice?.StockPrice?.close) {
+        price = data.data.StockPrice.StockPrice.close;
+      }
+    } else {
+      // Use Financial Modeling Prep API for other stocks
+      const res = await fetch(
+        `https://financialmodelingprep.com/api/v3/quote-short/${encodeURIComponent(symbol)}?apikey=${apiKey}`
+      );
+      if (!res.ok) return null;
+      const data = await res.json();
+      price = data && Array.isArray(data) && data[0]?.price;
+    }
+
     if (typeof price === 'number') {
       localStorage.setItem(key, JSON.stringify({ value: price, timestamp: now }));
       return price;
