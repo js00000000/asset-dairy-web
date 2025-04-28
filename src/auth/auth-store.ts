@@ -26,14 +26,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   async checkAuth() {
     set({ isHydrated: true, isLoading: true, error: null });
     try {
-      if (!isAccessTokenValid()) {
-        const newToken = await refreshAccessToken();
-        localStorage.setItem(ACCESS_TOKEN, newToken);
+      const accessToken = localStorage.getItem(ACCESS_TOKEN);
+      if (!isAccessTokenValid(accessToken)) {
+        await refreshAccessToken();
       }
-      set({ isAuthenticated: true, isLoading: false });
-    } catch (error) {
+
+      set({ isAuthenticated: true, isLoading: false, error: null });
+    } catch {
       await this.logout();
-      set({ isLoading: false, error: (error as Error).message || 'Failed to refresh access token' });
     }
   },
 
@@ -71,21 +71,25 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   async logout() {
-    set({ isAuthenticated: false });
-    await apiLogout();
+    set({ isLoading: true, error: null });
+    const accessToken = localStorage.getItem(ACCESS_TOKEN)
+    if (isAccessTokenValid(accessToken)) {
+      await apiLogout();
+    }
+    localStorage.removeItem(ACCESS_TOKEN);
+    set({ isAuthenticated: false, isLoading: false });
   },
-
 }));
 
-function isAccessTokenValid() {
-  const token = localStorage.getItem(ACCESS_TOKEN);
-  return !!token && !isJwtExpired(token);
+function isAccessTokenValid(accessToken: string | null) {
+  return !!accessToken && !isJwtExpired(accessToken);
 }
 
-async function refreshAccessToken(): Promise<string> {
-  const newToken = await apiRefreshAccessToken();
-  if (newToken) {
-    return newToken;
+async function refreshAccessToken(): Promise<void> {
+  try {
+    const newToken = await apiRefreshAccessToken();
+    localStorage.setItem(ACCESS_TOKEN, newToken);
+  } catch {
+    throw new Error('Failed to refresh access token. Please log in again.');
   }
-  throw new Error('Failed to refresh access token. Please log in again.');
 }
