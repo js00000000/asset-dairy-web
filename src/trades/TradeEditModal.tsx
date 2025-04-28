@@ -6,7 +6,7 @@ import { Info } from 'lucide-react';
 import type { Trade } from '../trades/trade-types';
 import type { Account } from '../accounts/account-types';
 import { fetchAccounts } from '../accounts/account-api';
-import { getStockPrice, getCryptoPrice } from '../portfolio/portfolio-api';
+import { getStockPrice, getCryptoPrice } from '../lib/realTimePrice-api';
 
 interface TradeEditModalProps {
   open: boolean;

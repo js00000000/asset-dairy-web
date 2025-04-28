@@ -10,7 +10,7 @@ import { fetchTrades } from '../trades/trade-api';
 import type { Trade } from '../trades/trade-types';
 import { fetchAccounts } from '../accounts/account-api';
 import type { Account } from '../accounts/account-types';
-import { getCryptoPrice, getStockPrice } from './portfolio-api';
+import { getCryptoPrice, getStockPrice } from '../lib/realTimePrice-api';
 
 const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
