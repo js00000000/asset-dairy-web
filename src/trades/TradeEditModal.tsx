@@ -85,7 +85,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
     setError(null);
 
     try {
-      const price = assetType === 'stock' 
+      const price = assetType === 'stock'
         ? await getStockPrice(newTicker)
         : await getCryptoPrice(newTicker);
 
@@ -239,22 +239,16 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
               <Bitcoin className="w-5 h-5" /> Crypto
             </button>
           </div>
-          <div className="relative">
-            <Input
-              label="Ticker Symbol"
-              placeholder="e.g. AAPL or BTC"
-              value={ticker}
-              onChange={e => setTicker(e.target.value.toUpperCase())}
-              leftIcon={<TrendingUp className="w-5 h-5 text-blue-600" />}
-              required
-              fullWidth
-            />
-            {isValidatingTicker && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
-              </div>
-            )}
-          </div>
+          <Input
+            label="Ticker Symbol"
+            placeholder="e.g. AAPL or BTC"
+            value={ticker}
+            onChange={e => setTicker(e.target.value.toUpperCase())}
+            leftIcon={<TrendingUp className="w-5 h-5 text-blue-600" />}
+            rightIcon={isValidatingTicker ? <Loader2 className="w-5 h-5 text-blue-500 animate-spin" /> : undefined}
+            required
+            fullWidth
+          />
           <div className="grid grid-cols-2 gap-3 mb-2">
             <Input
               label="Quantity"
