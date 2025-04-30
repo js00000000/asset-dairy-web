@@ -6,8 +6,12 @@ import type { Trade } from './trade-types';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import TradeEditModal from './TradeEditModal';
+import TradeCard from './TradeCard';
+import TradeLoadingState from './TradeLoadingState';
+import TradeEmptyState from './TradeEmptyState';
 import type { Account } from '@/accounts/account-types';
 import { fetchAccounts } from '@/accounts/account-api';
+import {formatPrice} from "@/lib/utils.ts";
 
 const assetTypeIcons = {
   stock: <TrendingUp className="w-4 h-4 text-blue-500" />,
@@ -43,11 +47,6 @@ const TradeListPage: React.FC = () => {
       .then((txs) => setTrades(txs))
       .finally(() => setLoading(false));
   }, []);
-
-  const formatPrice = (price: number, currency: 'USD' | 'TWD') => {
-    const symbol = currency === 'TWD' ? 'NT$' : '$';
-    return `${symbol}${price.toFixed(2)}`;
-  };
 
   const filtered = useMemo(() => {
     let txs = trades;
@@ -140,14 +139,9 @@ const TradeListPage: React.FC = () => {
         </div>
         <div className="bg-white rounded-xl shadow overflow-x-auto hidden sm:block">
           {loading ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-              <span className="ml-3 text-slate-500">Loading trades...</span>
-            </div>
+            <TradeLoadingState />
           ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-              <span>No trades found.</span>
-            </div>
+            <TradeEmptyState />
           ) : (
             <table className="min-w-full divide-y divide-slate-100">
               <thead>
@@ -253,6 +247,28 @@ const TradeListPage: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          )}
+        </div>
+        <div className="sm:hidden">
+          {loading ? (
+            <TradeLoadingState />
+          ) : filtered.length === 0 ? (
+            <TradeEmptyState />
+          ) : (
+            <div className="space-y-3">
+              {filtered.map((tx) => (
+                <TradeCard
+                  key={tx.id}
+                  tx={tx}
+                  accountMap={accountMap}
+                  deletingId={deletingId}
+                  onEdit={(tx) => { setEditTx(tx); setShowModal(true); }}
+                  onDelete={handleDelete}
+                  onCancelDelete={() => setDeletingId(null)}
+                  onSetDeletingId={setDeletingId}
+                />
+              ))}
+            </div>
           )}
         </div>
         <TradeEditModal
