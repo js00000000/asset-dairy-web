@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatPrice(price: number, currency: string) {
   const symbol = currency === 'TWD' ? 'NT$' : '$';
-  return `${symbol}${price.toFixed(2)}`;
+  return `${symbol}${price.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
 }
 
 // Currency conversion utility
