@@ -6,17 +6,18 @@ import TradeEditModal from '@/trades/TradeEditModal';
 import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
 import AccountEditModal from '@/accounts/AccountEditModal';
-import { fetchTrades } from '@/trades/trade-api';
 import type { Trade } from '@/trades/trade-types';
 import { fetchAccounts } from '@/accounts/account-api';
 import type { Account } from '@/accounts/account-types';
 import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
+import { fetchHoldings } from '@/holdings/holding-api';
+import type { Holding } from '@/holdings/holding-types';
 
 const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
-  const [assets, setAssets] = useState<any[]>([]);
+  const [holdings, setHoldings] = useState<Holding[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,11 +28,11 @@ const PortfolioPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const [txs, accs] = await Promise.all([
-          fetchTrades(),
-          fetchAccounts()
+        const [accs, holdings] = await Promise.all([
+          fetchAccounts(),
+          loadHoldings(),
         ]);
-        setAssets(await buildAssetsFromTrades(txs));
+        setHoldings(holdings);
         setAccounts(accs);
       } catch (err: any) {
         setError(err.message || 'Failed to load data');
@@ -42,85 +43,32 @@ const PortfolioPage: React.FC = () => {
     loadData();
   }, []);
 
-  // Helper to rebuild asset list from trades
-  const buildAssetsFromTrades = async (txs: Trade[]) => {
-    // Enhanced asset map to include averagePrice and currency
-    const assetMap: Record<string, {
-      ticker: string;
-      name: string;
-      type: string;
-      quantity: number;
-      price: number | null;
-      averagePrice: number;
-      currency: 'USD' | 'TWD';
-    }> = {};
-    // For average price calculation
-    const buyData: Record<string, { totalCost: number; totalQty: number }> = {};
+  // Helper to load holdings with current prices
+  const loadHoldings = async () => {
+    try {
+      // Fetch holdings from API
+      const holdings = await fetchHoldings();
 
-    txs.forEach(tx => {
-      if (!assetMap[tx.ticker]) {
-        assetMap[tx.ticker] = {
-          ticker: tx.ticker,
-          name: tx.ticker,
-          type: tx.assetType,
-          quantity: 0,
-          price: 0,
-          averagePrice: 0,
-          currency: tx.currency,
-        };
-        buyData[tx.ticker] = { totalCost: 0, totalQty: 0 };
-      }
-      // Update quantity and last price
-      assetMap[tx.ticker].quantity += tx.type === 'buy' ? tx.quantity : -tx.quantity;
-      // For average price: only consider buys
-      if (tx.type === 'buy') {
-        buyData[tx.ticker].totalCost += tx.price * tx.quantity;
-        buyData[tx.ticker].totalQty += tx.quantity;
-      } else if (tx.type === 'sell') {
-        // For weighted average, reduce totalQty by sold amount
-        // Remove cost basis proportionally (FIFO/LIFO not considered, just weighted avg)
-        const sellQty = tx.quantity;
-        if (buyData[tx.ticker].totalQty > 0) {
-          const avg = buyData[tx.ticker].totalCost / buyData[tx.ticker].totalQty;
-          buyData[tx.ticker].totalCost -= avg * sellQty;
-          buyData[tx.ticker].totalQty -= sellQty;
-          if (buyData[tx.ticker].totalQty < 0) buyData[tx.ticker].totalQty = 0;
-          if (buyData[tx.ticker].totalCost < 0) buyData[tx.ticker].totalCost = 0;
-        }
-      }
-    });
+      // Get current prices for each holding
+      const holdingsWithPrices = await Promise.all(holdings.map(async (holding) => ({
+        ...holding,
+        price: holding.assetType === 'stock'
+          ? await getStockPrice(holding.ticker)
+          : await getCryptoPrice(holding.ticker)
+      })));
 
-    // remove asset in assetMap which quantity is 0
-    Object.keys(assetMap).forEach(ticker => {
-      if (assetMap[ticker].quantity === 0) {
-        delete assetMap[ticker];
-      }
-    });
-
-    // Set averagePrice for each asset
-    const assetEntries = Object.entries(assetMap);
-    await Promise.all(assetEntries.map(async ([ticker, asset]) => {
-      const { totalCost, totalQty } = buyData[ticker];
-      asset.price = asset.type === 'stock'
-        ? await getStockPrice(ticker)
-        : await getCryptoPrice(ticker);
-      asset.averagePrice = totalQty > 0 ? totalCost / totalQty : 0;
-    }));
-
-    return Object.values(assetMap);
+      return holdingsWithPrices;
+    } catch (err: any) {
+      console.error('Failed to fetch holdings:', err);
+      throw new Error('Failed to load holdings');
+    }
   };
 
-  // Callback to reload accounts and trades after edit
   const handleAccountsUpdated = async () => {
     setLoading(true);
     setError(null);
     try {
-      const [txs, accs] = await Promise.all([
-        fetchTrades(),
-        fetchAccounts()
-      ]);
-      setAssets(await buildAssetsFromTrades(txs));
-      setAccounts(accs);
+      setAccounts(await fetchAccounts());
     } catch (err: any) {
       setError(err.message || 'Failed to reload data');
     } finally {
@@ -128,11 +76,16 @@ const PortfolioPage: React.FC = () => {
     }
   };
 
-  // Handler for trade changes
   const handleTradesChange = async (_newTxs: Trade[]) => {
-    // Always re-fetch from API for consistency
-    const txs = await fetchTrades();
-    setAssets(await buildAssetsFromTrades(txs));
+    setLoading(true);
+    setError(null);
+    try {
+      setHoldings(await loadHoldings());
+    } catch (err: any) {
+      setError(err.message || 'Failed to reload data');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -150,7 +103,6 @@ const PortfolioPage: React.FC = () => {
     );
   }
 
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -161,13 +113,13 @@ const PortfolioPage: React.FC = () => {
               <Wallet className="w-6 h-6 text-blue-500" /> Accounts
             </h2>
             <Button
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2 border-blue-400 text-blue-700 hover:bg-blue-50"
-            onClick={() => setAccountModalOpen(true)}
-          >
-            <PlusCircle className="w-4 h-4" /> Add Account
-          </Button>
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 border-blue-400 text-blue-700 hover:bg-blue-50"
+              onClick={() => setAccountModalOpen(true)}
+            >
+              <PlusCircle className="w-4 h-4" /> Add Account
+            </Button>
           </div>
           {accounts.length === 0 && (
             <div className="flex items-center gap-2 text-slate-400 italic mb-3">
@@ -198,30 +150,24 @@ const PortfolioPage: React.FC = () => {
               <PlusCircle className="w-4 h-4" /> Add Trade
             </Button>
           </div>
-          {assets.length === 0 && (
+          {holdings.length === 0 && (
             <div className="flex items-center gap-2 text-slate-400 italic mb-3">
-              <LineChart className="w-4 h-4" /> No trade
+              <LineChart className="w-4 h-4" /> No holdings
             </div>
           )}
           <div className="relative z-10">
             <div className="grid md:grid-cols-2 gap-8 relative">
-              {assets.length > 0 && assets.map((asset: {
-                ticker: string;
-                name: string;
-                type: string;
-                quantity: number;
-                price: number;
-                averagePrice: number
-              }) => (
+              {holdings.length > 0 && holdings.map((holding) => (
                 <AssetCard
-                  key={asset.ticker}
-                  ticker={asset.ticker}
-                  type={asset.type}
-                  quantity={asset.quantity}
-                  price={asset.price}
-                  averagePrice={asset.averagePrice}
-                  isZero={asset.quantity === 0}
-                  onClick={() => setSelectedAssetForTx({ ticker: asset.ticker, type: asset.type })}
+                  key={holding.ticker}
+                  ticker={holding.ticker}
+                  type={holding.assetType}
+                  quantity={holding.quantity}
+                  price={holding.price!}
+                  currency={holding.currency}
+                  averagePrice={holding.averagePrice}
+                  isZero={holding.quantity === 0}
+                  onClick={() => setSelectedAssetForTx({ ticker: holding.ticker, type: holding.assetType })}
                 />
               ))}
             </div>
@@ -239,7 +185,7 @@ const PortfolioPage: React.FC = () => {
         />
       </div>
       {/* Asset & Account Summary Table */}
-      <AssetAccountSummaryTable accounts={accounts} assets={assets} />
+      <AssetAccountSummaryTable accounts={accounts} holdings={holdings} />
     </div>
   );
 };

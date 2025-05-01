@@ -1,11 +1,13 @@
 import React from 'react';
 import { TrendingUp, Bitcoin } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 
 export interface AssetCardProps {
   ticker: string;
   type: string;
   quantity: number;
   price: number;
+  currency: string;
   averagePrice?: number;
   onClick?: () => void;
   isZero?: boolean;
@@ -16,6 +18,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
   type,
   quantity,
   price,
+  currency,
   averagePrice,
   onClick,
   isZero = false,
@@ -57,7 +60,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
         <div className="flex flex-col items-end min-w-[90px]">
           <span className="text-xs text-gray-500 font-medium">Price</span>
           <span className="text-2xl font-bold text-green-600 tabular-nums">
-            {price !== null ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>}
+            {price !== null ? formatPrice(price, currency) : <span className="text-gray-400">N/A</span>}
           </span>
         </div>
       </div>
@@ -73,7 +76,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
         </div>
         <div className="flex flex-col items-end">
           <span className="text-base text-gray-700 font-semibold flex items-center gap-1">Value</span>
-          <span className="text-2xl font-bold text-blue-900 tabular-nums break-words">${(price * quantity).toLocaleString()}</span>
+          <span className="text-2xl font-bold text-blue-900 tabular-nums break-words">{formatPrice(price * quantity, currency)}</span>
         </div>
       </div>
 
@@ -86,7 +89,7 @@ const AssetCard: React.FC<AssetCardProps> = ({
           <span className="font-semibold flex items-center gap-1">
             Avg. Price:
           </span>
-          <span className="text-blue-700 font-bold">{averagePrice !== undefined ? `$${averagePrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-gray-400">N/A</span>}</span>
+          <span className="text-blue-700 font-bold">{averagePrice !== undefined ? formatPrice(averagePrice, currency) : <span className="text-gray-400">N/A</span>}</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <span className="font-semibold text-gray-500">Gain/Loss:</span>
@@ -96,12 +99,12 @@ const AssetCard: React.FC<AssetCardProps> = ({
             const isGain = gainLossAbs > 0;
             const isLoss = gainLossAbs < 0;
             const color = isGain ? 'text-green-600' : isLoss ? 'text-red-600' : 'text-gray-500';
-            const absValue = Math.abs(gainLossAbs).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const absValue = formatPrice(Math.abs(gainLossAbs), currency);
             const absPct = Math.abs(gainLossPct).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             const sign = isGain ? '+' : isLoss ? '-' : '';
             return (
               <span className={`flex flex-col items-start font-bold ${color}`}>
-                <span className="text-base">{sign} ${absValue}</span>
+                <span className="text-base">{sign} {absValue}</span>
                 <span className="text-xs font-medium mt-0.5 opacity-80">{sign}{absPct}%</span>
               </span>
             );
