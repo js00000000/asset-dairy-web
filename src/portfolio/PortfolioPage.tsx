@@ -17,6 +17,7 @@ const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [holdings, setHoldings] = useState<Holding[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,12 +128,24 @@ const PortfolioPage: React.FC = () => {
             </div>
           )}
           {accounts.length > 0 && (
-            <AccountSummaryList accounts={accounts} onUpdated={handleAccountsUpdated} />
+            <AccountSummaryList 
+              accounts={accounts} 
+              onUpdated={handleAccountsUpdated} 
+              onEdit={(accountId) => {
+                setSelectedAccountId(accountId);
+                setAccountModalOpen(true);
+              }}
+            />
           )}
           <AccountEditModal
             open={accountModalOpen}
-            onClose={() => setAccountModalOpen(false)}
+            accountId={selectedAccountId}
+            onClose={() => {
+              setAccountModalOpen(false);
+              setSelectedAccountId(null);
+            }}
             onUpdated={handleAccountsUpdated}
+            accounts={accounts}
           />
         </section>
         {/* Portfolio grid */}
@@ -180,6 +193,7 @@ const PortfolioPage: React.FC = () => {
             setSelectedAssetForTx(null);
           }}
           onTradesChange={handleTradesChange}
+          accounts={accounts}
           ticker={selectedAssetForTx?.ticker}
           assetType={selectedAssetForTx?.type === 'stock' || selectedAssetForTx?.type === 'crypto' ? selectedAssetForTx.type : undefined}
         />

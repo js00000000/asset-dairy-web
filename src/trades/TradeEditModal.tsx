@@ -5,7 +5,6 @@ import Input from '@/components/ui/Input';
 import { Info } from 'lucide-react';
 import type { Trade } from './trade-types';
 import type { Account } from '@/accounts/account-types';
-import { fetchAccounts } from '@/accounts/account-api';
 import { getStockPrice, getCryptoPrice } from '@/lib/realTimePrice-api';
 
 interface TradeEditModalProps {
@@ -15,16 +14,16 @@ interface TradeEditModalProps {
   trade?: Trade;
   ticker?: string;
   assetType?: 'stock' | 'crypto';
+  accounts: Account[];
 }
 
-const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialTicker, assetType: initialAssetType }: TradeEditModalProps) => {
+const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialTicker, assetType: initialAssetType, accounts }: TradeEditModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>(trade ? trade.type : 'buy');
   const [assetType, setAssetType] = useState<'stock' | 'crypto'>(trade ? trade.assetType : (initialAssetType || 'stock'));
   const [ticker, setTicker] = useState(trade ? trade.ticker : (initialTicker || ''));
   const [quantity, setQuantity] = useState(trade ? String(trade.quantity) : '');
   const [price, setPrice] = useState(trade ? String(trade.price) : '');
   const [accountId, setAccountId] = useState(trade ? trade.accountId : '');
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [reason, setReason] = useState(trade ? trade.reason || '' : '');
   const [tradeDate, setTradeDate] = useState(trade ? trade.tradeDate.split('T')[0] : '');
   const [currency, setCurrency] = useState<'USD' | 'TWD'>(trade ? trade.currency : 'USD');
@@ -32,14 +31,11 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   const [isTickerValid, setIsTickerValid] = useState(false);
 
   React.useEffect(() => {
-    fetchAccounts().then((fetched) => {
-      setAccounts(fetched);
-      // If creating (no trade) and no accountId, set to first account
-      if (!trade && fetched.length > 0 && !accountId) {
-        setAccountId(fetched[0].id);
-      }
-    });
-  }, [open]);
+    // If creating (no trade) and no accountId, set to first account
+    if (!trade && accounts.length > 0 && !accountId) {
+      setAccountId(accounts[0].id);
+    }
+  }, [open, accounts, trade, accountId]);
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);

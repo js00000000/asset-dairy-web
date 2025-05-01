@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
 import { Account } from './account-types';
-import { createAccount, fetchAccounts, updateAccount } from './account-api';
+import { createAccount, updateAccount } from './account-api';
 import Input from '@/components/ui/Input';
 
 const currencyOptions = [
@@ -12,11 +12,12 @@ const currencyOptions = [
 interface Props {
   open: boolean;
   accountId?: string | null; // If null or undefined, create mode
+  accounts: Account[];
   onClose: () => void;
   onUpdated: () => void;
 }
 
-export default function AccountEditModal({ open, accountId, onClose, onUpdated }: Props) {
+export default function AccountEditModal({ open, accountId, accounts, onClose, onUpdated }: Props) {
   const isCreate = !accountId;
   const [account, setAccount] = useState<Account | null>(null);
   const [name, setName] = useState("");
@@ -37,18 +38,16 @@ export default function AccountEditModal({ open, accountId, onClose, onUpdated }
       setLoading(false);
     } else if (accountId) {
       setLoading(true);
-      fetchAccounts().then(accs => {
-        const found = accs.find(a => a.id === accountId);
-        if (found) {
-          setAccount(found);
-          setName(found.name);
-          setCurrency(found.currency);
-          setBalance(found.balance.toString());
-        }
-        setLoading(false);
-      });
+      const found = accounts.find(a => a.id === accountId);
+      if (found) {
+        setAccount(found);
+        setName(found.name);
+        setCurrency(found.currency);
+        setBalance(found.balance.toString());
+      }
+      setLoading(false);
     }
-  }, [open, accountId, isCreate]);
+  }, [open, accountId, isCreate, accounts]);
 
   if (!open) return null;
 

@@ -276,6 +276,7 @@ const TradeListPage: React.FC = () => {
           onClose={() => { setShowModal(false); setEditTx(null); }}
           onTradesChange={handleTradesChange}
           trade={editTx || undefined}
+          accounts={accounts}
         />
       </div>
     </div>
