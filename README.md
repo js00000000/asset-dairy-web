@@ -4,11 +4,21 @@ Asset Dairy is a modern web application for tracking your personal finances and 
 
 ## Features
 
-- **Account Setup**: Create and manage secure user accounts.
-- **Expense & Income Logging**: Record daily expenses, income, and transfers with ease.
-- **Portfolio Tracking**: Track your stock and crypto holdings, trades, and portfolio value over time.
+- **Account Management**: Create, edit, and manage secure user accounts with beautiful UI and validation.
+- **Authentication**: Secure login and registration system with protected routes.
+- **Portfolio Tracking**: Track your stock and crypto holdings with real-time price updates.
+- **Trade Management**: Record and manage stock and crypto trades with detailed transaction history.
 - **Modern UI**: Clean, responsive, and production-ready interface built with React, Tailwind CSS, and Lucide React icons.
-- **Data Insights**: Visualize spending, income, and asset allocation.
+- **Data Visualization**: Beautiful dashboards for portfolio overview and asset allocation.
+- **User Profile**: Manage your profile settings and investment preferences.
+- **Security**: Protected routes and secure data handling with user-specific ownership enforcement.
+
+*Coming Soon:*
+- Multi-currency support
+- Transaction management (expenses, income, transfers)
+- Advanced portfolio analytics and charts
+- Dark/light mode
+- Accessibility improvements
 
 ## Getting Started
 
@@ -57,10 +67,6 @@ src/
 │   └── ui/
 ├── config/
 │   └── site.config.ts
-├── layouts/
-│   ├── Footer.tsx
-│   ├── Header.tsx
-│   └── MainLayout.tsx
 ├── lib/
 │   ├── assetStorage.ts
 │   ├── storage-helpers.ts
@@ -91,45 +97,9 @@ src/
 ├── App.tsx
 ├── index.css
 ├── main.tsx
-├── vite-env.d.ts
+└── vite-env.d.ts
 ```
 
-├── users/           # User profiles, authentication, settings
-│   ├── ChangePasswordPage.tsx
-│   ├── ProfileEditPage.tsx
-│   ├── ProfilePage.tsx
-│   ├── auth-store.ts
-│   ├── user-api.ts
-│   ├── user-investment-profile-types.ts
-│   └── user-types.ts
-├── components/      # Shared UI components
-│   ├── ProtectedRoute.tsx
-│   ├── layout/      # App-wide layout components (Header, Footer, etc.)
-│   └── ui/          # Generic, reusable UI elements
-├── config/          # App/site configuration
-│   └── site.config.ts
-├── layouts/         # Layout wrappers
-│   ├── Footer.tsx
-│   ├── Header.tsx
-│   └── MainLayout.tsx
-├── lib/             # Utilities and helpers
-│   ├── assetStorage.ts
-│   ├── storage-helpers.ts
-│   └── utils.ts
-├── accounts/         # Account domain
-├── users/           # User domain
-│   ├── mock-accounts.ts
-│   └── mock-data.ts
-├── pages/           # App-wide pages (Home, Login, Register, NotFound)
-│   ├── HomePage.tsx
-│   ├── LoginPage.tsx
-│   ├── NotFoundPage.tsx
-│   └── RegisterPage.tsx
-├── App.tsx
-├── index.css
-├── main.tsx
-├── vite-env.d.ts
-```
 - Types/interfaces are placed in their primary domain folder (e.g., `accounts/account-types.ts`).
 - Only global types go in `src/types/` (if needed).
 - Test files should mirror the domain structure in a `__tests__/` or `tests/` folder.

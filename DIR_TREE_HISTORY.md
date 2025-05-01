@@ -53,17 +53,7 @@ src/
 ├── App.tsx
 ├── index.css
 ├── main.tsx
-├── vite-env.d.ts
-
----
-
-- This file now only tracks the current state for clarity and maintainability.
-- For a full history of moves, refer to your version control history (git log).
-
-├── App.tsx
-├── index.css
-├── main.tsx
-├── vite-env.d.ts
+└── vite-env.d.ts
 
 ---
 
