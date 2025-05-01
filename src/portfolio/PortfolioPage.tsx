@@ -25,23 +25,17 @@ const PortfolioPage: React.FC = () => {
 
   // Load trades and accounts from API on mount
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const [accs, holdings] = await Promise.all([
-          fetchAccounts(),
-          loadHoldings(),
-        ]);
+    setLoading(true);
+    setError(null);
+    Promise
+      .all([
+        loadHoldings().then(res => res),
+        fetchAccounts().then(res => res)])
+      .then(([holdings, accounts]) => {
         setHoldings(holdings);
-        setAccounts(accs);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load data');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
+        setAccounts(accounts)
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // Helper to load holdings with current prices

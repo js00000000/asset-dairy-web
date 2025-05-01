@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Plus, Search, TrendingUp, Bitcoin, Loader2, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, TrendingUp, Bitcoin, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
 import ReasonTooltip from '@/components/ui/ReasonTooltip';
 import { fetchTrades, deleteTrade } from './trade-api';
 import type { Trade } from './trade-types';
@@ -11,7 +11,7 @@ import TradeLoadingState from './TradeLoadingState';
 import TradeEmptyState from './TradeEmptyState';
 import type { Account } from '@/accounts/account-types';
 import { fetchAccounts } from '@/accounts/account-api';
-import {formatPrice} from "@/lib/utils.ts";
+import { formatPrice } from "@/lib/utils.ts";
 
 const assetTypeIcons = {
   stock: <TrendingUp className="w-4 h-4 text-blue-500" />,
@@ -30,9 +30,6 @@ const TradeListPage: React.FC = () => {
 
   // Load accounts once on mount
   const [accounts, setAccounts] = useState<Account[]>([]);
-  useEffect(() => {
-    fetchAccounts().then(setAccounts);
-  }, []);
 
   // Map accountId to Account
   const accountMap = useMemo(() => {
@@ -43,8 +40,14 @@ const TradeListPage: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchTrades()
-      .then((txs) => setTrades(txs))
+    Promise
+      .all([
+        fetchTrades().then(res => res),
+        fetchAccounts().then(res => res)])
+      .then(([trades, accounts]) => {
+        setTrades(trades);
+        setAccounts(accounts)
+      })
       .finally(() => setLoading(false));
   }, []);
 
