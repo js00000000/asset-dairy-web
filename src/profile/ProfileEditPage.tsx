@@ -60,13 +60,15 @@ const ProfileEditPage: React.FC = () => {
       name === 'maxAcceptableShortTermLossPercentage' ||
       name === 'expectedAnnualizedRateOfReturn' ||
       name === 'timeHorizon' ||
-      name === 'yearsInvesting'
+      name === 'yearsInvesting' ||
+      name === 'monthlyCashFlow' ||
+      name === 'defaultCurrency'
     ) {
       setForm({
         ...form,
         investmentProfile: {
           ...form.investmentProfile,
-          [name]: type === 'number' || name === 'age' || name === 'yearsInvesting' || name === 'expectedAnnualizedRateOfReturn' || name === 'maxAcceptableShortTermLossPercentage' ? Number(value) : value,
+          [name]: type === 'number' || name === 'age' || name === 'yearsInvesting' || name === 'expectedAnnualizedRateOfReturn' || name === 'maxAcceptableShortTermLossPercentage' || name === 'monthlyCashFlow' ? Number(value) : value,
         },
       });
     } else {
