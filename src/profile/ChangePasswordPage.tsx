@@ -21,14 +21,14 @@ const ChangePasswordPage: React.FC = () => {
       setFormError("All fields are required.");
       return false;
     }
-    if (next.length < 8) {
-      setFormError("New password must be at least 8 characters.");
+    if (next.length < 6) {
+      setFormError("New password must be at least 6 characters.");
       return false;
     }
-    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':\",.<>/?]{8,}$/.test(next)) {
-      setFormError("Password must include at least one letter and one number.");
-      return false;
-    }
+    // if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':\",.<>/?]{8,}$/.test(next)) {
+    //   setFormError("Password must include at least one letter and one number.");
+    //   return false;
+    // }
     if (next !== confirm) {
       setFormError("Passwords do not match.");
       return false;
