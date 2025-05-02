@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { UserCircle, Save, ArrowLeft } from "lucide-react";
+import { UserCircle, Save, ArrowLeft, DollarSign, Calendar, Clock, Percent, TrendingUp, User } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
@@ -20,6 +20,8 @@ const ProfileEditPage: React.FC = () => {
       expectedAnnualizedRateOfReturn: 8,
       timeHorizon: 'Medium-term (3-10 years)',
       yearsInvesting: 0,
+      monthlyCashFlow: 0,
+      defaultCurrency: 'USD',
     },
   });
   
@@ -41,6 +43,8 @@ const ProfileEditPage: React.FC = () => {
             expectedAnnualizedRateOfReturn: typeof latest.investmentProfile?.expectedAnnualizedRateOfReturn === 'number' ? latest.investmentProfile.expectedAnnualizedRateOfReturn : 8,
             timeHorizon: (latest.investmentProfile?.timeHorizon as TimeHorizon) || 'Medium-term (3-10 years)',
             yearsInvesting: typeof latest.investmentProfile?.yearsInvesting === 'number' ? latest.investmentProfile.yearsInvesting : 0,
+            monthlyCashFlow: typeof latest.investmentProfile?.monthlyCashFlow === 'number' ? latest.investmentProfile.monthlyCashFlow : 0,
+            defaultCurrency: latest.investmentProfile?.defaultCurrency || 'USD',
           },
         });
       }
@@ -140,14 +144,9 @@ const ProfileEditPage: React.FC = () => {
                 min={0}
                 max={120}
                 required
-                leftIcon={
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 16v-4"/>
-                    <path d="M12 8h.01"/>
-                  </svg>
-                }
+                leftIcon={<User className="w-5 h-5 text-blue-400" />}
                 fullWidth
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <Input
                 type="number"
@@ -157,16 +156,10 @@ const ProfileEditPage: React.FC = () => {
                 onChange={handleChange}
                 min={0}
                 max={100}
-                step={0.01}
                 required
-                leftIcon={
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                    <polyline points="2 17 12 22 22 17"/>
-                    <polyline points="2 12 12 17 22 12"/>
-                  </svg>
-                }
+                rightIcon={<Percent className="w-5 h-5 text-blue-400" />}
                 fullWidth
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <Input
                 type="number"
@@ -176,25 +169,13 @@ const ProfileEditPage: React.FC = () => {
                 onChange={handleChange}
                 min={0}
                 max={100}
-                step={0.01}
                 required
-                leftIcon={
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M4 21v-2a4 4 0 0 1 3-3.87"/>
-                    <circle cx="12" cy="7" r="4"/>
-                  </svg>
-                }
+                rightIcon={<Percent className="w-5 h-5 text-blue-400" />}
                 fullWidth
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <div>
                 <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                    <path d="M16 2v4"/>
-                    <path d="M8 2v4"/>
-                    <path d="M3 10h18"/>
-                  </svg>
                   Time Horizon
                 </label>
                 <select
@@ -220,15 +201,37 @@ const ProfileEditPage: React.FC = () => {
                   min={0}
                   max={100}
                   required
-                  leftIcon={
-                    <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-3-3.87"/>
-                      <path d="M4 21v-2a4 4 0 0 1 3-3.87"/>
-                      <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                  }
+                  leftIcon={<Calendar className="w-5 h-5 text-blue-400" />}
                   fullWidth
+                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
+              </div>
+              <Input
+                type="number"
+                name="monthlyCashFlow"
+                label="Monthly Cash Flow"
+                value={form.investmentProfile.monthlyCashFlow}
+                onChange={handleChange}
+                min={0}
+                required
+                leftIcon={<DollarSign className="w-5 h-5 text-blue-400" />}
+                fullWidth
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <div>
+                <label className="block text-gray-700 font-medium mb-1 flex items-center gap-2">
+                  Default Currency
+                </label>
+                <select
+                  name="defaultCurrency"
+                  value={form.investmentProfile.defaultCurrency}
+                  onChange={handleChange}
+                  className="w-full border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+                  required
+                >
+                  <option value="USD">USD</option>
+                  <option value="TWD">TWD</option>
+                </select>
               </div>
             </div>
             <div className="flex justify-end mt-8">

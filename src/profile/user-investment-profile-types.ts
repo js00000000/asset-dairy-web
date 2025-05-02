@@ -11,5 +11,7 @@ export interface UserInvestmentProfile {
   expectedAnnualizedRateOfReturn: ExpectedAnnualizedRateOfReturn;
   timeHorizon: TimeHorizon;
   yearsInvesting: number;
+  monthlyCashFlow: number;
+  defaultCurrency: string;
 }
 

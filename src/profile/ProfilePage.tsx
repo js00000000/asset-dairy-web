@@ -87,6 +87,16 @@ const ProfilePage: React.FC = () => {
                 <span>Years Investing:</span>
                 <span className="font-semibold">{user.investmentProfile.yearsInvesting}</span>
               </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span>Monthly Cash Flow:</span>
+                <span className="font-semibold">{user.investmentProfile.monthlyCashFlow.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span>Default Currency:</span>
+                <span className="font-semibold">{user.investmentProfile.defaultCurrency}</span>
+              </div>
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-blue-200 bg-blue-50/30 p-6 text-center text-blue-500">
