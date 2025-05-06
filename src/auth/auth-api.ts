@@ -54,3 +54,27 @@ export async function refreshAccessToken(): Promise<string> {
     throw new Error('Session expired. Please log in again.');
   }
 }
+
+export async function forgotPassword(email: string): Promise<void> {
+  try {
+    await apiNoAuth.post('/auth/forgot-password', { email });
+  } catch (error: any) {
+    let errMsg = 'Failed to send password reset code';
+    if (error.response?.data?.message) {
+      errMsg = error.response.data.message;
+    }
+    throw new Error(errMsg);
+  }
+}
+
+export async function verifyResetCode(email: string, code: string): Promise<void> {
+  try {
+    await apiNoAuth.post('/auth/verify-reset-code', { email, code });
+  } catch (error: any) {
+    let errMsg = 'Failed to verify reset code';
+    if (error.response?.data?.message) {
+      errMsg = error.response.data.message;
+    }
+    throw new Error(errMsg);
+  }
+}
