@@ -6,6 +6,7 @@ import { Info } from 'lucide-react';
 import type { Trade } from './trade-types';
 import type { Account } from '@/accounts/account-types';
 import { getStockPrice, getCryptoPrice } from '@/lib/realTimePrice-api';
+import { useToast } from '@/lib/toast';
 
 interface TradeEditModalProps {
   open: boolean;
@@ -38,7 +39,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   }, [open, accounts, trade, accountId]);
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const toast = useToast();
 
   // Reset fields when modal opens/closes or trade changes
   React.useEffect(() => {
@@ -66,7 +67,6 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
         return `${yyyy}-${mm}-${dd}`;
       })());
       setError(null);
-      setSuccess(false);
     }
   }, [open, trade, accounts, initialTicker, initialAssetType]);
 
@@ -152,11 +152,8 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
       await updateTrade(trade.id, updatedTx);
       const updated = await fetchTrades();
       onTradesChange(updated);
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-      }, 1200);
+      toast.success('Trade updated successfully');
+      onClose();
     } else {
       // Add mode
       const tx = {
@@ -174,11 +171,8 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
       await createTrade(tx as Omit<Trade, 'id'>);
       const updated = await fetchTrades();
       onTradesChange(updated);
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-      }, 1200);
+      toast.success('Trade updated successfully');
+      onClose();
     }
   };
 
@@ -330,11 +324,6 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
           {error && (
             <div className="text-red-600 font-semibold text-center animate-pulse bg-red-50 p-3 rounded-lg border border-red-200">
               {error}
-            </div>
-          )}
-          {success && (
-            <div className="text-green-600 font-semibold text-center animate-pulse bg-green-50 p-3 rounded-lg border border-green-200">
-              Trade recorded!
             </div>
           )}
           <Button

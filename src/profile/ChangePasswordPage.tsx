@@ -3,6 +3,7 @@ import { useAuthStore } from '@/auth/auth-store';
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Save, ArrowLeft } from "lucide-react";
 import Input from '@/components/ui/Input';
+import { useToast } from '@/lib/toast';
 
 const ChangePasswordPage: React.FC = () => {
   const { changePassword, isLoading, error } = useAuthStore();
@@ -12,9 +13,9 @@ const ChangePasswordPage: React.FC = () => {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNext, setShowNext] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const validate = () => {
     if (!current || !next || !confirm) {
@@ -42,13 +43,10 @@ const ChangePasswordPage: React.FC = () => {
     if (!validate()) return;
     try {
       await changePassword(current, next);
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        navigate("/profile");
-      }, 1000);
+      toast.success('Password changed successfully');
+      navigate("/profile");
     } catch (err) {
-      // error state handled by store
+      toast.error(error || 'Failed to change password');
     }
   };
 
@@ -110,11 +108,7 @@ const ChangePasswordPage: React.FC = () => {
               {error}
             </div>
           )}
-          {success && (
-            <div className="text-green-600 font-semibold text-center mt-2 animate-pulse">
-              Password changed successfully!
-            </div>
-          )}
+
           <button
             type="submit"
             className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-xl shadow transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-2"

@@ -3,6 +3,7 @@ import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
 import { Account } from './account-types';
 import { createAccount, updateAccount } from './account-api';
 import Input from '@/components/ui/Input';
+import { useToast } from '@/lib/toast';
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },
@@ -27,6 +28,7 @@ export default function AccountEditModal({ open, accountId, accounts, onClose, o
   const [loading, setLoading] = useState(!isCreate);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     if (!open) return;
@@ -80,9 +82,10 @@ export default function AccountEditModal({ open, accountId, accounts, onClose, o
           });
         }
         onUpdated();
+        toast.success(isCreate ? "Account created successfully" : "Account updated successfully");
         onClose();
       } catch (err) {
-        setApiError(isCreate ? "Failed to create account. Please try again." : "Failed to update account. Please try again.");
+        toast.error(isCreate ? "Failed to create account. Please try again." : "Failed to update account. Please try again.");
       } finally {
         setSubmitting(false);
       }

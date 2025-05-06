@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Search, TrendingUp, Bitcoin, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
 import ReasonTooltip from '@/components/ui/ReasonTooltip';
 import { fetchTrades, deleteTrade } from './trade-api';
+import { useToast } from '@/lib/toast';
 import type { Trade } from './trade-types';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -23,6 +24,7 @@ const TradeListPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState<Trade | null>(null);
+  const toast = useToast();
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [filterType, setFilterType] = useState<"all" | "stock" | "crypto">("all");
   const [search, setSearch] = useState("");
@@ -77,8 +79,9 @@ const TradeListPage: React.FC = () => {
     setDeletingId(id);
     try {
       await deleteTrade(id);
-      const txs = await fetchTrades();
-      setTrades(txs);
+      const updatedTrades = await fetchTrades();
+      setTrades(updatedTrades);
+      toast.success('Trade deleted successfully');
     } finally {
       setDeletingId(null);
     }

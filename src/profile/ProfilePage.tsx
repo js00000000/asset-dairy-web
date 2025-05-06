@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Mail, Loader2, Trash2, User as UserIcon, TrendingDown, Clock, Calendar, DollarSign, CreditCard } from "lucide-react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { fetchProfile, deleteProfile } from './profile-api';
+import { useToast } from '@/lib/toast';
 import type { User } from './user-types';
 import { useAuthStore } from '@/auth/auth-store';
 
 const ProfilePage: React.FC = () => {
-  const { isAuthenticated, logout } = useAuthStore(); // Added logout
+  const { isAuthenticated, logout } = useAuthStore();
+  const toast = useToast();
+  const navigate = useNavigate();
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -34,10 +37,11 @@ const ProfilePage: React.FC = () => {
       try {
         const success = await deleteProfile(); // This function needs to be implemented in profile-api.ts
         if (success) {
-          alert("Your account has been successfully deleted.");
-          logout(); // This should trigger redirect via the isAuthenticated check
+          toast.success("Your account has been successfully deleted.");
+          logout();
+          navigate('/');
         } else {
-          alert("Failed to delete account. Please try again or contact support.");
+          toast.error("Failed to delete account. Please try again or contact support.");
         }
       } catch (error) {
         console.error("Error deleting account:", error);

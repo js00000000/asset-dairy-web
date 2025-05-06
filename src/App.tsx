@@ -16,6 +16,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import TradeListPage from '@/trades/TradeListPage';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/auth/auth-store';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   useEffect(() => {
@@ -45,7 +46,28 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster 
+        position="bottom-center"
+        toastOptions={{
+          success: {
+            style: {
+              background: '#10B981',
+              color: 'white',
+            },
+          },
+          error: {
+            style: {
+              background: '#EF4444',
+              color: 'white',
+            },
+          },
+        }}
+      />
+    </>
+  );
 }
 
 export default App;

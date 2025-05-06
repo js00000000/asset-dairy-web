@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Wallet, Trash2 } from "lucide-react";
 import type { Account } from './account-types';
 import { deleteAccount } from './account-api';
+import { useToast } from '@/lib/toast';
 import Button from '@/components/ui/Button';
 
 export interface AccountCardProps {
@@ -19,6 +20,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account, onClick, onDelete })
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,10 +39,11 @@ const AccountCard: React.FC<AccountCardProps> = ({ account, onClick, onDelete })
     setError(null);
     try {
       await deleteAccount(account.id);
+      toast.success('Account deleted successfully');
       setShowConfirm(false);
       if (onDelete) onDelete(account.id);
     } catch (err: any) {
-      setError(err.message || "Failed to delete account");
+      toast.error(err.message || "Failed to delete account");
     } finally {
       setDeleting(false);
     }

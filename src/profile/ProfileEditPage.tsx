@@ -5,7 +5,7 @@ import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
 import { useAuthStore } from '@/auth/auth-store';
 import Input from '@/components/ui/Input';
-import { useToast } from '@/components/ui/Toast';
+import { useToast } from '@/lib/toast';
 
 const ProfileEditPage: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
@@ -27,7 +27,7 @@ const ProfileEditPage: React.FC = () => {
   });
   
   const [saving, setSaving] = useState(false);
-  const { showToast, ToastContainer } = useToast();
+  const toast = useToast();
 
   // Load profile on mount (in case of refresh or store loss)
   useEffect(() => {
@@ -87,15 +87,11 @@ const ProfileEditPage: React.FC = () => {
           timeHorizon: form.investmentProfile.timeHorizon as TimeHorizon,
         },
       });
-      showToast({
-        message: 'Profile updated successfully!',
-        type: 'success'
-      });
+      toast.success('Profile updated successfully!');
+
     } catch (err) {
-      showToast({
-        message: err instanceof Error ? err.message : 'Failed to update profile',
-        type: 'error'
-      });
+      toast.error(err instanceof Error ? err.message : 'Failed to update profile');
+
     } finally {
       setSaving(false);
     }
@@ -216,9 +212,6 @@ const ProfileEditPage: React.FC = () => {
             </button>
           </div>
         </form>
-
-        {/* Toast Notification */}
-        {ToastContainer}
 
       </div>
     </div>
