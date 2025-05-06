@@ -30,3 +30,15 @@ export async function changePassword(currentPassword: string, newPassword: strin
   }
 }
 
+export async function deleteProfile(): Promise<boolean> {
+  try {
+    // Assuming your API returns a 200 OK or 204 No Content on successful deletion
+    const response = await api.delete('/profile');
+    // Check if the status code indicates success
+    return response.status === 200 || response.status === 204;
+  } catch (err: any) {
+    console.error('Failed to delete user account:', err);
+    // Optionally, you could throw a more specific error or re-throw the original
+    throw new Error(err?.response?.data?.message || 'Failed to delete account');
+  }
+}

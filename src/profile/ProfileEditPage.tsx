@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { UserCircle, Save, ArrowLeft, DollarSign, Calendar, Clock, Percent, TrendingUp, User } from "lucide-react";
+import { UserCircle, Save, ArrowLeft, DollarSign, Calendar, Percent, User } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
@@ -28,6 +28,7 @@ const ProfileEditPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
 
   // Load profile on mount (in case of refresh or store loss)
   useEffect(() => {
@@ -96,6 +97,8 @@ const ProfileEditPage: React.FC = () => {
       setSaving(false);
     }
   };
+
+
 
 
   return (
@@ -256,8 +259,11 @@ const ProfileEditPage: React.FC = () => {
                 {error}
               </div>
             )}
+
           </div>
         </form>
+
+
       </div>
     </div>
   );

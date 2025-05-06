@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { UserCircle, Mail, Loader2 } from "lucide-react";
+import { UserCircle, Mail, Loader2, Trash2 } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import { fetchProfile } from './profile-api';
+import { fetchProfile, deleteProfile } from './profile-api'; // Assuming deleteUserAccount will be added here
 import type { User } from './user-types';
 import { useAuthStore } from '@/auth/auth-store';
 
 const ProfilePage: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore(); // Added logout
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
   const [user, updateUser ] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     async function syncProfile() {
@@ -26,6 +27,26 @@ const ProfilePage: React.FC = () => {
     // Only run on mount
     // eslint-disable-next-line
   }, []);
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone.")) {
+      setIsDeleting(true);
+      try {
+        const success = await deleteProfile(); // This function needs to be implemented in profile-api.ts
+        if (success) {
+          alert("Your account has been successfully deleted.");
+          logout(); // This should trigger redirect via the isAuthenticated check
+        } else {
+          alert("Failed to delete account. Please try again or contact support.");
+        }
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        alert("An error occurred while deleting your account. Please try again.");
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -105,7 +126,7 @@ const ProfilePage: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="mt-8 flex justify-end gap-4">
+        <div className="mt-8 flex flex-wrap justify-end gap-4">
           <Link
             to="/profile/change-password"
             className="flex items-center gap-2 bg-white border border-blue-300 hover:bg-blue-50 text-blue-600 font-semibold px-5 py-2 rounded-lg shadow transition-colors"
@@ -121,6 +142,19 @@ const ProfilePage: React.FC = () => {
           >
             Edit Profile
           </Link>
+          <button
+            onClick={handleDeleteAccount}
+            disabled={isDeleting}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Delete Account"
+          >
+            {isDeleting ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Trash2 className="w-5 h-5" />
+            )}
+            {isDeleting ? "Deleting..." : "Delete Account"}
+          </button>
         </div>
       </div>
     </div>
