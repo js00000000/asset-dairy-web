@@ -53,7 +53,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   async login(email: string, password: string) {
     set({ isLoading: true, error: null });
     try {
-      await apiLogin(email, password);
+      const token = await apiLogin(email, password);
+      localStorage.setItem(ACCESS_TOKEN, token);
       set({ isAuthenticated: true, isLoading: false });
     } catch (error: any) {
       set({ error: error.message || 'Login failed', isLoading: false });
@@ -63,8 +64,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   async signup(name: string, username: string, email: string, password: string) {
     set({ isLoading: true, error: null });
     try {
-      await apiSignup(name, username, email, password);
-      set({ isLoading: false });
+      const token = await apiSignup(name, username, email, password);
+      localStorage.setItem(ACCESS_TOKEN, token);
+      set({ isAuthenticated: true, isLoading: false });
     } catch (error: any) {
       set({ error: error.message || 'Signup failed', isLoading: false });
     }

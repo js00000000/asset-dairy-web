@@ -4,11 +4,11 @@ import api, { apiNoAuth } from '@/lib/api';
 
 export const API_BASE = import.meta.env.VITE_BACKEND_HOST;
 
-export async function login(email: string, password: string): Promise<void> {
+export async function login(email: string, password: string): Promise<string> {
   try {
     const response = await apiNoAuth.post(`/auth/sign-in`, { email, password });
     const token: string = response.data.token;
-    localStorage.setItem(ACCESS_TOKEN, token);
+    return token;
   } catch (error: any) {
     let errMsg = 'Login failed';
     if (error.response?.data?.message) {
@@ -27,9 +27,11 @@ export async function logout(): Promise<void> {
   localStorage.removeItem(ACCESS_TOKEN);
 }
 
-export async function signup(name: string, username: string, email: string, password: string): Promise<void> {
+export async function signup(name: string, username: string, email: string, password: string): Promise<string> {
   try {
-    await apiNoAuth.post(`/auth/sign-up`, { name, username, email, password });
+    const response = await apiNoAuth.post(`/auth/sign-up`, { name, username, email, password });
+    const token: string = response.data.token;
+    return token;
   } catch (error: any) {
     let errMsg = 'Signup failed';
     if (error.response?.data?.message) {
