@@ -140,8 +140,19 @@ const ForgotPasswordPage: React.FC = () => {
 
           <div>
             {stage === 'verify' && (
-              <div className="text-center text-gray-600 mb-4">
-                Time Remaining: {formatTime(timeRemaining)}
+              <div className="flex items-center justify-center text-gray-600 mb-4 space-x-4">
+                <span>Time Remaining: {formatTime(timeRemaining)}</span>
+                <button 
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSendVerificationCode(e as unknown as React.FormEvent<HTMLFormElement>);
+                  }}
+                  className="text-indigo-600 hover:text-indigo-800 underline text-sm"
+                  disabled={isLoading}
+                >
+                  Resend Code
+                </button>
               </div>
             )}
             <Button 
