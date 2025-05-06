@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { UserCircle, Save, ArrowLeft, DollarSign, Calendar, Percent, User } from "lucide-react";
+import { Save, ArrowLeft, DollarSign, Calendar, Percent, User } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
@@ -112,11 +112,6 @@ const ProfileEditPage: React.FC = () => {
           <span>Back</span>
         </a>
         <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6 mt-6">
-          <div className="relative">
-            <span className="w-32 h-32 flex items-center justify-center rounded-full bg-blue-100 border-4 border-blue-300 shadow-lg">
-              <UserCircle className="w-20 h-20 text-blue-400" />
-            </span>
-          </div>
           <div className="w-full space-y-5">
             <Input
               type="text"

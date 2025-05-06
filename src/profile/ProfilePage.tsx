@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { UserCircle, Mail, Loader2, Trash2 } from "lucide-react";
+import { Mail, Loader2, Trash2, User as UserIcon, TrendingDown, Clock, Calendar, DollarSign, CreditCard } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import { fetchProfile, deleteProfile } from './profile-api'; // Assuming deleteUserAccount will be added here
+import { fetchProfile, deleteProfile } from './profile-api';
 import type { User } from './user-types';
 import { useAuthStore } from '@/auth/auth-store';
 
@@ -58,66 +58,40 @@ const ProfilePage: React.FC = () => {
  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
-      <div className="w-full max-w-xl bg-white shadow-xl rounded-3xl p-8 relative">
-        <div className="flex flex-col items-center gap-4">
-          <div className="relative">
-            <span className="w-32 h-32 flex items-center justify-center rounded-full bg-blue-100 border-4 border-blue-300 shadow-lg">
-              <UserCircle className="w-20 h-20 text-blue-400" />
-            </span>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800">{user?.name}</h2>
-          <div className="text-gray-500 font-mono text-sm">@{user?.username}</div>
-        </div>
-        <div className="flex flex-col gap-2 w-full mt-6">
-          <div className="flex items-center gap-2 text-gray-700">
-            <Mail className="w-5 h-5 text-blue-400" />
+      <div className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl overflow-hidden">
+        {/* Header with Profile Picture and Basic Info */}
+        <div className="bg-blue-600 text-white p-6 flex flex-col items-center">
+          <h2 className="text-3xl font-bold">{user?.name}</h2>
+          <div className="text-white/80 font-mono text-sm mt-1">@{user?.username}</div>
+          <div className="flex items-center gap-2 mt-3 text-white/90">
+            <Mail className="w-5 h-5" />
             <span>{user?.email}</span>
           </div>
         </div>
 
         {/* Investment Profile Section */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold text-blue-700 flex items-center gap-2 mb-3">
+        <div className="p-6">
+          <h3 className="text-xl font-semibold text-blue-700 flex items-center gap-3 mb-4 border-b pb-2">
             <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             Investment Profile
           </h3>
           {user?.investmentProfile ? (
-            <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-2 text-gray-700">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                <span>Age:</span>
-                <span className="font-semibold">{user.investmentProfile.age}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                <span>Max Acceptable Short-Term Loss (%):</span>
-                <span className="font-semibold">{user.investmentProfile.maxAcceptableShortTermLossPercentage}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M12 4v16"/><path d="M6 8v8"/><path d="M3 12h3"/><path d="M18 8v8"/><path d="M21 12h-3"/></svg>
-                <span>Expected Annualized Rate of Return (%):</span>
-                <span className="font-semibold">{user.investmentProfile.expectedAnnualizedRateOfReturn}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-                <span>Time Horizon:</span>
-                <span className="font-semibold">{user.investmentProfile.timeHorizon}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700 col-span-full">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
-                <span>Years Investing:</span>
-                <span className="font-semibold">{user.investmentProfile.yearsInvesting}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <span>Monthly Cash Flow:</span>
-                <span className="font-semibold">{user.investmentProfile.monthlyCashFlow.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <span>Default Currency:</span>
-                <span className="font-semibold">{user.investmentProfile.defaultCurrency}</span>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50/50 rounded-2xl p-6">
+              {[
+                { icon: <UserIcon className="w-5 h-5 text-blue-400" />, label: 'Age', value: user.investmentProfile.age },
+                { icon: <TrendingDown className="w-5 h-5 text-blue-400" />, label: 'Max Short-Term Loss (%)', value: user.investmentProfile.maxAcceptableShortTermLossPercentage },
+                { icon: <DollarSign className="w-5 h-5 text-blue-400" />, label: 'Expected Annual Return (%)', value: user.investmentProfile.expectedAnnualizedRateOfReturn },
+                { icon: <Clock className="w-5 h-5 text-blue-400" />, label: 'Time Horizon', value: user.investmentProfile.timeHorizon },
+                { icon: <Calendar className="w-5 h-5 text-blue-400" />, label: 'Years Investing', value: user.investmentProfile.yearsInvesting },
+                { icon: <DollarSign className="w-5 h-5 text-blue-400" />, label: 'Monthly Cash Flow', value: user.investmentProfile.monthlyCashFlow.toLocaleString() },
+                { icon: <CreditCard className="w-5 h-5 text-blue-400" />, label: 'Default Currency', value: user.investmentProfile.defaultCurrency, fullWidth: true }
+              ].map(({ icon, label, value, fullWidth = false }) => (
+                <div key={label} className={`flex items-center gap-3 text-gray-700 ${fullWidth ? 'col-span-full' : ''}`}>
+                  {icon}
+                  <span className="font-medium">{label}:</span>
+                  <span className="font-semibold">{value}</span>
+                </div>
+              ))}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-blue-200 bg-blue-50/30 p-6 text-center text-blue-500">
@@ -126,10 +100,12 @@ const ProfilePage: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="mt-8 flex flex-wrap justify-end gap-4">
+
+        {/* Action Buttons */}
+        <div className="bg-gray-50 p-6 flex flex-col sm:flex-row justify-end gap-4 border-t">
           <Link
             to="/profile/change-password"
-            className="flex items-center gap-2 bg-white border border-blue-300 hover:bg-blue-50 text-blue-600 font-semibold px-5 py-2 rounded-lg shadow transition-colors"
+            className="flex items-center justify-center gap-2 bg-white border border-blue-300 hover:bg-blue-50 text-blue-600 font-semibold px-5 py-2 rounded-lg shadow transition-colors w-full sm:w-auto"
             aria-label="Change Password"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -137,7 +113,7 @@ const ProfilePage: React.FC = () => {
           </Link>
           <Link
             to="/profile/edit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition flex items-center justify-center"
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition w-full sm:w-auto"
             aria-label="Edit Profile"
           >
             Edit Profile
@@ -145,7 +121,7 @@ const ProfilePage: React.FC = () => {
           <button
             onClick={handleDeleteAccount}
             disabled={isDeleting}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             aria-label="Delete Account"
           >
             {isDeleting ? (
