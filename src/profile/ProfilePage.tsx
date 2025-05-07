@@ -5,6 +5,8 @@ import { fetchProfile, deleteProfile } from './profile-api';
 import { useToast } from '@/lib/toast';
 import type { User } from './user-types';
 import { useAuthStore } from '@/auth/auth-store';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import Button from "@/components/ui/Button";
 
 const ProfilePage: React.FC = () => {
   const { isAuthenticated, logout } = useAuthStore();
@@ -16,6 +18,7 @@ const ProfilePage: React.FC = () => {
   const [user, updateUser ] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   useEffect(() => {
     async function syncProfile() {
@@ -32,23 +35,26 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const handleDeleteAccount = async () => {
-    if (window.confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone.")) {
-      setIsDeleting(true);
-      try {
-        const success = await deleteProfile(); // This function needs to be implemented in profile-api.ts
-        if (success) {
-          toast.success("Your account has been successfully deleted.");
-          logout();
-          navigate('/');
-        } else {
-          toast.error("Failed to delete account. Please try again or contact support.");
-        }
-      } catch (error) {
-        console.error("Error deleting account:", error);
-        alert("An error occurred while deleting your account. Please try again.");
-      } finally {
-        setIsDeleting(false);
+    setIsConfirmDialogOpen(true);
+  };
+
+  const confirmDeleteAccount = async () => {
+    setIsDeleting(true);
+    setIsConfirmDialogOpen(false);
+    try {
+      const success = await deleteProfile(); // This function needs to be implemented in profile-api.ts
+      if (success) {
+        toast.success("Your account has been successfully deleted.");
+        logout();
+        navigate('/');
+      } else {
+        toast.error("Failed to delete account. Please try again or contact support.");
       }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error("An error occurred while deleting your account. Please try again.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -59,7 +65,7 @@ const ProfilePage: React.FC = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl overflow-hidden">
@@ -122,22 +128,35 @@ const ProfilePage: React.FC = () => {
           >
             Edit Profile
           </Link>
-          <button
+          <Button
+            type="button"
             onClick={handleDeleteAccount}
             disabled={isDeleting}
-            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-            aria-label="Delete Account"
+            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition w-full sm:w-auto"
           >
             {isDeleting ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Deleting...
+              </>  
             ) : (
-              <Trash2 className="w-5 h-5" />
+              <>
+                <Trash2 className="w-4 h-4" />
+                Delete Account
+              </>
             )}
-            {isDeleting ? "Deleting..." : "Delete Account"}
-          </button>
+          </Button>
         </div>
       </div>
+      <ConfirmDialog 
+          isOpen={isConfirmDialogOpen}
+          onClose={() => setIsConfirmDialogOpen(false)}
+          onConfirm={confirmDeleteAccount}
+          title="Delete Account"
+          description="Are you sure you want to delete your account? This action is permanent and cannot be undone."
+        />
     </div>
+    
   );
 };
 
