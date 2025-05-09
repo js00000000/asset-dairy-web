@@ -20,22 +20,35 @@ const PortfolioPage: React.FC = () => {
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [holdings, setHoldings] = useState<Holding[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [holdingsLoading, setHoldingsLoading] = useState(true);
+  const [accountsLoading, setAccountsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Load trades and accounts from API on mount
   useEffect(() => {
-    setLoading(true);
+    setHoldingsLoading(true);
+    setAccountsLoading(true);
     setError(null);
-    Promise
-      .all([
-        loadHoldings().then(res => res),
-        fetchAccounts().then(res => res)])
-      .then(([holdings, accounts]) => {
+    
+    loadHoldings()
+      .then(holdings => {
         setHoldings(holdings);
-        setAccounts(accounts)
       })
-      .finally(() => setLoading(false));
+      .catch(err => {
+        console.error('Failed to load holdings:', err);
+        setError(err.message || 'Failed to load holdings');
+      })
+      .finally(() => setHoldingsLoading(false));
+
+    fetchAccounts()
+      .then(accounts => {
+        setAccounts(accounts);
+      })
+      .catch(err => {
+        console.error('Failed to load accounts:', err);
+        setError(err.message || 'Failed to load accounts');
+      })
+      .finally(() => setAccountsLoading(false));
   }, []);
 
   // Helper to load holdings with current prices
@@ -60,36 +73,29 @@ const PortfolioPage: React.FC = () => {
   };
 
   const handleAccountsUpdated = async () => {
-    setLoading(true);
+    setAccountsLoading(true);
     setError(null);
     try {
       setAccounts(await fetchAccounts());
     } catch (err: any) {
-      setError(err.message || 'Failed to reload data');
+      setError(err.message || 'Failed to reload accounts');
     } finally {
-      setLoading(false);
+      setAccountsLoading(false);
     }
   };
 
   const handleTradesChange = async (_newTxs: Trade[]) => {
-    setLoading(true);
+    setHoldingsLoading(true);
     setError(null);
     try {
       setHoldings(await loadHoldings());
     } catch (err: any) {
-      setError(err.message || 'Failed to reload data');
+      setError(err.message || 'Failed to reload holdings');
     } finally {
-      setLoading(false);
+      setHoldingsLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-blue-700 animate-pulse text-xl font-semibold">Loading portfolio...</div>
-      </div>
-    );
-  }
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -116,12 +122,15 @@ const PortfolioPage: React.FC = () => {
               <PlusCircle className="w-4 h-4" /> Add Account
             </Button>
           </div>
-          {accounts.length === 0 && (
+          {accountsLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <div className="text-blue-700 animate-pulse text-md font-semibold">Loading accounts...</div>
+            </div>
+          ) : accounts.length === 0 ? (
             <div className="flex items-center gap-2 text-slate-400 italic mb-3">
               <Wallet className="w-4 h-4" /> No account
             </div>
-          )}
-          {accounts.length > 0 && (
+          ) : (
             <AccountSummaryList 
               accounts={accounts} 
               onUpdated={handleAccountsUpdated} 
@@ -142,11 +151,11 @@ const PortfolioPage: React.FC = () => {
             accounts={accounts}
           />
         </section>
-        {/* Portfolio grid */}
+        {/* Holdings grid */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-blue-500" /> Portfolio
+              <TrendingUp className="w-6 h-6 text-blue-500" /> Holdings
             </h2>
             <Button
               variant="outline"
@@ -157,28 +166,33 @@ const PortfolioPage: React.FC = () => {
               <PlusCircle className="w-4 h-4" /> Add Trade
             </Button>
           </div>
-          {holdings.length === 0 && (
+          {holdingsLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <div className="text-blue-700 animate-pulse text-md font-semibold">Loading holdings...</div>
+            </div>
+          ) : holdings.length === 0 ? (
             <div className="flex items-center gap-2 text-slate-400 italic mb-3">
               <LineChart className="w-4 h-4" /> No holdings
             </div>
-          )}
-          <div className="relative z-10">
-            <div className="grid md:grid-cols-2 gap-8 relative">
-              {holdings.length > 0 && holdings.map((holding) => (
-                <AssetCard
-                  key={holding.ticker}
-                  ticker={holding.ticker}
-                  type={holding.assetType}
-                  quantity={holding.quantity}
-                  price={holding.price!}
-                  currency={holding.currency}
-                  averagePrice={holding.averagePrice}
-                  isZero={holding.quantity === 0}
-                  onClick={() => setSelectedAssetForTx({ ticker: holding.ticker, type: holding.assetType })}
-                />
-              ))}
+          ) : (
+            <div className="relative z-10">
+              <div className="grid md:grid-cols-2 gap-8 relative">
+                {holdings.map((holding) => (
+                  <AssetCard
+                    key={holding.ticker}
+                    ticker={holding.ticker}
+                    type={holding.assetType}
+                    quantity={holding.quantity}
+                    price={holding.price!}
+                    currency={holding.currency}
+                    averagePrice={holding.averagePrice}
+                    isZero={holding.quantity === 0}
+                    onClick={() => setSelectedAssetForTx({ ticker: holding.ticker, type: holding.assetType })}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </section>
         <TradeEditModal
           open={modalOpen || !!selectedAssetForTx}
@@ -189,11 +203,15 @@ const PortfolioPage: React.FC = () => {
           onTradesChange={handleTradesChange}
           accounts={accounts}
           ticker={selectedAssetForTx?.ticker}
-          assetType={selectedAssetForTx?.type === 'stock' || selectedAssetForTx?.type === 'crypto' ? selectedAssetForTx.type : undefined}
+          assetType={selectedAssetForTx?.type === 'stock' || selectedAssetForTx?.type === 'crypto' 
+            ? selectedAssetForTx.type 
+            : undefined}
         />
       </div>
       {/* Asset & Account Summary Table */}
-      <AssetAccountSummaryTable accounts={accounts} holdings={holdings} />
+      {!accountsLoading && !holdingsLoading && (
+        <AssetAccountSummaryTable accounts={accounts} holdings={holdings} />
+      )}
     </div>
   );
 };
