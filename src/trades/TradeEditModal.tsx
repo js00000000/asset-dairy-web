@@ -39,6 +39,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   }, [open, accounts, trade, accountId]);
 
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
   // Reset fields when modal opens/closes or trade changes
@@ -134,45 +135,54 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    if (trade) {
-      // Edit mode
-      const updatedTx = {
-        ...trade,
-        assetType,
-        type,
-        tradeDate,
-        quantity: Number(quantity),
-        price: Number(price),
-        accountId,
-        ticker,
-        reason,
-        currency,
-      };
-      const { updateTrade, fetchTrades } = await import('./trade-api');
-      await updateTrade(trade.id, updatedTx);
-      const updated = await fetchTrades();
-      onTradesChange(updated);
-      toast.success('Trade updated successfully');
-      onClose();
-    } else {
-      // Add mode
-      const tx = {
-        assetType,
-        type,
-        tradeDate,
-        quantity: Number(quantity),
-        price: Number(price),
-        accountId,
-        ticker,
-        reason,
-        currency,
-      };
-      const { createTrade, fetchTrades } = await import('./trade-api');
-      await createTrade(tx as Omit<Trade, 'id'>);
-      const updated = await fetchTrades();
-      onTradesChange(updated);
-      toast.success('Trade updated successfully');
-      onClose();
+    
+    setIsSubmitting(true);
+    try {
+      if (trade) {
+        // Edit mode
+        const updatedTx = {
+          ...trade,
+          assetType,
+          type,
+          tradeDate,
+          quantity: Number(quantity),
+          price: Number(price),
+          accountId,
+          ticker,
+          reason,
+          currency,
+        };
+        const { updateTrade, fetchTrades } = await import('./trade-api');
+        await updateTrade(trade.id, updatedTx);
+        const updated = await fetchTrades();
+        onTradesChange(updated);
+        toast.success('Trade updated successfully');
+        onClose();
+      } else {
+        // Add mode
+        const tx = {
+          assetType,
+          type,
+          tradeDate,
+          quantity: Number(quantity),
+          price: Number(price),
+          accountId,
+          ticker,
+          reason,
+          currency,
+        };
+        const { createTrade, fetchTrades } = await import('./trade-api');
+        await createTrade(tx as Omit<Trade, 'id'>);
+        const updated = await fetchTrades();
+        onTradesChange(updated);
+        toast.success('Trade added successfully');
+        onClose();
+      }
+    } catch (err) {
+      toast.error('Failed to save trade');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -331,9 +341,16 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
             variant="primary"
             size="lg"
             className="mt-2 w-full flex items-center justify-center gap-2"
-            disabled={!isTickerValid}
+            disabled={!isTickerValid || isSubmitting}
           >
-            Record {type === 'buy' ? 'Buy' : 'Sell'}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>{trade ? 'Update' : 'Add'} Trade</>
+            )}
           </Button>
         </form>
       </div>
