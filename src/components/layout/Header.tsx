@@ -25,13 +25,24 @@ const Header: React.FC = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo or Menu Bar (mobile) */}
           <div className="flex items-center md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md"
-              aria-label="Open menu"
-            >
-              <Menu size={28} />
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md"
+                aria-label="Open menu"
+              >
+                <Menu size={28} />
+              </button>
+            ) : (
+              <Link to="/" className="flex items-center space-x-2" aria-label={siteConfig.name}>
+                {siteConfig.logoUrl ? (
+                  <img src={siteConfig.logoUrl} alt={siteConfig.name} className="h-8 w-8 object-contain" />
+                ) : (
+                  <PiggyBank className="h-8 w-8 text-primary-600" />
+                )}
+                <span className="text-xl font-bold text-gray-900">{siteConfig.name}</span>
+              </Link>
+            )}
           </div>
           {/* Logo (desktop) */}
           <Link to="/" className="hidden md:flex items-center space-x-2" aria-label={siteConfig.name}>
@@ -45,11 +56,13 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6 items-center">
-            {siteConfig.nav.map((item) => (
-              <Link key={item.href} to={item.href} className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
-                {item.label}
-              </Link>
-            ))}
+            {siteConfig.nav
+              .filter(item => !['Portfolio', 'Trades'].includes(item.label) || isAuthenticated)
+              .map((item) => (
+                <Link key={item.href} to={item.href} className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
+                  {item.label}
+                </Link>
+              ))}
           </nav>
 
           {/* Desktop Actions */}
@@ -148,16 +161,18 @@ const Header: React.FC = () => {
                 </button>
               </div>
               <nav className="flex-1 flex flex-col justify-start px-4 py-6 space-y-4">
-                {siteConfig.nav.map((item) => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    className="text-base font-medium text-gray-700 hover:text-primary-600 transition-colors rounded px-2 py-2"
-                    onClick={closeMobileMenu}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {siteConfig.nav
+                  .filter(item => !['Portfolio', 'Trades'].includes(item.label) || isAuthenticated)
+                  .map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className="text-base font-medium text-gray-700 hover:text-primary-600 transition-colors rounded px-2 py-2"
+                      onClick={closeMobileMenu}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
               </nav>
             </motion.nav>
           </>
