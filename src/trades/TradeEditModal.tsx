@@ -7,6 +7,7 @@ import type { Trade } from './trade-types';
 import type { Account } from '@/accounts/account-types';
 import { getStockPrice, getCryptoPrice } from '@/lib/realTimePrice-api';
 import { useToast } from '@/lib/toast';
+import { formatPrice } from '@/lib/utils';
 
 interface TradeEditModalProps {
   open: boolean;
@@ -18,7 +19,7 @@ interface TradeEditModalProps {
   accounts: Account[];
 }
 
-const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialTicker, assetType: initialAssetType, accounts }: TradeEditModalProps) => {
+const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTradesChange, trade, ticker: initialTicker, assetType: initialAssetType, accounts }: TradeEditModalProps) => {
   const [type, setType] = useState<'buy' | 'sell'>(trade ? trade.type : 'buy');
   const [assetType, setAssetType] = useState<'stock' | 'crypto'>(trade ? trade.assetType : (initialAssetType || 'stock'));
   const [ticker, setTicker] = useState(trade ? trade.ticker : (initialTicker || ''));
@@ -135,7 +136,7 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    
+
     setIsSubmitting(true);
     try {
       if (trade) {
@@ -336,11 +337,17 @@ const TradeEditModal = ({ open, onClose, onTradesChange, trade, ticker: initialT
               {error}
             </div>
           )}
+          <div className="flex items-center justify-end">
+            <span className="text-sm text-blue-700 font-medium mr-2">Est. Cost:</span>
+            <span className="text-sm text-blue-900 font-bold">
+              {formatPrice(Number(quantity) * Number(price), currency)}
+            </span>
+          </div>
           <Button
             type="submit"
             variant="primary"
             size="lg"
-            className="mt-2 w-full flex items-center justify-center gap-2"
+            className="w-full flex items-center justify-center gap-2"
             disabled={!isTickerValid || isSubmitting}
           >
             {isSubmitting ? (

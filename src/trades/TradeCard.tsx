@@ -48,6 +48,8 @@ const TradeCard: React.FC<TradeCardProps> = ({
         <div className="text-right">{tx.quantity}</div>
         <div>Price</div>
         <div className="text-right">{formatPrice(tx.price, tx.currency)}</div>
+        <div>Total Cost</div>
+        <div className="text-right">{formatPrice(tx.quantity * tx.price, tx.currency)}</div>
         <div>Account</div>
         <div className="text-right">
           {accountMap[tx.accountId]?.name

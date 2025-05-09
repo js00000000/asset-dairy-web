@@ -158,6 +158,7 @@ const TradeListPage: React.FC = () => {
                   <th className="px-4 py-3 text-center">Ticker</th>
                   <th className="px-4 py-3 text-right">Quantity</th>
                   <th className="px-4 py-3 text-right">Price</th>
+                  <th className="px-4 py-3 text-right">Total Cost</th>
                   <th className="px-4 py-3 text-right">From Account</th>
                   <th className="px-4 py-3 text-center">Actions</th>
                 </tr>
@@ -192,6 +193,9 @@ const TradeListPage: React.FC = () => {
                     <td className="px-4 py-3 text-right">{tx.quantity}</td>
                     <td className="px-4 py-3 text-right">
                       {formatPrice(tx.price, tx.currency)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {formatPrice(tx.quantity * tx.price, tx.currency)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       {accountMap[tx.accountId]?.name
