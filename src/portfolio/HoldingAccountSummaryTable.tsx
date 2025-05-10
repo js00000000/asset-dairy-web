@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot, Bitcoin } from 'lucide-react';
 import type { Account } from '@/accounts/account-types';
-import type { User } from '@/profile/user-types';
-import { useEffect, useState } from 'react';
-import { profileApi } from '@/profile/profile-api';
+import { useEffect } from 'react';
 import type { Holding } from '@/holdings/holding-types';
 import { convertToUSD, formatPrice } from '@/lib/utils';
+import { useProfileStore } from '@/profile/profile-store';
+import { useToast } from '@/lib/toast';
 
 interface HoldingAccountSummaryTableProps {
   accounts: Account[];
@@ -13,28 +13,22 @@ interface HoldingAccountSummaryTableProps {
 }
 
 const HoldingAccountSummaryTable: React.FC<HoldingAccountSummaryTableProps> = ({ accounts, holdings: holdings }) => {
-  // Get user and investment profile from profile API
-  const [user, setUser] = useState<User | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const { profile, isProfileLoading, fetchProfile } = useProfileStore();
+  const toast = useToast();
+
   useEffect(() => {
     async function loadProfile() {
       try {
-        const profile = await profileApi.fetchProfile();
-        setUser(profile);
+        await fetchProfile();
       } catch {
-        setUser(null);
-      } finally {
-        setLoadingProfile(false);
+        toast.error('Failed to fetch profile');
       }
     }
     loadProfile();
-  }, []);
-  const investmentProfile = user?.investmentProfile;
-  // Export handler: export only assetRows as JSON with ticker, valueUSD, percentage
-  const [copied, setCopied] = React.useState(false);
-  const [aiCopied, setAiCopied] = React.useState(false);
-
-  // Helper to get export JSON string
+  }, [fetchProfile]);
+  const investmentProfile = profile?.investmentProfile;
+  const [copied, setCopied] = useState(false);
+  const [aiCopied, setAiCopied] = useState(false);
   const getPortfolioJson = () => {
     const assetExportRows = holdings.map(asset => {
       const valueUSD = asset.price !== null ? convertToUSD(asset.price * asset.quantity, 'USD') : 0;
@@ -155,8 +149,8 @@ const HoldingAccountSummaryTable: React.FC<HoldingAccountSummaryTableProps> = ({
                 ? 'Copied!'
                 : 'Copy AI Prompt'
             }
-            disabled={loadingProfile}
-            style={{ opacity: loadingProfile ? 0.6 : 1, cursor: loadingProfile ? 'not-allowed' : 'pointer' }}
+            disabled={isProfileLoading}
+            style={{ opacity: isProfileLoading ? 0.6 : 1, cursor: isProfileLoading ? 'not-allowed' : 'pointer' }}
           >
             <Bot className="w-4 h-4" /> {aiCopied ? 'Copied!' : 'Ask AI'}
           </button>

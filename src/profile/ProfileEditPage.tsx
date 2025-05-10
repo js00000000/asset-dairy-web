@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, DollarSign, Calendar, TrendingDown, User, Loader2 } from "lucide-react";
-import { Navigate } from "react-router-dom";
 import { TimeHorizon } from './user-investment-profile-types';
-import { useAuthStore } from '@/auth/auth-store';
 import Input from '@/components/ui/Input';
 import { useToast } from '@/lib/toast';
-import { profileApi } from './profile-api';
+import { useProfileStore } from './profile-store';
 
 const ProfileEditPage: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+  const { profile, isProfileSubmitting, fetchProfile, updateProfile } = useProfileStore();
   const [form, setForm] = useState({
     name: '',
     username: '',
@@ -26,33 +21,33 @@ const ProfileEditPage: React.FC = () => {
     },
   });
   
-  const [saving, setSaving] = useState(false);
   const toast = useToast();
 
-  // Load profile on mount (in case of refresh or store loss)
   useEffect(() => {
     async function loadProfile() {
-      const latest = await profileApi.fetchProfile();
-      if (latest) {
-        setForm({
-          name: latest.name || '',
-          username: latest.username || '',
-          investmentProfile: {
-            age: typeof latest.investmentProfile?.age === 'number' ? latest.investmentProfile.age : 0,
-            maxAcceptableShortTermLossPercentage: typeof latest.investmentProfile?.maxAcceptableShortTermLossPercentage === 'number' ? latest.investmentProfile.maxAcceptableShortTermLossPercentage : 20,
-            expectedAnnualizedRateOfReturn: typeof latest.investmentProfile?.expectedAnnualizedRateOfReturn === 'number' ? latest.investmentProfile.expectedAnnualizedRateOfReturn : 8,
-            timeHorizon: (latest.investmentProfile?.timeHorizon as TimeHorizon) || 'Medium-term (3-10 years)',
-            yearsInvesting: typeof latest.investmentProfile?.yearsInvesting === 'number' ? latest.investmentProfile.yearsInvesting : 0,
-            monthlyCashFlow: typeof latest.investmentProfile?.monthlyCashFlow === 'number' ? latest.investmentProfile.monthlyCashFlow : 0,
-            defaultCurrency: latest.investmentProfile?.defaultCurrency || 'USD',
-          },
-        });
-      }
+      await fetchProfile();
     }
     loadProfile();
-  }, []);
+  }, [fetchProfile]);
 
-  // Handlers
+  useEffect(() => {
+    if (profile) {
+      setForm({
+        name: profile.name || '',
+        username: profile.username || '',
+        investmentProfile: {
+          age: typeof profile.investmentProfile?.age === 'number' ? profile.investmentProfile.age : 0,
+          maxAcceptableShortTermLossPercentage: typeof profile.investmentProfile?.maxAcceptableShortTermLossPercentage === 'number' ? profile.investmentProfile.maxAcceptableShortTermLossPercentage : 20,
+          expectedAnnualizedRateOfReturn: typeof profile.investmentProfile?.expectedAnnualizedRateOfReturn === 'number' ? profile.investmentProfile.expectedAnnualizedRateOfReturn : 8,
+          timeHorizon: (profile.investmentProfile?.timeHorizon as TimeHorizon) || 'Medium-term (3-10 years)',
+          yearsInvesting: typeof profile.investmentProfile?.yearsInvesting === 'number' ? profile.investmentProfile.yearsInvesting : 0,
+          monthlyCashFlow: typeof profile.investmentProfile?.monthlyCashFlow === 'number' ? profile.investmentProfile.monthlyCashFlow : 0,
+          defaultCurrency: profile.investmentProfile?.defaultCurrency || 'USD',
+        },
+      });
+    }
+  }, [profile]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     if (
@@ -79,8 +74,7 @@ const ProfileEditPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setSaving(true);
-      await profileApi.updateProfile({
+      await updateProfile({
         ...form,
         investmentProfile: {
           ...form.investmentProfile,
@@ -88,12 +82,8 @@ const ProfileEditPage: React.FC = () => {
         },
       });
       toast.success('Profile updated successfully!');
-
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to update profile');
-
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -198,10 +188,10 @@ const ProfileEditPage: React.FC = () => {
           <div className="p-6 pt-0">
             <button
               type="submit"
-              disabled={saving}
+              disabled={isProfileSubmitting}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition flex items-center justify-center"
             >
-              {saving ? (
+              {isProfileSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                   Saving...

@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Mail, Loader2, Trash2, User as UserIcon, TrendingDown, Clock, Calendar, DollarSign, CreditCard } from "lucide-react";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { profileApi } from './profile-api';
+import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/lib/toast';
-import type { User } from './user-types';
 import { useAuthStore } from '@/auth/auth-store';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import Button from "@/components/ui/Button";
+import { useProfileStore } from './profile-store';
 
 const ProfilePage: React.FC = () => {
-  const { isAuthenticated, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const toast = useToast();
   const navigate = useNavigate();
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-  const [user, updateUser ] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const { profile, isProfileLoading, fetchProfile, deleteProfile } = useProfileStore();
 
   useEffect(() => {
-    async function syncProfile() {
-      setLoading(true);
-      const latest = await profileApi.fetchProfile();
-      if (latest) {
-        updateUser(latest);
-      }
-      setLoading(false);
-    }
-    syncProfile();
-    // Only run on mount
-    // eslint-disable-next-line
-  }, []);
+    fetchProfile()
+  }, [fetchProfile]);
 
   const handleDeleteAccount = async () => {
     setIsConfirmDialogOpen(true);
@@ -42,23 +27,18 @@ const ProfilePage: React.FC = () => {
     setIsDeleting(true);
     setIsConfirmDialogOpen(false);
     try {
-      const success = await profileApi.deleteProfile(); // This function needs to be implemented in profile-api.ts
-      if (success) {
-        toast.success("Your account has been successfully deleted.");
-        logout();
-        navigate('/');
-      } else {
-        toast.error("Failed to delete account. Please try again or contact support.");
-      }
+      await deleteProfile();
+      toast.success("Your account has been successfully deleted.");
+      logout();
+      navigate('/');
     } catch (error) {
-      console.error("Error deleting account:", error);
-      toast.error("An error occurred while deleting your account. Please try again.");
+      toast.error("Failed to delete account. Please try again or contact support.");
     } finally {
       setIsDeleting(false);
     }
   };
 
-  if (loading) {
+  if (isProfileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
         <Loader2 className="w-12 h-12 animate-spin text-blue-400" />
@@ -71,11 +51,11 @@ const ProfilePage: React.FC = () => {
       <div className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl overflow-hidden">
         {/* Header with Profile Picture and Basic Info */}
         <div className="bg-blue-600 text-white p-6 flex flex-col items-center">
-          <h2 className="text-3xl font-bold">{user?.name}</h2>
-          <div className="text-white/80 font-mono text-sm mt-1">@{user?.username}</div>
+          <h2 className="text-3xl font-bold">{profile?.name}</h2>
+          <div className="text-white/80 font-mono text-sm mt-1">@{profile?.username}</div>
           <div className="flex items-center gap-2 mt-3 text-white/90">
             <Mail className="w-5 h-5" />
-            <span>{user?.email}</span>
+            <span>{profile?.email}</span>
           </div>
         </div>
 
@@ -85,16 +65,16 @@ const ProfilePage: React.FC = () => {
             <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             Investment Profile
           </h3>
-          {user?.investmentProfile ? (
+          {profile?.investmentProfile ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50/50 rounded-2xl p-6">
               {[
-                { icon: <UserIcon className="w-5 h-5 text-blue-400" />, label: 'Age', value: user.investmentProfile.age },
-                { icon: <TrendingDown className="w-5 h-5 text-blue-400" />, label: 'Max Short-Term Loss (%)', value: user.investmentProfile.maxAcceptableShortTermLossPercentage },
-                { icon: <DollarSign className="w-5 h-5 text-blue-400" />, label: 'Expected Annual Return (%)', value: user.investmentProfile.expectedAnnualizedRateOfReturn },
-                { icon: <Clock className="w-5 h-5 text-blue-400" />, label: 'Time Horizon', value: user.investmentProfile.timeHorizon },
-                { icon: <Calendar className="w-5 h-5 text-blue-400" />, label: 'Years Investing', value: user.investmentProfile.yearsInvesting },
-                { icon: <DollarSign className="w-5 h-5 text-blue-400" />, label: 'Monthly Cash Flow', value: user.investmentProfile.monthlyCashFlow.toLocaleString() },
-                { icon: <CreditCard className="w-5 h-5 text-blue-400" />, label: 'Default Currency', value: user.investmentProfile.defaultCurrency, fullWidth: true }
+                { icon: <UserIcon className="w-5 h-5 text-blue-400" />, label: 'Age', value: profile.investmentProfile.age },
+                { icon: <TrendingDown className="w-5 h-5 text-blue-400" />, label: 'Max Short-Term Loss (%)', value: profile.investmentProfile.maxAcceptableShortTermLossPercentage },
+                { icon: <DollarSign className="w-5 h-5 text-blue-400" />, label: 'Expected Annual Return (%)', value: profile.investmentProfile.expectedAnnualizedRateOfReturn },
+                { icon: <Clock className="w-5 h-5 text-blue-400" />, label: 'Time Horizon', value: profile.investmentProfile.timeHorizon },
+                { icon: <Calendar className="w-5 h-5 text-blue-400" />, label: 'Years Investing', value: profile.investmentProfile.yearsInvesting },
+                { icon: <DollarSign className="w-5 h-5 text-blue-400" />, label: 'Monthly Cash Flow', value: profile.investmentProfile.monthlyCashFlow.toLocaleString() },
+                { icon: <CreditCard className="w-5 h-5 text-blue-400" />, label: 'Default Currency', value: profile.investmentProfile.defaultCurrency, fullWidth: true }
               ].map(({ icon, label, value, fullWidth = false }) => (
                 <div key={label} className={`flex items-center gap-3 text-gray-700 ${fullWidth ? 'col-span-full' : ''}`}>
                   {icon}

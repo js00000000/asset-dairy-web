@@ -19,16 +19,6 @@ async function updateProfile(data: Partial<User>): Promise<User> {
   }
 }
 
-async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
-  try {
-    await api.post('/profile/change-password', { currentPassword, newPassword });
-  } catch (err: any) {
-    let errMsg = 'Change password failed';
-    if (err.response?.data?.message) errMsg = err.response.data.message;
-    throw new Error(errMsg);
-  }
-}
-
 async function deleteProfile(): Promise<boolean> {
   try {
     // Assuming your API returns a 200 OK or 204 No Content on successful deletion
@@ -45,6 +35,5 @@ async function deleteProfile(): Promise<boolean> {
 export const profileApi = {
   fetchProfile,
   updateProfile,
-  changePassword,
   deleteProfile,
 };
