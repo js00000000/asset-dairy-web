@@ -10,7 +10,7 @@ import type { Trade } from '@/trades/trade-types';
 import { AccountApi } from '@/accounts/account-api';
 import type { Account } from '@/accounts/account-types';
 import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
-import { fetchHoldings } from '@/holdings/holding-api';
+import { HoldingApi } from '@/holdings/holding-api';
 import type { Holding } from '@/holdings/holding-types';
 
 const PortfolioPage: React.FC = () => {
@@ -55,7 +55,7 @@ const PortfolioPage: React.FC = () => {
   const loadHoldings = async () => {
     try {
       // Fetch holdings from API
-      const holdings = await fetchHoldings();
+      const holdings = await HoldingApi.fetchHoldings();
 
       // Get current prices for each holding
       const holdingsWithPrices = await Promise.all(holdings.map(async (holding) => ({
