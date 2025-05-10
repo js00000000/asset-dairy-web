@@ -1,7 +1,7 @@
 import { Trade } from './trade-types';
 import api from '@/lib/api';
 
-export async function fetchTrades(): Promise<Trade[]> {
+async function fetchTrades(): Promise<Trade[]> {
   try {
     const res = await api.get<Trade[]>('/trades');
     return res.data;
@@ -10,7 +10,7 @@ export async function fetchTrades(): Promise<Trade[]> {
   }
 }
 
-export async function createTrade(trade: Omit<Trade, 'id'>): Promise<Trade> {
+async function createTrade(trade: Omit<Trade, 'id'>): Promise<Trade> {
   try {
     const res = await api.post<Trade>('/trades', trade);
     return res.data;
@@ -19,7 +19,7 @@ export async function createTrade(trade: Omit<Trade, 'id'>): Promise<Trade> {
   }
 }
 
-export async function updateTrade(id: number, data: Partial<Trade>): Promise<Trade> {
+async function updateTrade(id: number, data: Partial<Trade>): Promise<Trade> {
   try {
     const res = await api.put<Trade>(`/trades/${id}`, data);
     return res.data;
@@ -28,7 +28,7 @@ export async function updateTrade(id: number, data: Partial<Trade>): Promise<Tra
   }
 }
 
-export async function deleteTrade(id: number): Promise<void> {
+async function deleteTrade(id: number): Promise<void> {
   try {
     await api.delete(`/trades/${id}`);
   } catch (err: any) {

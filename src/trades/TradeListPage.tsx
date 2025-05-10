@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Search, TrendingUp, Bitcoin, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
 import ReasonTooltip from '@/components/ui/ReasonTooltip';
-import { fetchTrades, deleteTrade } from './trade-api';
+import { tradeApi } from './trade-api';
 import { useToast } from '@/lib/toast';
 import type { Trade } from './trade-types';
 import Button from '@/components/ui/Button';
@@ -44,7 +44,7 @@ const TradeListPage: React.FC = () => {
     setLoading(true);
     Promise
       .all([
-        fetchTrades().then(res => res),
+        tradeApi.fetchTrades().then(res => res),
         fetchAccounts().then(res => res)])
       .then(([trades, accounts]) => {
         setTrades(trades);
@@ -78,8 +78,8 @@ const TradeListPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     setDeletingId(id);
     try {
-      await deleteTrade(id);
-      const updatedTrades = await fetchTrades();
+      await tradeApi.deleteTrade(id);
+      const updatedTrades = await tradeApi.fetchTrades();
       setTrades(updatedTrades);
       toast.success('Trade deleted successfully');
     } finally {

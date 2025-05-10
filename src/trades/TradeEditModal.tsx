@@ -8,6 +8,7 @@ import type { Account } from '@/accounts/account-types';
 import { getStockPrice, getCryptoPrice } from '@/lib/realTimePrice-api';
 import { useToast } from '@/lib/toast';
 import { formatPrice } from '@/lib/utils';
+import { tradeApi } from './trade-api';
 
 interface TradeEditModalProps {
   open: boolean;
@@ -153,9 +154,8 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
           reason,
           currency,
         };
-        const { updateTrade, fetchTrades } = await import('./trade-api');
-        await updateTrade(trade.id, updatedTx);
-        const updated = await fetchTrades();
+        await tradeApi.updateTrade(trade.id, updatedTx);
+        const updated = await tradeApi.fetchTrades();
         onTradesChange(updated);
         toast.success('Trade updated successfully');
         onClose();
@@ -172,9 +172,8 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
           reason,
           currency,
         };
-        const { createTrade, fetchTrades } = await import('./trade-api');
-        await createTrade(tx as Omit<Trade, 'id'>);
-        const updated = await fetchTrades();
+        await tradeApi.createTrade(tx);
+        const updated = await tradeApi.fetchTrades();
         onTradesChange(updated);
         toast.success('Trade added successfully');
         onClose();
