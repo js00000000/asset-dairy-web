@@ -11,8 +11,8 @@ import TradeCard from './TradeCard';
 import TradeLoadingState from './TradeLoadingState';
 import TradeEmptyState from './TradeEmptyState';
 import type { Account } from '@/accounts/account-types';
-import { AccountApi } from '@/accounts/account-api';
 import { formatPrice } from "@/lib/utils.ts";
+import { useAccountStore } from '@/accounts/account-store';
 
 const assetTypeIcons = {
   stock: <TrendingUp className="w-4 h-4 text-blue-500" />,
@@ -29,11 +29,8 @@ const TradeListPage: React.FC = () => {
   const [filterType, setFilterType] = useState<"all" | "stock" | "crypto">("all");
   const [search, setSearch] = useState("");
   const [sortDesc, setSortDesc] = useState(true);
+  const { accounts, fetchAccounts } = useAccountStore();
 
-  // Load accounts once on mount
-  const [accounts, setAccounts] = useState<Account[]>([]);
-
-  // Map accountId to Account
   const accountMap = useMemo(() => {
     const map: Record<string, Account> = {};
     accounts.forEach(acc => { map[acc.id] = acc; });
@@ -44,11 +41,11 @@ const TradeListPage: React.FC = () => {
     setLoading(true);
     Promise
       .all([
-        tradeApi.fetchTrades().then(res => res),
-        AccountApi.fetchAccounts().then(res => res)])
-      .then(([trades, accounts]) => {
+        tradeApi.fetchTrades(),
+        fetchAccounts()
+      ])
+      .then(([trades]) => {
         setTrades(trades);
-        setAccounts(accounts)
       })
       .finally(() => setLoading(false));
   }, []);

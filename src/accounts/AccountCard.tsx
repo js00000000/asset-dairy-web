@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { Wallet, Trash2 } from "lucide-react";
 import type { Account } from './account-types';
-import { AccountApi } from './account-api';
 import { useToast } from '@/lib/toast';
 import Button from '@/components/ui/Button';
+import { useAccountStore } from "./account-store";
 
 export interface AccountCardProps {
   account: Account;
   onClick?: () => void;
-  onDelete?: (accountId: string) => void;
 }
 
 const currencySymbols: Record<string, string> = {
@@ -16,11 +15,11 @@ const currencySymbols: Record<string, string> = {
   TWD: "NT$",
 };
 
-const AccountCard: React.FC<AccountCardProps> = ({ account, onClick, onDelete }) => {
+const AccountCard: React.FC<AccountCardProps> = ({ account, onClick }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const toast = useToast();
+  const { deleteAccount, error } = useAccountStore();
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -30,20 +29,17 @@ const AccountCard: React.FC<AccountCardProps> = ({ account, onClick, onDelete })
   const handleCancel = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowConfirm(false);
-    setError(null);
   };
 
   const handleConfirmDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setDeleting(true);
-    setError(null);
     try {
-      await AccountApi.deleteAccount(account.id);
+      await deleteAccount(account.id);
       toast.success('Account deleted successfully');
       setShowConfirm(false);
-      if (onDelete) onDelete(account.id);
     } catch (err: any) {
-      toast.error(err.message || "Failed to delete account");
+      toast.error(error || "Failed to delete account");
     } finally {
       setDeleting(false);
     }

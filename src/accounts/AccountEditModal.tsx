@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
 import { Account } from './account-types';
-import { AccountApi } from './account-api';
 import Input from '@/components/ui/Input';
 import { useToast } from '@/lib/toast';
+import { useAccountStore } from "./account-store";
 
 const currencyOptions = [
   { label: "USD - US Dollar", value: "USD" },
@@ -15,10 +15,9 @@ interface Props {
   accountId?: string | null; // If null or undefined, create mode
   accounts: Account[];
   onClose: () => void;
-  onUpdated: () => void;
 }
 
-export default function AccountEditModal({ open, accountId, accounts, onClose, onUpdated }: Props) {
+export default function AccountEditModal({ open, accountId, accounts, onClose }: Props) {
   const isCreate = !accountId;
   const [account, setAccount] = useState<Account | null>(null);
   const [name, setName] = useState("");
@@ -27,8 +26,8 @@ export default function AccountEditModal({ open, accountId, accounts, onClose, o
   const [errors, setErrors] = useState<{ name?: string; balance?: string }>({});
   const [loading, setLoading] = useState(!isCreate);
   const [submitting, setSubmitting] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
   const toast = useToast();
+  const { createAccount, updateAccount, error } = useAccountStore();
 
   useEffect(() => {
     if (!open) return;
@@ -62,26 +61,24 @@ export default function AccountEditModal({ open, accountId, accounts, onClose, o
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setApiError(null);
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length === 0) {
       setSubmitting(true);
       try {
         if (isCreate) {
-          await AccountApi.createAccount({
+          await createAccount({
             name: name.trim(),
             currency,
             balance: parseFloat(balance),
           });
         } else if (account) {
-          await AccountApi.updateAccount(account.id, {
+          await updateAccount(account.id, {
             name: name.trim(),
             currency,
             balance: parseFloat(balance),
           });
         }
-        onUpdated();
         toast.success(isCreate ? "Account created successfully" : "Account updated successfully");
         onClose();
       } catch (err) {
@@ -193,8 +190,8 @@ export default function AccountEditModal({ open, accountId, accounts, onClose, o
               fullWidth
             />
           </div>
-          {apiError && (
-            <div className="text-red-600 font-semibold text-center animate-pulse">{apiError}</div>
+          {error && (
+            <div className="text-red-600 font-semibold text-center animate-pulse">{error}</div>
           )}
           <button
             type="submit"

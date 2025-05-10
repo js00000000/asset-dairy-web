@@ -7,11 +7,11 @@ import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
 import AccountEditModal from '@/accounts/AccountEditModal';
 import type { Trade } from '@/trades/trade-types';
-import { AccountApi } from '@/accounts/account-api';
-import type { Account } from '@/accounts/account-types';
 import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
 import { HoldingApi } from '@/holdings/holding-api';
 import type { Holding } from '@/holdings/holding-types';
+import { useAccountStore } from '@/accounts/account-store';
+import { useToast } from '@/lib/toast';
 
 const PortfolioPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,16 +19,13 @@ const PortfolioPage: React.FC = () => {
   const [selectedAssetForTx, setSelectedAssetForTx] = useState<null | { ticker: string; type: string }>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [holdings, setHoldings] = useState<Holding[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [holdingsLoading, setHoldingsLoading] = useState(true);
-  const [accountsLoading, setAccountsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { accounts, isLoading: isLoadingAccounts, fetchAccounts, error: accountError } = useAccountStore();
+  const toast = useToast();
 
   // Load trades and accounts from API on mount
   useEffect(() => {
     setHoldingsLoading(true);
-    setAccountsLoading(true);
-    setError(null);
 
     loadHoldings()
       .then(holdings => {
@@ -36,19 +33,15 @@ const PortfolioPage: React.FC = () => {
       })
       .catch(err => {
         console.error('Failed to load holdings:', err);
-        setError(err.message || 'Failed to load holdings');
+        toast.error(accountError || 'Failed to load holdings');
       })
       .finally(() => setHoldingsLoading(false));
 
-    AccountApi.fetchAccounts()
-      .then(accounts => {
-        setAccounts(accounts);
-      })
+    fetchAccounts()
       .catch(err => {
         console.error('Failed to load accounts:', err);
-        setError(err.message || 'Failed to load accounts');
-      })
-      .finally(() => setAccountsLoading(false));
+        toast.error(accountError || 'Failed to load accounts');
+      });
   }, []);
 
   // Helper to load holdings with current prices
@@ -72,34 +65,21 @@ const PortfolioPage: React.FC = () => {
     }
   };
 
-  const handleAccountsUpdated = async () => {
-    setAccountsLoading(true);
-    setError(null);
-    try {
-      setAccounts(await AccountApi.fetchAccounts());
-    } catch (err: any) {
-      setError(err.message || 'Failed to reload accounts');
-    } finally {
-      setAccountsLoading(false);
-    }
-  };
-
   const handleTradesChange = async (_newTxs: Trade[]) => {
     setHoldingsLoading(true);
-    setError(null);
     try {
       setHoldings(await loadHoldings());
     } catch (err: any) {
-      setError(err.message || 'Failed to reload holdings');
+      toast.error(accountError || 'Failed to reload holdings');
     } finally {
       setHoldingsLoading(false);
     }
   };
 
-  if (error) {
+  if (accountError) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-600 text-lg font-semibold">{error}</div>
+        <div className="text-red-600 text-lg font-semibold">{accountError}</div>
       </div>
     );
   }
@@ -122,7 +102,7 @@ const PortfolioPage: React.FC = () => {
               <PlusCircle className="w-4 h-4" /> Add Account
             </Button>
           </div>
-          {accountsLoading ? (
+          {isLoadingAccounts ? (
             <div className="flex items-center justify-center py-4">
               <div className="text-blue-700 animate-pulse text-md font-semibold">Loading accounts...</div>
             </div>
@@ -133,7 +113,6 @@ const PortfolioPage: React.FC = () => {
           ) : (
             <AccountSummaryList
               accounts={accounts}
-              onUpdated={handleAccountsUpdated}
               onEdit={(accountId) => {
                 setSelectedAccountId(accountId);
                 setAccountModalOpen(true);
@@ -147,7 +126,6 @@ const PortfolioPage: React.FC = () => {
               setAccountModalOpen(false);
               setSelectedAccountId(null);
             }}
-            onUpdated={handleAccountsUpdated}
             accounts={accounts}
           />
         </section>
@@ -209,7 +187,7 @@ const PortfolioPage: React.FC = () => {
         />
       </div>
       {/* Asset & Account Summary Table */}
-      {!accountsLoading && !holdingsLoading && (
+      {!isLoadingAccounts && !holdingsLoading && (
         <AssetAccountSummaryTable accounts={accounts} holdings={holdings} />
       )}
     </div>
