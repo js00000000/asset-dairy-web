@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { siteConfig } from '@/config/site.config';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -19,13 +19,13 @@ const RegisterPage: React.FC = () => {
   const { signup, isLoading, error, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       navigate('/portfolio');
     }
   }, [isAuthenticated, navigate]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     if (signupSuccess && countdown > 0) {
       timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
@@ -63,7 +63,7 @@ const RegisterPage: React.FC = () => {
     navigate('/login');
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       navigate('/portfolio');
     }

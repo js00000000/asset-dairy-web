@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Info } from "lucide-react";
 import Button from './Button';
 
@@ -7,7 +7,7 @@ interface ReasonTooltipProps {
 }
 
 const ReasonTooltip: React.FC<ReasonTooltipProps> = ({ reason }) => {
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
   return (
     <div className="relative inline-block text-left">
       <Button

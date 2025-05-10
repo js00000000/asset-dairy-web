@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, TrendingUp, DollarSign, ArrowDownCircle, ArrowUpCircle, Bitcoin, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -34,7 +34,7 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
   const [isTickerValid, setIsTickerValid] = useState(false);
   const { createTrade, updateTrade, isLoading } = useTradeStore();
 
-  React.useEffect(() => {
+  useEffect(() => {
     // If creating (no trade) and no accountId, set to first account
     if (!trade && accounts.length > 0 && !accountId) {
       setAccountId(accounts[0].id);
@@ -45,7 +45,7 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
   const toast = useToast();
 
   // Reset fields when modal opens/closes or trade changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
       setType(trade ? trade.type : 'buy');
       setAssetType(trade ? trade.assetType : (initialAssetType || 'stock'));
@@ -103,7 +103,7 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
   };
 
   // Validate ticker when it changes
-  React.useEffect(() => {
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       validateTicker(ticker);
     }, 500); // Debounce for 500ms
