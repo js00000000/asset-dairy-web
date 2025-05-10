@@ -32,8 +32,17 @@ async function deleteProfile(): Promise<boolean> {
   }
 }
 
+async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  try {
+    await api.post('/profile/change-password', { currentPassword, newPassword });
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || 'Failed to change password');
+  }
+}
+
 export const profileApi = {
   fetchProfile,
   updateProfile,
   deleteProfile,
+  changePassword,
 };

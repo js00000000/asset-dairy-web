@@ -11,6 +11,7 @@ interface ProfileState {
   fetchProfile: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
   deleteProfile: () => Promise<boolean>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   resetProfileError: () => void;
 }
 
@@ -60,6 +61,19 @@ export const useProfileStore = create<ProfileState>()(
           profileError: err instanceof Error ? err.message : 'Failed to delete profile',
         });
         return false;
+      } finally {
+        set({ isProfileSubmitting: false });
+      }
+    },
+
+    changePassword: async (currentPassword: string, newPassword: string) => {
+      set({ isProfileSubmitting: true, profileError: null });
+      try {
+        await profileApi.changePassword(currentPassword, newPassword);
+      } catch (err) {
+        set({
+          profileError: err instanceof Error ? err.message : 'Failed to update profile',
+        });
       } finally {
         set({ isProfileSubmitting: false });
       }

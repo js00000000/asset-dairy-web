@@ -12,7 +12,6 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   checkAuth: () => Promise<void>;
 }
 
@@ -34,19 +33,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ isAuthenticated: true, isLoading: false, error: null });
     } catch {
       await this.logout();
-    }
-  },
-
-  async changePassword(currentPassword: string, newPassword: string) {
-    set({ isLoading: true, error: null });
-    try {
-      await profileApi.changePassword(currentPassword, newPassword);
-      set({ isLoading: false });
-    } catch (error: any) {
-      set({
-        error: error.message || 'Password change failed',
-        isLoading: false,
-      });
     }
   },
 

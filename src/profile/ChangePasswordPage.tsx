@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useAuthStore } from '@/auth/auth-store';
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Save, ArrowLeft } from "lucide-react";
 import Input from '@/components/ui/Input';
 import { useToast } from '@/lib/toast';
+import { useProfileStore } from './profile-store';
 
 const ChangePasswordPage: React.FC = () => {
-  const { changePassword, isLoading, error } = useAuthStore();
+  const { changePassword, isProfileSubmitting, profileError } = useProfileStore();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -46,7 +46,7 @@ const ChangePasswordPage: React.FC = () => {
       toast.success('Password changed successfully');
       navigate("/profile");
     } catch (err) {
-      toast.error(error || 'Failed to change password');
+      toast.error(profileError || 'Failed to change password');
     }
   };
 
@@ -103,19 +103,19 @@ const ChangePasswordPage: React.FC = () => {
               {formError}
             </div>
           )}
-          {error && (
+          {profileError && (
             <div className="text-red-600 font-semibold text-center mt-2 animate-pulse">
-              {error}
+              {profileError}
             </div>
           )}
 
           <button
             type="submit"
             className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-xl shadow transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-            disabled={isLoading}
+            disabled={isProfileSubmitting}
           >
             <Save className="w-5 h-5" />
-            {isLoading ? "Saving..." : "Change Password"}
+            {isProfileSubmitting ? "Saving..." : "Change Password"}
           </button>
         </form>
       </div>
