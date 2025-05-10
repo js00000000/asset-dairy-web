@@ -1,12 +1,7 @@
-/**
- * Domain-specific API functions for account actions
- * Extracted from services/api.ts
- */
-
 import { Account } from './account-types';
 import api from '@/lib/api';
 
-export async function fetchAccounts(): Promise<Account[]> {
+async function fetchAccounts(): Promise<Account[]> {
   try {
     const res = await api.get<Account[]>('/accounts');
     return res.data;
@@ -15,7 +10,7 @@ export async function fetchAccounts(): Promise<Account[]> {
   }
 }
 
-export async function createAccount(account: Omit<Account, 'id'>): Promise<Account> {
+async function createAccount(account: Omit<Account, 'id'>): Promise<Account> {
   try {
     const res = await api.post<Account>('/accounts', account);
     return res.data;
@@ -25,7 +20,7 @@ export async function createAccount(account: Omit<Account, 'id'>): Promise<Accou
 }
 
 
-export async function updateAccount(id: string, data: Partial<Omit<Account, 'id'>>): Promise<Account> {
+async function updateAccount(id: string, data: Partial<Omit<Account, 'id'>>): Promise<Account> {
   try {
     const res = await api.put<Account>(`/accounts/${id}`, data);
     return res.data;
@@ -34,7 +29,7 @@ export async function updateAccount(id: string, data: Partial<Omit<Account, 'id'
   }
 }
 
-export async function deleteAccount(id: string): Promise<void> {
+async function deleteAccount(id: string): Promise<void> {
   try {
     await api.delete(`/accounts/${id}`);
   } catch (err: any) {
@@ -42,3 +37,9 @@ export async function deleteAccount(id: string): Promise<void> {
   }
 }
 
+export const AccountApi = {
+  fetchAccounts,
+  createAccount,
+  updateAccount,
+  deleteAccount,
+}

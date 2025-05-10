@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Wallet, DollarSign, Save, Loader2, X } from "lucide-react";
 import { Account } from './account-types';
-import { createAccount, updateAccount } from './account-api';
+import { AccountApi } from './account-api';
 import Input from '@/components/ui/Input';
 import { useToast } from '@/lib/toast';
 
@@ -69,13 +69,13 @@ export default function AccountEditModal({ open, accountId, accounts, onClose, o
       setSubmitting(true);
       try {
         if (isCreate) {
-          await createAccount({
+          await AccountApi.createAccount({
             name: name.trim(),
             currency,
             balance: parseFloat(balance),
           });
         } else if (account) {
-          await updateAccount(account.id, {
+          await AccountApi.updateAccount(account.id, {
             name: name.trim(),
             currency,
             balance: parseFloat(balance),

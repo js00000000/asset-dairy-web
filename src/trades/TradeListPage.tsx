@@ -11,7 +11,7 @@ import TradeCard from './TradeCard';
 import TradeLoadingState from './TradeLoadingState';
 import TradeEmptyState from './TradeEmptyState';
 import type { Account } from '@/accounts/account-types';
-import { fetchAccounts } from '@/accounts/account-api';
+import { AccountApi } from '@/accounts/account-api';
 import { formatPrice } from "@/lib/utils.ts";
 
 const assetTypeIcons = {
@@ -45,7 +45,7 @@ const TradeListPage: React.FC = () => {
     Promise
       .all([
         tradeApi.fetchTrades().then(res => res),
-        fetchAccounts().then(res => res)])
+        AccountApi.fetchAccounts().then(res => res)])
       .then(([trades, accounts]) => {
         setTrades(trades);
         setAccounts(accounts)

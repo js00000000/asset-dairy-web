@@ -7,7 +7,7 @@ import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
 import AccountEditModal from '@/accounts/AccountEditModal';
 import type { Trade } from '@/trades/trade-types';
-import { fetchAccounts } from '@/accounts/account-api';
+import { AccountApi } from '@/accounts/account-api';
 import type { Account } from '@/accounts/account-types';
 import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
 import { fetchHoldings } from '@/holdings/holding-api';
@@ -29,7 +29,7 @@ const PortfolioPage: React.FC = () => {
     setHoldingsLoading(true);
     setAccountsLoading(true);
     setError(null);
-    
+
     loadHoldings()
       .then(holdings => {
         setHoldings(holdings);
@@ -40,7 +40,7 @@ const PortfolioPage: React.FC = () => {
       })
       .finally(() => setHoldingsLoading(false));
 
-    fetchAccounts()
+    AccountApi.fetchAccounts()
       .then(accounts => {
         setAccounts(accounts);
       })
@@ -76,7 +76,7 @@ const PortfolioPage: React.FC = () => {
     setAccountsLoading(true);
     setError(null);
     try {
-      setAccounts(await fetchAccounts());
+      setAccounts(await AccountApi.fetchAccounts());
     } catch (err: any) {
       setError(err.message || 'Failed to reload accounts');
     } finally {
@@ -131,9 +131,9 @@ const PortfolioPage: React.FC = () => {
               <Wallet className="w-4 h-4" /> No account
             </div>
           ) : (
-            <AccountSummaryList 
-              accounts={accounts} 
-              onUpdated={handleAccountsUpdated} 
+            <AccountSummaryList
+              accounts={accounts}
+              onUpdated={handleAccountsUpdated}
               onEdit={(accountId) => {
                 setSelectedAccountId(accountId);
                 setAccountModalOpen(true);
@@ -203,8 +203,8 @@ const PortfolioPage: React.FC = () => {
           onTradesChange={handleTradesChange}
           accounts={accounts}
           ticker={selectedAssetForTx?.ticker}
-          assetType={selectedAssetForTx?.type === 'stock' || selectedAssetForTx?.type === 'crypto' 
-            ? selectedAssetForTx.type 
+          assetType={selectedAssetForTx?.type === 'stock' || selectedAssetForTx?.type === 'crypto'
+            ? selectedAssetForTx.type
             : undefined}
         />
       </div>

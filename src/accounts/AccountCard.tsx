@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Wallet, Trash2 } from "lucide-react";
 import type { Account } from './account-types';
-import { deleteAccount } from './account-api';
+import { AccountApi } from './account-api';
 import { useToast } from '@/lib/toast';
 import Button from '@/components/ui/Button';
 
@@ -38,7 +38,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account, onClick, onDelete })
     setDeleting(true);
     setError(null);
     try {
-      await deleteAccount(account.id);
+      await AccountApi.deleteAccount(account.id);
       toast.success('Account deleted successfully');
       setShowConfirm(false);
       if (onDelete) onDelete(account.id);
