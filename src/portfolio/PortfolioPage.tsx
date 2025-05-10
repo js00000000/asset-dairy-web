@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, TrendingUp, LineChart, Wallet } from 'lucide-react';
-import AssetCard from './AssetCard';
+import HoldingCard from './HoldingCard';
 import Button from '@/components/ui/Button';
 import TradeEditModal from '@/trades/TradeEditModal';
 import AccountSummaryList from './AccountSummaryList';
-import AssetAccountSummaryTable from './AssetAccountSummaryTable';
+import HoldingAccountSummaryTable from './HoldingAccountSummaryTable';
 import AccountEditModal from '@/accounts/AccountEditModal';
 import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
-import { HoldingApi } from '@/holdings/holding-api';
+import { holdingApi } from '@/holdings/holding-api';
 import type { Holding } from '@/holdings/holding-types';
 import { useAccountStore } from '@/accounts/account-store';
 import { useToast } from '@/lib/toast';
@@ -47,7 +47,7 @@ const PortfolioPage: React.FC = () => {
   const loadHoldings = async () => {
     try {
       // Fetch holdings from API
-      const holdings = await HoldingApi.fetchHoldings();
+      const holdings = await holdingApi.fetchHoldings();
 
       // Get current prices for each holding
       const holdingsWithPrices = await Promise.all(holdings.map(async (holding) => ({
@@ -155,7 +155,7 @@ const PortfolioPage: React.FC = () => {
             <div className="relative z-10">
               <div className="grid md:grid-cols-2 gap-8 relative">
                 {holdings.map((holding) => (
-                  <AssetCard
+                  <HoldingCard
                     key={holding.ticker}
                     ticker={holding.ticker}
                     type={holding.assetType}
@@ -190,7 +190,7 @@ const PortfolioPage: React.FC = () => {
       </div>
       {/* Asset & Account Summary Table */}
       {!isLoadingAccounts && !holdingsLoading && (
-        <AssetAccountSummaryTable accounts={accounts} holdings={holdings} />
+        <HoldingAccountSummaryTable accounts={accounts} holdings={holdings} />
       )}
     </div>
   );

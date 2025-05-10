@@ -2,7 +2,7 @@ import React from 'react';
 import { TrendingUp, Bitcoin } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 
-export interface AssetCardProps {
+export interface HoldingCardProps {
   ticker: string;
   type: string;
   quantity: number;
@@ -13,7 +13,7 @@ export interface AssetCardProps {
   isZero?: boolean;
 }
 
-const AssetCard: React.FC<AssetCardProps> = ({
+const HoldingCard: React.FC<HoldingCardProps> = ({
   ticker,
   type,
   quantity,
@@ -115,4 +115,4 @@ const AssetCard: React.FC<AssetCardProps> = ({
   );
 };
 
-export default AssetCard;
+export default HoldingCard;

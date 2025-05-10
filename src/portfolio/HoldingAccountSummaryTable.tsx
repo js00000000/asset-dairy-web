@@ -7,12 +7,12 @@ import { profileApi } from '@/profile/profile-api';
 import type { Holding } from '@/holdings/holding-types';
 import { convertToUSD, formatPrice } from '@/lib/utils';
 
-interface AssetAccountSummaryTableProps {
+interface HoldingAccountSummaryTableProps {
   accounts: Account[];
   holdings: Holding[];
 }
 
-const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ accounts, holdings: holdings }) => {
+const HoldingAccountSummaryTable: React.FC<HoldingAccountSummaryTableProps> = ({ accounts, holdings: holdings }) => {
   // Get user and investment profile from profile API
   const [user, setUser] = useState<User | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -200,4 +200,4 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
   );
 };
 
-export default AssetAccountSummaryTable;
+export default HoldingAccountSummaryTable;

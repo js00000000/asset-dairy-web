@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Account } from './account-types';
-import { AccountApi } from './account-api';
+import { accountApi } from './account-api';
 
 interface AccountState {
   accounts: Account[];
@@ -24,7 +24,7 @@ export const useAccountStore = create<AccountState>()(
       fetchAccounts: async () => {
         set({ isLoading: true, error: null });
         try {
-          const accounts = await AccountApi.fetchAccounts();
+          const accounts = await accountApi.fetchAccounts();
           set({ accounts, isLoading: false });
         } catch (err) {
           set({ 
@@ -37,7 +37,7 @@ export const useAccountStore = create<AccountState>()(
       createAccount: async (account: Omit<Account, 'id'>) => {
         set({ isLoading: true, error: null });
         try {
-          const newAccount = await AccountApi.createAccount(account);
+          const newAccount = await accountApi.createAccount(account);
           set(state => ({ 
             accounts: [...state.accounts, newAccount], 
             isLoading: false 
@@ -53,7 +53,7 @@ export const useAccountStore = create<AccountState>()(
       updateAccount: async (id: string, data: Partial<Omit<Account, 'id'>>) => {
         set({ isLoading: true, error: null });
         try {
-          const updatedAccount = await AccountApi.updateAccount(id, data);
+          const updatedAccount = await accountApi.updateAccount(id, data);
           set(state => ({
             accounts: state.accounts.map(account => 
               account.id === id ? updatedAccount : account
@@ -71,7 +71,7 @@ export const useAccountStore = create<AccountState>()(
       deleteAccount: async (id: string) => {
         set({ isLoading: true, error: null });
         try {
-          await AccountApi.deleteAccount(id);
+          await accountApi.deleteAccount(id);
           set(state => ({
             accounts: state.accounts.filter(account => account.id !== id),
             isLoading: false,

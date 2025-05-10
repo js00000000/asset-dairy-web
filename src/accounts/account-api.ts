@@ -37,7 +37,7 @@ async function deleteAccount(id: string): Promise<void> {
   }
 }
 
-export const AccountApi = {
+export const accountApi = {
   fetchAccounts,
   createAccount,
   updateAccount,

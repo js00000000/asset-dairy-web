@@ -10,6 +10,6 @@ async function fetchHoldings(): Promise<Holding[]> {
   }
 }
 
-export const HoldingApi = {
+export const holdingApi = {
   fetchHoldings,
 };
