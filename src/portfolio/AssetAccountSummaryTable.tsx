@@ -3,7 +3,7 @@ import { Wallet, TrendingUp, Clipboard, ClipboardCheck, Bot, Bitcoin } from 'luc
 import type { Account } from '@/accounts/account-types';
 import type { User } from '@/profile/user-types';
 import { useEffect, useState } from 'react';
-import { fetchProfile } from '@/profile/profile-api';
+import { profileApi } from '@/profile/profile-api';
 import type { Holding } from '@/holdings/holding-types';
 import { convertToUSD, formatPrice } from '@/lib/utils';
 
@@ -19,7 +19,7 @@ const AssetAccountSummaryTable: React.FC<AssetAccountSummaryTableProps> = ({ acc
   useEffect(() => {
     async function loadProfile() {
       try {
-        const profile = await fetchProfile();
+        const profile = await profileApi.fetchProfile();
         setUser(profile);
       } catch {
         setUser(null);

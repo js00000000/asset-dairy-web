@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, DollarSign, Calendar, TrendingDown, User, Loader2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
-import { fetchProfile, updateProfile } from './profile-api';
 import { TimeHorizon } from './user-investment-profile-types';
 import { useAuthStore } from '@/auth/auth-store';
 import Input from '@/components/ui/Input';
 import { useToast } from '@/lib/toast';
+import { profileApi } from './profile-api';
 
 const ProfileEditPage: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
@@ -32,7 +32,7 @@ const ProfileEditPage: React.FC = () => {
   // Load profile on mount (in case of refresh or store loss)
   useEffect(() => {
     async function loadProfile() {
-      const latest = await fetchProfile();
+      const latest = await profileApi.fetchProfile();
       if (latest) {
         setForm({
           name: latest.name || '',
@@ -80,7 +80,7 @@ const ProfileEditPage: React.FC = () => {
     e.preventDefault();
     try {
       setSaving(true);
-      await updateProfile({
+      await profileApi.updateProfile({
         ...form,
         investmentProfile: {
           ...form.investmentProfile,

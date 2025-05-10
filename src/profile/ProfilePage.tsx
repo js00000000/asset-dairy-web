@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Mail, Loader2, Trash2, User as UserIcon, TrendingDown, Clock, Calendar, DollarSign, CreditCard } from "lucide-react";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { fetchProfile, deleteProfile } from './profile-api';
+import { profileApi } from './profile-api';
 import { useToast } from '@/lib/toast';
 import type { User } from './user-types';
 import { useAuthStore } from '@/auth/auth-store';
@@ -23,7 +23,7 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     async function syncProfile() {
       setLoading(true);
-      const latest = await fetchProfile();
+      const latest = await profileApi.fetchProfile();
       if (latest) {
         updateUser(latest);
       }
@@ -42,7 +42,7 @@ const ProfilePage: React.FC = () => {
     setIsDeleting(true);
     setIsConfirmDialogOpen(false);
     try {
-      const success = await deleteProfile(); // This function needs to be implemented in profile-api.ts
+      const success = await profileApi.deleteProfile(); // This function needs to be implemented in profile-api.ts
       if (success) {
         toast.success("Your account has been successfully deleted.");
         logout();

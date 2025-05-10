@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { login as apiLogin, signup as apiSignup, logout as apiLogout, refreshAccessToken as apiRefreshAccessToken } from './auth-api';
-import { changePassword as apiChangePassword } from '@/profile/profile-api';
+import { profileApi } from '@/profile/profile-api';
 import { ACCESS_TOKEN } from '@/lib/storage-helpers';
 import { isJwtExpired } from '@/lib/jwt-utils';
 
@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   async changePassword(currentPassword: string, newPassword: string) {
     set({ isLoading: true, error: null });
     try {
-      await apiChangePassword(currentPassword, newPassword);
+      await profileApi.changePassword(currentPassword, newPassword);
       set({ isLoading: false });
     } catch (error: any) {
       set({

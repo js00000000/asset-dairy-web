@@ -1,8 +1,7 @@
-// Domain-specific API functions for user profile actions
 import { User } from './user-types';
 import api from '@/lib/api';
 
-export async function fetchProfile(): Promise<User | null> {
+async function fetchProfile(): Promise<User | null> {
   try {
     const res = await api.get<User>('/profile');
     return res.data;
@@ -11,7 +10,7 @@ export async function fetchProfile(): Promise<User | null> {
   }
 }
 
-export async function updateProfile(data: Partial<User>): Promise<User> {
+async function updateProfile(data: Partial<User>): Promise<User> {
   try {
     const res = await api.put<User>('/profile', data);
     return res.data;
@@ -20,7 +19,7 @@ export async function updateProfile(data: Partial<User>): Promise<User> {
   }
 }
 
-export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
   try {
     await api.post('/profile/change-password', { currentPassword, newPassword });
   } catch (err: any) {
@@ -30,7 +29,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
   }
 }
 
-export async function deleteProfile(): Promise<boolean> {
+async function deleteProfile(): Promise<boolean> {
   try {
     // Assuming your API returns a 200 OK or 204 No Content on successful deletion
     const response = await api.delete('/profile');
@@ -42,3 +41,10 @@ export async function deleteProfile(): Promise<boolean> {
     throw new Error(err?.response?.data?.message || 'Failed to delete account');
   }
 }
+
+export const profileApi = {
+  fetchProfile,
+  updateProfile,
+  changePassword,
+  deleteProfile,
+};
