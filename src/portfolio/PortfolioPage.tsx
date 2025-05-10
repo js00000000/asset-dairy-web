@@ -6,7 +6,6 @@ import TradeEditModal from '@/trades/TradeEditModal';
 import AccountSummaryList from './AccountSummaryList';
 import AssetAccountSummaryTable from './AssetAccountSummaryTable';
 import AccountEditModal from '@/accounts/AccountEditModal';
-import type { Trade } from '@/trades/trade-types';
 import { getCryptoPrice, getStockPrice } from '@/lib/realTimePrice-api';
 import { HoldingApi } from '@/holdings/holding-api';
 import type { Holding } from '@/holdings/holding-types';
@@ -65,7 +64,7 @@ const PortfolioPage: React.FC = () => {
     }
   };
 
-  const handleTradesChange = async (_newTxs: Trade[]) => {
+  const handleTradesChange = async () => {
     setHoldingsLoading(true);
     try {
       setHoldings(await loadHoldings());
@@ -165,7 +164,10 @@ const PortfolioPage: React.FC = () => {
                     currency={holding.currency}
                     averagePrice={holding.averagePrice}
                     isZero={holding.quantity === 0}
-                    onClick={() => setSelectedAssetForTx({ ticker: holding.ticker, type: holding.assetType })}
+                    onClick={() => {
+                      setModalOpen(true);
+                      setSelectedAssetForTx({ ticker: holding.ticker, type: holding.assetType })
+                    }}
                   />
                 ))}
               </div>
@@ -173,7 +175,7 @@ const PortfolioPage: React.FC = () => {
           )}
         </section>
         <TradeEditModal
-          open={modalOpen || !!selectedAssetForTx}
+          open={modalOpen}
           onClose={() => {
             setModalOpen(false);
             setSelectedAssetForTx(null);

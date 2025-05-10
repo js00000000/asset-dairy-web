@@ -19,7 +19,7 @@ async function createTrade(trade: Omit<Trade, 'id'>): Promise<Trade> {
   }
 }
 
-async function updateTrade(id: number, data: Partial<Trade>): Promise<Trade> {
+async function updateTrade(id: string, data: Partial<Trade>): Promise<Trade> {
   try {
     const res = await api.put<Trade>(`/trades/${id}`, data);
     return res.data;
@@ -28,7 +28,7 @@ async function updateTrade(id: number, data: Partial<Trade>): Promise<Trade> {
   }
 }
 
-async function deleteTrade(id: number): Promise<void> {
+async function deleteTrade(id: string): Promise<void> {
   try {
     await api.delete(`/trades/${id}`);
   } catch (err: any) {

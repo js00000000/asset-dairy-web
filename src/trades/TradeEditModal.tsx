@@ -8,12 +8,12 @@ import type { Account } from '@/accounts/account-types';
 import { getStockPrice, getCryptoPrice } from '@/lib/realTimePrice-api';
 import { useToast } from '@/lib/toast';
 import { formatPrice } from '@/lib/utils';
-import { tradeApi } from './trade-api';
+import { useTradeStore } from './trade-store';
 
 interface TradeEditModalProps {
   open: boolean;
   onClose: () => void;
-  onTradesChange: (newTxs: Trade[]) => void;
+  onTradesChange?: () => void;
   trade?: Trade;
   ticker?: string;
   assetType?: 'stock' | 'crypto';
@@ -32,6 +32,7 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
   const [currency, setCurrency] = useState<'USD' | 'TWD'>(trade ? trade.currency : 'USD');
   const [isValidatingTicker, setIsValidatingTicker] = useState(false);
   const [isTickerValid, setIsTickerValid] = useState(false);
+  const { createTrade, updateTrade, isLoading } = useTradeStore();
 
   React.useEffect(() => {
     // If creating (no trade) and no accountId, set to first account
@@ -41,7 +42,6 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
   }, [open, accounts, trade, accountId]);
 
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
   // Reset fields when modal opens/closes or trade changes
@@ -138,7 +138,6 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
     e.preventDefault();
     if (!validate()) return;
 
-    setIsSubmitting(true);
     try {
       if (trade) {
         // Edit mode
@@ -154,9 +153,8 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
           reason,
           currency,
         };
-        await tradeApi.updateTrade(trade.id, updatedTx);
-        const updated = await tradeApi.fetchTrades();
-        onTradesChange(updated);
+        await updateTrade(trade.id, updatedTx);
+        onTradesChange?.();
         toast.success('Trade updated successfully');
         onClose();
       } else {
@@ -172,17 +170,14 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
           reason,
           currency,
         };
-        await tradeApi.createTrade(tx);
-        const updated = await tradeApi.fetchTrades();
-        onTradesChange(updated);
+        await createTrade(tx);
+        onTradesChange?.();
         toast.success('Trade added successfully');
         onClose();
       }
     } catch (err) {
       toast.error('Failed to save trade');
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -347,9 +342,9 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({ open, onClose, onTrades
             variant="primary"
             size="lg"
             className="w-full flex items-center justify-center gap-2"
-            disabled={!isTickerValid || isSubmitting}
+            disabled={!isTickerValid || isLoading}
           >
-            {isSubmitting ? (
+            {isLoading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
                 Saving...

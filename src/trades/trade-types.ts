@@ -4,7 +4,7 @@ export type Trade = {
   quantity: number;
   price: number;
   accountId: string; // The account whose balance should be updated (account id)
-  id: number;
+  id: string;
   ticker: string;
   assetType: 'stock' | 'crypto';
   reason?: string; // Optional reason for the trade

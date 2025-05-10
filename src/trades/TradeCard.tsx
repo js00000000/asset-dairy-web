@@ -14,11 +14,11 @@ const assetTypeIcons = {
 interface TradeCardProps {
   tx: Trade;
   accountMap: Record<string, Account>;
-  deletingId: number | null;
+  deletingId: string | null;
   onEdit: (tx: Trade) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
   onCancelDelete: () => void;
-  onSetDeletingId: (id: number) => void;
+  onSetDeletingId: (id: string) => void;
 }
 
 const TradeCard: React.FC<TradeCardProps> = ({

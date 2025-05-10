@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Search, TrendingUp, Bitcoin, SortAsc, SortDesc, Edit, Trash2 } from "lucide-react";
 import ReasonTooltip from '@/components/ui/ReasonTooltip';
-import { tradeApi } from './trade-api';
 import { useToast } from '@/lib/toast';
 import type { Trade } from './trade-types';
 import Button from '@/components/ui/Button';
@@ -13,6 +12,7 @@ import TradeEmptyState from './TradeEmptyState';
 import type { Account } from '@/accounts/account-types';
 import { formatPrice } from "@/lib/utils.ts";
 import { useAccountStore } from '@/accounts/account-store';
+import { useTradeStore } from './trade-store';
 
 const assetTypeIcons = {
   stock: <TrendingUp className="w-4 h-4 text-blue-500" />,
@@ -20,16 +20,16 @@ const assetTypeIcons = {
 };
 
 const TradeListPage: React.FC = () => {
-  const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState<Trade | null>(null);
   const toast = useToast();
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<"all" | "stock" | "crypto">("all");
   const [search, setSearch] = useState("");
   const [sortDesc, setSortDesc] = useState(true);
-  const { accounts, fetchAccounts } = useAccountStore();
+  const { accounts, fetchAccounts, isLoading: isLoadingAccounts } = useAccountStore();
+  const { trades, isLoading: isLoadingTrades, fetchTrades, deleteTrade } = useTradeStore();
 
   const accountMap = useMemo(() => {
     const map: Record<string, Account> = {};
@@ -38,16 +38,13 @@ const TradeListPage: React.FC = () => {
   }, [accounts]);
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(isLoadingAccounts || isLoadingTrades);
     Promise
       .all([
-        tradeApi.fetchTrades(),
+        fetchTrades(),
         fetchAccounts()
       ])
-      .then(([trades]) => {
-        setTrades(trades);
-      })
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(isLoadingAccounts || isLoadingTrades));
   }, []);
 
   const filtered = useMemo(() => {
@@ -66,18 +63,10 @@ const TradeListPage: React.FC = () => {
     return txs;
   }, [trades, filterType, search, sortDesc]);
 
-  const handleTradesChange = (newTxs: Trade[]) => {
-    setTrades(newTxs);
-    setEditTx(null);
-    setShowModal(false);
-  };
-
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     setDeletingId(id);
     try {
-      await tradeApi.deleteTrade(id);
-      const updatedTrades = await tradeApi.fetchTrades();
-      setTrades(updatedTrades);
+      await deleteTrade(id);
       toast.success('Trade deleted successfully');
     } finally {
       setDeletingId(null);
@@ -281,7 +270,6 @@ const TradeListPage: React.FC = () => {
         <TradeEditModal
           open={showModal}
           onClose={() => { setShowModal(false); setEditTx(null); }}
-          onTradesChange={handleTradesChange}
           trade={editTx || undefined}
           accounts={accounts}
         />
